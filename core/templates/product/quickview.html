@@ -1,0 +1,229 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{{ product.name }} | Quick View</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'ico/favicon.png' %}" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700|Roboto:400,500,700,900" rel="stylesheet">
+
+    <!-- Libs CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome/css/font-awesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'js/datetimepicker/bootstrap-datetimepicker.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'js/owl-carousel/owl.carousel.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/themecss/lib.css' %}" />
+    <link rel="stylesheet" href="{% static 'js/jquery-ui/jquery-ui.min.css' %}" />
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="{% static 'css/themecss/so_megamenu.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/themecss/so-categories.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/themecss/so-listing-tabs.css' %}" />
+    <link id="color_scheme" rel="stylesheet" href="{% static 'css/theme.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
+</head>
+
+<body class="res layout-subpage">
+<div id="wrapper" class="wrapper-full">
+    <div class="main-container container">
+        <div class="row">
+            <div id="content" class="col-md-12 col-sm-12">
+                <div class="product-view row">
+                    <div class="left-content-product col-lg-12 col-xs-12">
+                        <div class="row">
+                            <!-- ========== LEFT SIDE (IMAGE) ========== -->
+                            <div class="content-product-left col-sm-6 col-xs-12">
+                                <div class="large-image">
+                                    {% if product.images.first %}
+                                        <img itemprop="image" class="product-image-zoom"
+                                             src="{{ product.images.first.image.url }}"
+                                             data-zoom-image="{{ product.images.first.image.url }}"
+                                             title="{{ product.name }}" alt="{{ product.name }}">
+                                    {% else %}
+                                        <img src="{% static 'images/no-image.png' %}" alt="{{ product.name }}">
+                                    {% endif %}
+                                </div>
+
+                                <div id="thumb-slider" class="owl-theme owl-loaded owl-drag full_slider">
+                                    {% for image in product.images.all %}
+                                        <a data-index="{{ forloop.counter0 }}" class="img thumbnail"
+                                           data-image="{{ image.image.url }}" title="{{ product.name }}">
+                                            <img src="{{ image.image.url }}" title="{{ product.name }}" alt="{{ product.name }}">
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- ========== RIGHT SIDE (DETAILS) ========== -->
+                            <div class="content-product-right col-sm-6 col-xs-12">
+                                <div class="title-product">
+                                    <h1>{{ product.name }}</h1>
+                                </div>
+
+                                <!-- Review -->
+                                <div class="box-review form-group">
+                                    <div class="ratings">
+                                        <div class="rating-box">
+                                            {% for i in "12345" %}
+                                                <span class="fa fa-stack">
+                                                    <i class="fa fa-star{% if forloop.counter > product.rating|default:4 %}-o{% endif %} fa-stack-1x"></i>
+                                                </span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <a class="reviews_button" href="#">({{ product.review_count|default:0 }}) reviews</a>
+                                </div>
+
+                                <!-- Price and Availability -->
+                                <div class="product-label form-group">
+                                    <div class="product_page_price price">
+                                        <span class="price-new">{{ product.price }}৳</span>
+                                        {% if product.old_price %}
+                                            <span class="price-old">{{ product.old_price }}৳</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="stock">
+                                        <span>Availability: </span>
+                                        {% if product.in_stock %}
+                                            <span class="status-stock text-success">In Stock</span>
+                                        {% else %}
+                                            <span class="text-danger">Out of Stock</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="product-box-desc">
+                                    <div class="inner-box-desc">
+                                        <div class="brand">
+                                            <span>Brand: </span>
+                                            <a href="#">{{ product.brand.name }}</a>
+                                        </div>
+                                        <div class="model">
+                                            <span>Product Code: </span> {{ product.sku }}
+                                        </div>
+                                        <div class="reward">
+                                            <span>Category: </span>
+                                            {{ product.category.name }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Add to Cart -->
+                                <div id="product">
+                                    <div class="form-group box-info-product">
+                                        <div class="option quantity">
+                                            <div class="input-group quantity-control">
+                                                <label>Qty</label>
+                                                <input class="form-control" type="text" name="quantity" value="1">
+                                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                                <span class="input-group-addon product_quantity_down">−</span>
+                                                <span class="input-group-addon product_quantity_up">+</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="cart">
+                                            <button type="button" id="button-cart" class="btn btn-mega btn-lg"
+                                                    onclick="cart.add('{{ product.id }}', '1');">
+                                                Add to Cart
+                                            </button>
+                                        </div>
+
+                                        <div class="add-to-links wish_comp">
+                                            <ul class="blank list-inline">
+                                                <li class="wishlist">
+                                                    <a class="icon" data-toggle="tooltip" title="Add to Wishlist"
+                                                       onclick="wishlist.add('{{ product.id }}');">
+                                                        <i class="fa fa-heart"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="compare">
+                                                    <a class="icon" data-toggle="tooltip" title="Compare"
+                                                       onclick="compare.add('{{ product.id }}');">
+                                                        <i class="fa fa-exchange"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div> <!-- end box info -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JS for notification -->
+                <script type="text/javascript">
+                    var cart = {
+                        add: function(product_id, quantity) {
+                            parent.addProductNotice(
+                                'Added to Cart',
+                                '<img src="{{ product.images.first.image.url }}" alt="">',
+                                '<h3><a href="#">{{ product.name }}</a> added to cart!</h3>',
+                                'success'
+                            );
+                        }
+                    }
+
+                    var wishlist = {
+                        add: function(product_id) {
+                            parent.addProductNotice(
+                                'Wishlist',
+                                '<img src="{{ product.images.first.image.url }}" alt="">',
+                                '<h3><a href="#">{{ product.name }}</a> added to wishlist!</h3>',
+                                'success'
+                            );
+                        }
+                    }
+
+                    var compare = {
+                        add: function(product_id) {
+                            parent.addProductNotice(
+                                'Compare',
+                                '<img src="{{ product.images.first.image.url }}" alt="">',
+                                '<h3><a href="#">{{ product.name }}</a> added to compare!</h3>',
+                                'success'
+                            );
+                        }
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS -->
+<style type="text/css">
+    #wrapper { box-shadow: none; }
+    #wrapper > *:not(.main-container) { display: none; }
+    #content { margin: 0 }
+    .container { width: 100%; }
+    .product-info .product-view, .left-content-product, .box-info-product { margin: 0; }
+    .left-content-product .content-product-right .box-info-product .add-to-links {
+        width: auto; float: none; margin-top: 0;
+    }
+</style>
+
+<!-- JS files -->
+<script src="{% static 'js/jquery-2.2.4.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/owl-carousel/owl.carousel.js' %}"></script>
+<script src="{% static 'js/themejs/libs.js' %}"></script>
+<script src="{% static 'js/unveil/jquery.unveil.js' %}"></script>
+<script src="{% static 'js/countdown/jquery.countdown.min.js' %}"></script>
+<script src="{% static 'js/dcjqaccordion/jquery.dcjqaccordion.2.8.min.js' %}"></script>
+<script src="{% static 'js/datetimepicker/moment.js' %}"></script>
+<script src="{% static 'js/datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'js/jquery-ui/jquery-ui.min.js' %}"></script>
+
+<!-- Theme JS -->
+<script src="{% static 'js/themejs/so_megamenu.js' %}"></script>
+<script src="{% static 'js/themejs/addtocart.js' %}"></script>
+<script src="{% static 'js/themejs/application.js' %}"></script>
+</body>
+</html>
