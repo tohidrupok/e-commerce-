@@ -1,9 +1,10 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <!-- Basic page needs -->
-    <title>{% block title %}One Stop Solution{% endblock %}</title>
+    <title>{% block title %}JISA{% endblock %}</title>
     
     <meta charset="utf-8">
     <meta name="keywords" content="bootstrap, responsive, html5, css3, jquery, theme, multicolor, parallax, retina, business" />
@@ -14,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <!-- Favicon --> 
-    <link rel="shortcut icon" href="{% static 'ico/logo.jpg' %}">
+    <link rel="shortcut icon" href="https://jisa.com.bd/media/logo/jisa-3-logo.png">
 
     <!-- Google web fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700|Roboto:400,500,700,900" rel="stylesheet" type="text/css">
@@ -37,11 +38,11 @@
     <link id="color_scheme" rel="stylesheet" href="{% static 'css/theme.css' %}">
     <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
 </head> 
-
-	<style>
-		body {
+<style>
+        body {
 			margin: 0;
-			font-family: sans-serif;
+			font-family: 'Roboto', sans-serif !important;
+			color: #222;
 			}
 
 			.custom-navbar-wrapper {
@@ -142,8 +143,9 @@
 	  
 	.jio-banner-wrapper {
 	margin: 0 0 0 -5px; /* top right bottom left */
-	font-family: 'Segoe UI', sans-serif;
+	font-family: 'Roboto', sans-serif !important;
 	background-color: #f5f7fb;
+	color: #222;
 	} 
 
 	/* 🔁 Scrolling Notice Bar */
@@ -301,11 +303,7 @@
 		font-weight: 500;
 		color: #333;
 		}
-		
-
-
 	</style>
-
 <body class="common-home res layout-home1">
     <div id="wrapper" class="wrapper-full banners-effect-7">
 		<!-- Header Container  -->
@@ -315,7 +313,8 @@
 				<div class="custom-navbar-wrapper"> 
 					<div class="custom-navbar-top">
 						<div class="custom-logo"> 
-						<img src="https://v1.ostbd.com/wp-content/uploads/2025/01/image-01-one-stop-logo_hires.jpg" alt="Star Tech Logo">
+						<!--<img src="https://jisa.bkonsoft.com/media/products/js3_2jcjT7O.png" alt="Jisa Logo">-->
+						 <a href="{% url 'home' %}"><img src="https://jisa.com.bd/media/logo/jisa-3-logo.png" alt="Jisa Logo"></a>
 						</div>
 
 						<div class="custom-search-box">
@@ -326,7 +325,41 @@
 						<div class="custom-top-links">
 						<div>🎁 Offers</div>
 						<div>⚡ Happy Hour</div>
-						<div>👤 Account</div>
+                        
+{% if request.user.is_authenticated %}
+    <div style="display:flex;align-items:center;gap:10px;">
+
+        <!-- Avatar -->
+        {% if request.user.profile.avatar %}
+            <img src="{{ request.user.profile.avatar.url }}" 
+                 alt="Avatar"
+                 style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+        {% else %}
+            <div style="width:32px;height:32px;border-radius:50%;
+                        background:#ccc;display:flex;align-items:center;justify-content:center;
+                        font-size:14px;">👤</div>
+        {% endif %}
+
+        <!-- Username (click → Profile page) -->
+        <a href="{% url 'profile' %}"
+           style="font-weight:bold;color:#ffffffee;text-decoration:none;">
+            {{ request.user.username }}
+        </a>
+
+        
+    </div>
+
+{% else %}
+
+    <!-- Login Button -->
+    <a href="{% url 'customer_login' %}" 
+       style="background-color:#FD7211;border-radius:8px;color:#fff;
+              padding:5px 12px;text-decoration:none;font-size:14px;">
+       Login
+    </a>
+
+{% endif %}
+
 						<div class="custom-pc-builder">PC Builder</div>
 						</div>
 					</div>
@@ -334,85 +367,337 @@
 
 			</div>
 			<!-- //Header Top -->
-			<!-- Header center -->
-			<div class="header-center">
-				<div class="container">
-					<div class="row">
-						<!-- LOGO -->
-						<div class="header-center-right col-md-12 col-sm-12 col-xs-12">
-							<div class="responsive so-megamenu  megamenu-style-dev">
-								<nav class="navbar-default">
-									<div class=" container-megamenu  horizontal">
-										<div class="navbar-header">
-											<button type="button" id="show-megamenu" data-toggle="collapse" class="navbar-toggle">
-												<span class="icon-bar"></span>
-												<span class="icon-bar"></span>
-												<span class="icon-bar"></span>
-											</button>	
-										</div>
-										
-										<div class="megamenu-wrapper">
-												<div class="megamenu-pattern">
-													<div class="container">
-														<ul class="megamenu" data-transition="slide" data-animationtime="250">
-															
-															<li class="home hover">
-																<a href="{% url 'home' %}">Home <b class="caret"></b></a>
-															</li>
+				<style>
+                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+                    
+                    /* =============================
+                       GLOBAL
+                    ============================= */
+                    body {
+                        margin: 0;
+                        font-family: "Inter", sans-serif;
+                        font-size: 14px;
+                        background-color: #f4f5f7;
+                    }
+                    
+                    /* REMOVE ALL DEFAULT SPACING CAUSING GAP */
+                    .header-center,
+                    .header-center .container,
+                    .header-center .row,
+                    .megamenu-wrapper,
+                    .megamenu-pattern,
+                    .megamenu {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+                    
+                    /* =============================
+                       TOP NAVBAR
+                    ============================= */
+                    .custom-navbar-top {
+                        background-color: #061c2f;
+                        padding: 6px 30px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        color: white;
+                    }
+                    
+                    .custom-logo img {
+                        height: 35px;
+                    }
+                    
+                    /* SEARCH BOX */
+                    .custom-search-box {
+                        flex: 1;
+                        margin: 0 20px;
+                        display: flex;
+                    }
+                    
+                    .custom-search-box input {
+                        width: 100%;
+                        padding: 6px 14px;
+                        font-size: 14px;
+                        border: none;
+                        border-radius: 4px 0 0 4px;
+                        outline: none;
+                    }
+                    
+                    .custom-search-box button {
+                        background: white;
+                        border: none;
+                        padding: 0 16px;
+                        font-size: 18px;
+                        cursor: pointer;
+                        border-radius: 0 4px 4px 0;
+                    }
+                    
+                    /* RIGHT LINKS */
+                    .custom-top-links {
+                        display: flex;
+                        align-items: center;
+                        gap: 25px;
+                        font-size: 14px;
+                    }
+                    
+                    .custom-top-links div {
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        cursor: pointer;
+                    }
+                    
+                    /* PC BUILDER BUTTON */
+                    .custom-pc-builder {
+                        background: linear-gradient(90deg, #3971ff, #5c9dff);
+                        padding: 5px 5px;
+                        font-size: 12px;
+                        color: white;
+                        border-radius: 6px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        border: none;
+                    }
+                    
+                    /* =============================
+                       FULL-WIDTH MENU BAR
+                    ============================= */
+                    .header-bottom-wrapper {
+                        width: 100%;
+                        background: #ffffff;
+                        border-bottom: 1px solid #e3e3e3;
+                        margin: 0 !important;
+                        padding: 0 !important;  /* remove gap */
+                    }
+                    
+                    .header-bottom-inner {
+                        max-width: 1350px;
+                        margin: auto;
+                        padding: 10px 0 !important;
+                        display: flex;
+                        align-items: center;
+                        font-size: 15px;
+                        font-weight: 600;
+                    }
+                    
+                    /* MENU LINKS */
+                    .header-bottom-inner a {
+                        text-decoration: none;
+                        color: #000;
+                        padding: 4px 0;
+                    }
+                    
+                    .header-bottom-inner a:hover {
+                        color: #2478ff;
+                    }
+                    
+                    /* REMOVE BUTTON LOOK ON MEGAMENU */
+                    .megamenu li,
+                    .megamenu li:hover,
+                    .megamenu li:focus {
+                        background: none !important;
+                        border: none !important;
+                        box-shadow: none !important;
+                    }
+                    
+                    /* MAIN MENU LINKS */
+                    .megamenu > li > a {
+                        font-family: "Inter", sans-serif !important;
+                        font-size: 15px;
+                        font-weight: 600;
+                        padding: 10px 10px !important;
+                        color: #000 !important;
+                        background: none !important;
+                        margin: 0 !important;
+                    }
+                    
+                    .megamenu > li > a:hover {
+                        color: #2478ff !important;
+                    }
+                    
+                    /* =============================
+                       FIX DOUBLE BOX DROPDOWN
+                    ============================= */
+                    
+                    /* REMOVE outer wrapper box */
+                    .megamenu-pattern {
+                        background: none !important;
+                        border: none !important;
+                    }
+                    
+                    /* REMOVE all padding */
+                    .megamenu-wrapper {
+                        background: none !important;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                    }
+                    
+                    /* ONLY ONE CLEAN SUBMENU BOX */
+                    .sub-menu {
+                        background: #ffffff !important;
+                        border: 1px solid #e4e4e4 !important;
+                        padding: 12px 18px !important;
+                        border-radius: 4px !important;
+                        margin-top: 0 !important;
+                    }
+                    
+                    /* REMOVE extra inside content padding */
+                    .sub-menu .content {
+                        padding: 0 !important;
+                        margin: 0 !important;
+                    }
+                    
+                    /* REMOVE row gap inside dropdown */
+                    .sub-menu .row {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+                    
+                    /* SUB CATEGORY ITEMS */
+                    .subcategory_item {
+                        font-size: 14px;
+                        padding: 6px 0 !important;
+                        display: block;
+                    }
+                    
+                    .subcategory_item:hover {
+                        color: #2478ff !important;
+                        text-decoration: underline;
+                    }
+                    
+                    
+                    .megamenu > li {
+    position: relative;
+}
 
-															{% for cat in menu_categories %}
-																<li class="with-sub-menu hover">
-																	<p class="close-menu"></p>
-																	<a href="{% url 'category_products' cat.slug %}" class="clearfix">
-																		<strong>
-																			{% if cat.icon %}
-																				<i class="{{ cat.icon }}"></i>
-																			{% endif %}
-																			{{ cat.name }}
-																		</strong>
-																		{% if cat.children.all %}
-																			<b class="caret"></b>
-																		{% endif %}
-																	</a>
+/* Level 1 dropdown */
+.sub-menu.level-1 {
+    display: none;
+    position: absolute;
+    background: #fff;
+    padding: 12px;
+    min-width: 220px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    z-index: 99;
+}
 
-																	{% if cat.children.all %}
-																	<div class="sub-menu" style="width: 40%;">
-																		<div class="content">
-																			<div class="row">
-																				<div class="col-md-6">
-																					<ul class="row-list">
-																						{% for subcat in cat.children.all %}
-																							<li>
-																								<a class="subcategory_item" href="{% url 'category_products' subcat.slug %}">
-																									{{ subcat.name }}
-																								</a>
-																							</li>
-																						{% endfor %}
-																					</ul>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																	{% endif %}
-																</li>
-															{% endfor %}
-														</ul>
-													</div>
-												</div>
-										</div>
+.megamenu > li:hover > .sub-menu.level-1 {
+    display: block;
+}
 
-									</div>
-								</nav>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- //Header center -->
-			<!-- Header Bottom -->
-			
+/* Subcategory link design */
+.subcat-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    border-radius: 4px;
+}
+
+/* Arrow style */
+.arrow {
+    font-weight: bold;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+/* Level 2 dropdown */
+.sub-menu.level-2 {
+    display: none;
+    position: absolute;
+    left: 210px;
+    top: 0;
+    background: #fff;
+    padding: 12px;
+    min-width: 200px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    z-index: 100;
+}
+
+.has-sublevel:hover > .sub-menu.level-2 {
+    display: block;
+}
+
+            </style>
+
+            
+            
+            <!-- Header center -->
+            <div class="header-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="header-center-right col-md-12 col-sm-12 col-xs-12">
+                            <div class="responsive so-megamenu megamenu-style-dev">
+            
+                                <nav class="navbar-default">
+                                    <div class="container-megamenu horizontal">
+            
+                                        <div class="navbar-header">
+                                            <button type="button" id="show-megamenu" data-toggle="collapse" class="navbar-toggle">
+                                                <span class="icon-bar"></span>
+                                                <span class="icon-bar"></span>
+                                                <span class="icon-bar"></span>
+                                            </button>
+                                        </div>
+                                        <div class="megamenu-wrapper">
+                                            <div class="megamenu-pattern">
+                                                <div class="container">
+                                                    <ul class="megamenu" data-transition="slide" data-animationtime="250">
+                                                        {% for cat in menu_categories|slice:":12" %}
+                                                            <li class="with-sub-menu hover main-item">
+                                                                <a href="{% url 'category_products' cat.slug %}">
+                                                                    {{ cat.name }}
+                                                                </a>
+                                                    
+                                                                {% if cat.has_children %}
+                                                                    <div class="sub-menu level-1">
+                                                                        <ul>
+                                                                            {% for subcat in cat.children.all %}
+                                                                                <li class="has-sublevel">
+                                                    
+                                                                                    <a href="{% url 'category_products' subcat.slug %}" class="subcat-link">
+                                                                                        {{ subcat.name }}
+                                                    
+                                                                                        {% if subcat.children.exists %}
+                                                                                            <span class="arrow">›</span>
+                                                                                        {% endif %}
+                                                                                    </a>
+                                                    
+                                                                                    {% if subcat.children.exists %}
+                                                                                        <ul class="sub-menu level-2">
+                                                                                            {% for subsub in subcat.children.all %}
+                                                                                                <li>
+                                                                                                    <a href="{% url 'category_products' subsub.slug %}">
+                                                                                                        {{ subsub.name }}
+                                                                                                    </a>
+                                                                                                </li>
+                                                                                            {% endfor %}
+                                                                                        </ul>
+                                                                                    {% endif %}
+                                                                                </li>
+                                                                            {% endfor %}
+                                                                        </ul>
+                                                                    </div>
+                                                                {% endif %}
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+            
+                                    </div>
+                                </nav>
+            
+                            </div>
+                        </div>
+            
+                    </div>
+                </div>
+            </div>
 		</header>
-		<!-- //Header Container  -->
 		<!-- Main Container  -->
 		<main id="content" class="page-main">
             {% block content %}
@@ -425,170 +710,368 @@
 			var $typeheader = 'header-home1';
 			//-->
 		</script>
+		
 		<!-- Footer Container -->
-		<footer class="footer-container typefooter-1">
-			<!-- FOOTER TOP -->
-			<div class="footer-top">
-				<div class="container">
-					<div class="row">
-						<div class="col-xs-12">
-							<div class="module social_block col-md-3 col-sm-12 col-xs-12" >
-								<ul class="social-block ">
-									<li class="facebook"><a class="_blank" href="https://www.facebook.com/MagenTech" target="_blank"><i class="fa fa-facebook"></i></a></li>
-									<li class="twitter"><a class="_blank" href="https://twitter.com/smartaddons" target="_blank"><i class="fa fa-twitter"></i></a></li>
-									<li class="rss"><a class="_blank" href="#" target="_blank"><i class="fa fa-rss"></i></a></li>
-									<li class="google_plus"><a class="_blank" href="https://plus.google.com/u/0/+Smartaddons/posts" target="_blank"><i class="fa  fa-google-plus"></i></a></li>
-									<li class="pinterest"><a class="_blank" href="https://www.pinterest.com/smartaddons/" target="_blank"><i class="fa fa-pinterest"></i></a></li>
-								</ul>
-							</div>
-							<div class="module news-letter col-md-9 col-sm-12 col-xs-12">
-								<div class="newsletter">
-									<div class="title-block">
-										<div class="page-heading">SIGN UP FOR OUR NEWSLETTER</div>
-										<div class="pre-text">
-											Duis at ante non massa consectetur iaculis id non tellus			
-										</div>
-									</div>
-									<div class="block_content">
-										<form method="post" name="signup" id="signup" class="btn-group form-inline signup">
-											<div class="form-group required send-mail">
-												<div class="input-box">
-													<input type="email" placeholder="Your email address..." value="" class="form-control" id="txtemail" name="txtemail" size="55">
-												</div>
-												<div class="subcribe">
-													<button class="btn btn-default btn-lg" type="submit" onclick="return subscribe_newsletter();" name="submit">
-														Subscribe						</button>
-												</div>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div> 
-			</div>
-			<!-- FOOTER CENTER -->
-			<div class="footer-center">
-				<div class="container content">
-					<div class="row">
-						<!-- BOX INFO -->
-						<div class="col-md-3 col-sm-6 col-xs-12 collapsed-block footer-links box-footer">
-							<div class="module ">
-								<div class="content-block-footer">
-									<div class="footer-logo">
-                                    <a href="#"><img class="lazyload img-responsive" data-sizes="auto" src="{% static 'image/demo/logos/one.png' %}" title="Your Store" alt="Your Store" /></a>
-									</div>
-									<p>One Stop Solution is a trusted name in the eCommerce industry, providing shopping experiences. We committed to excellence online retail and customer satisfaction.</p>
-								</div>
-							</div>				
-						</div>
-						<!-- BOX ACCOUT -->
-						<div class="col-md-3 col-sm-6 box-account box-footer">
-							<div class="module clearfix">
-								<h3 class="modtitle">My Account</h3>
-								<div class="modcontent">
-									<ul class="menu">
-										<li><a href="#">Brands</a></li>
-										<li><a href="#">Gift Certificates</a></li>
-										<li><a href="#">Affiliates</a></li>
-										<li><a href="#">Specials</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<!-- BOX INFOMATION -->
-						<div class="col-md-3 col-sm-6 box-information box-footer">
-							<div class="module clearfix">
-								<h3 class="modtitle">Information</h3>
-								<div class="modcontent">
-									<ul class="menu">
-										<li><a href="#">About Us</a></li>
-										<li><a href="#">FAQ</a></li>
-										<li><a href="#">Pricing Tables</a></li>
-										<li><a href="#">Terms And Conditions</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<!-- BOX ABOUT -->
-						<div class="col-md-3  col-sm-6 collapsed-block box-footer">
-							<div class="module ">
-								<h3 class="modtitle">About Us</h3>
-								<div class="modcontent">
-									<ul class="contact-address">
-										<li><span class="fa fa-home"></span> One Stop, Mirpur-10, Dhaka</li>
-										<li><span class="fa fa-envelope"></span> Email: <a href="#"> sales@onestop.com</a></li>
-										<li><span class="fa fa-phone">&nbsp;</span> Phone: 0123456789</li>
-									</ul>
-									<ul class="payment-method">
-									<li><a title="Payment Method" href="#"><img class="lazyload img-responsive" data-sizes="auto" src="{% static 'image/demo/cms/payment/payment-1.png' %}" alt="Payment"></a></li>
-									<li><a title="Payment Method" href="#"><img class="lazyload img-responsive" data-sizes="auto" src="{% static 'image/demo/cms/payment/payment-2.png' %}" alt="Payment"></a></li>
-									<li><a title="Payment Method" href="#"><img class="lazyload img-responsive" data-sizes="auto" src="{% static 'image/demo/cms/payment/payment-3.png' %}" alt="Payment"></a></li>
-									<li><a title="Payment Method" href="#"><img class="lazyload img-responsive" data-sizes="auto" src="{% static 'image/demo/cms/payment/payment-4.png' %}" alt="Payment"></a></li>
-									<li><a title="Payment Method" href="#"><img class="lazyload img-responsive" data-sizes="auto" src="{% static 'image/demo/cms/payment/payment-5.png' %}" alt="Payment"></a></li>
-									</ul>
-								</div>
-							</div>				
-						</div>
-					</div>
-				</div>
-			</div>		
-			<!-- FOOTER BOTTOM -->
-			<div class="footer-bottom ">
-				<div class="container">
-					<div class="row">
-						<div class="col-sm-12">
-						One Stop Solution © 2025. All Rights Reserved.				
-						</div>
-						<div class="back-to-top"><i class="fa fa-angle-up"></i><span> Top </span></div>
-					</div>
-				</div>
-			</div>
+		
+		<style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        
+        .new-footer, 
+        .new-footer-bottom {
+            font-family: 'Roboto', sans-serif !important;
+        }
+        
+        /* MAIN FOOTER */
+        .new-footer {
+            background: #0a1a2b;     /* Dark Navy Like Startech */
+            color: #d7d9dd;
+            padding: 55px 0;
+            border-top: 3px solid #142c42;
+        }
+        
+        /* TITLES */
+        .footer-title {
+            color: #FFFFFF;        /* StarTech cyan */
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+        
+        /* LINKS */
+        .footer-links li,
+        .footer-contact li {
+            list-style: none;
+            margin: 7px 0;
+            font-size: 14px;
+        }
+        
+        .footer-links a {
+            color: #b7c2cc;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #00c2ff;
+        }
+        
+        /* ABOUT TEXT */
+        .footer-about p {
+            margin-top: 15px;
+            line-height: 1.7;
+            font-size: 14px;
+            color: #cfd3d8;
+        }
+        
+        /* SUPPORT BOXES */
+        .support-box {
+            background: #102334;
+            padding: 14px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border: 1px solid #1d3245;
+        }
+        
+        .support-box .icon {
+            font-size: 24px;
+            color: #00c2ff;    /* cyan icon */
+            margin-right: 15px;
+        }
+        
+        .support-box p {
+            margin: 0;
+            font-size: 13px;
+            color: #b3bec9;
+        }
+        
+        .support-number {
+            font-size: 19px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .support-link {
+            color: #00c2ff;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        /* CONTACT INFO */
+        .footer-contact i {
+            color: #00c2ff;
+            margin-right: 10px;
+        }
+        
+        .footer-contact li {
+            font-size: 14px;
+            color: #cfd3d8;
+        }
+        
+        /* PAYMENT ICONS */
+        .payment-method img {
+            width: 45px;
+            margin-right: 5px;
+            opacity: 0.9;
+        }
+        
+        .payment-method img:hover {
+            opacity: 1;
+        }
+        
+        /* FOOTER BOTTOM */
+        .new-footer-bottom {
+            background: #081521;
+            color: #a9b3bb;
+            padding: 18px 0;
+            font-size: 14px;
+            border-top: 1px solid #112636;
+        }
+        
+        /* BACK TO TOP */
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #00c2ff;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 4px 12px rgba(0, 194, 255, 0.4);
+            transition: 0.3s;
+        }
+        
+        .back-to-top:hover {
+            background: #009dd1;
+        }
+        
+        /* RESPONSIVE */
+        @media(max-width: 767px) {
+            .footer-center {
+                text-align: center;
+            }
+            .support-box {
+                justify-content: center;
+            }
+            .payment-method li { display: inline-block; }
+        }
+        </style>
+        
+        
+        <!-- 🌐 STARTECH STYLE FOOTER -->
+        <div class="footer-center new-footer">
+            <div class="container content">
+                <div class="row">
+        
+                    <!-- SUPPORT -->
+                    <div class="col-md-3 col-sm-6 footer-support">
+                        <h3 class="footer-title">Support</h3>
+        
+                        <div class="support-box">
+                            <div class="icon"><i class="fa fa-phone"></i></div>
+                            <div>
+                                <p>9 AM – 8 PM</p>
+                                <span class="support-number">01885198155</span>
+                            </div>
+                        </div>
+        
+                        <div class="support-box">
+                            <div class="icon"><i class="fa fa-map-marker"></i></div>
+                            <div>
+                                <p>Store Locator</p>
+                                <a href="#" class="support-link">Find Our Stores</a>
+                            </div>
+                        </div>
+                    </div> 
+                    
+                    
+        
+                    <!-- ABOUT -->
+                    <div class="col-md-3 col-sm-6 footer-about">
+                        <div class="footer-logo">
+                            <a href="#">
+                                <img class="img-responsive"
+                                src="https://jisa.com.bd/media/logo/jisa-3-logo.png" alt="Jisa Logo">
+                            </a>
+                        </div>
+                        <p>
+                            JISA is a trusted eCommerce platform delivering authentic products 
+                            with a seamless shopping experience and top-tier customer service.
+                        </p>
+                    </div>
+        
+                    <!-- ACCOUNT -->
+                    <div class="col-md-3 col-sm-6 box-account">
+                        <h3 class="footer-title">My Account</h3>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'brand_index' %}">Brands</a></li>
+                            <li><a href="#">Gift Certificates</a></li>
+                            <li><a href="#">Affiliates</a></li>
+                            <li><a href="#">Specials</a></li>
+                        </ul>
+                    </div>
+        
+                    <!-- INFORMATION -->
+                    <div class="col-md-3 col-sm-6 box-info">
+                        <h3 class="footer-title">Information</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">FAQ</a></li>
+                            <li><a href="#">Pricing Tables</a></li>
+                            <li><a href="#">Terms & Conditions</a></li>
+                        </ul>
+        
+                        <h3 class="footer-title m-top-20">Contact</h3>
+                        <ul class="footer-contact">
+                            <li><i class="fa fa-home"></i> 3021, West Jurain, Shyampur, Dhaka</li>
+                            <li><i class="fa fa-envelope"></i> sales@jisa.com</li>
+                            <li><i class="fa fa-phone"></i> 0123456789</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <!-- FOOTER BOTTOM -->
+        <div class="footer-bottom new-footer-bottom">
+            <div class="container text-center">
+                <!-- Social Icons -->
+                <ul class="social-block" style="margin:0 0 15px 0; padding:0; list-style:none; display:flex; justify-content:center; gap:15px;">
+                    <li class="facebook">
+                        <a class="_blank" href="https://www.facebook.com/MagenTech" target="_blank">
+                            <i class="fa fa-facebook" style="color:#00c2ff; font-size:18px;"></i>
+                        </a>
+                    </li>
+                    <li class="twitter">
+                        <a class="_blank" href="https://twitter.com/smartaddons" target="_blank">
+                            <i class="fa fa-twitter" style="color:#00c2ff; font-size:18px;"></i>
+                        </a>
+                    </li>
+                    <li class="rss">
+                        <a class="_blank" href="#" target="_blank">
+                            <i class="fa fa-rss" style="color:#00c2ff; font-size:18px;"></i>
+                        </a>
+                    </li>
+                    <li class="google_plus">
+                        <a class="_blank" href="https://plus.google.com/u/0/+Smartaddons/posts" target="_blank">
+                            <i class="fa fa-google-plus" style="color:#00c2ff; font-size:18px;"></i>
+                        </a>
+                    </li>
+                    <li class="pinterest">
+                        <a class="_blank" href="https://www.pinterest.com/smartaddons/" target="_blank">
+                            <i class="fa fa-pinterest" style="color:#00c2ff; font-size:18px;"></i>
+                        </a>
+                    </li>
+                </ul>
+        
+                <!-- Payment Icons -->
+                <ul class="payment-method" style="margin:0; padding:0; list-style:none; display:flex; justify-content:center; gap:10px;">
+                    <li><img src="{% static 'image/demo/cms/payment/payment-1.png' %}" alt="" style="width:45px;"></li>
+                    <li><img src="{% static 'image/demo/cms/payment/payment-2.png' %}" alt="" style="width:45px;"></li>
+                    <li><img src="{% static 'image/demo/cms/payment/payment-3.png' %}" alt="" style="width:45px;"></li>
+                    <li><img src="{% static 'image/demo/cms/payment/payment-4.png' %}" alt="" style="width:45px;"></li>
+                    <li><img src="{% static 'image/demo/cms/payment/payment-5.png' %}" alt="" style="width:45px;"></li>
+                </ul>
+            </div>
+        </div>
 
-		</footer>
-		<!-- //end Footer Container -->
+        
 
-    </div>
-	<!-- Social widgets -->
-	<section class="social-widgets visible-lg">
-		<ul class="items">
-			<li class="item item-01 facebook"> <a href="#" class="tab-icon"><span class="fa fa-facebook"></span></a>
-				<div class="tab-content">
-					<div class="title">
-						<h5>FACEBOOK</h5>
-					</div>
-					<div class="loading">
-						<img class="lazyload ajaxloader" data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="image/theme/lazy-loader.gif" alt="loader">
-					</div>
-				</div>
-			</li>
-			<li class="item item-02 twitter"> <a href="php/twitter.php?account_twitter=envato" class="tab-icon"><span class="fa fa-twitter"></span></a>
-				<div class="tab-content">
-					<div class="title">
-						<h5>TWITTER FEEDS</h5> 
-					</div>
-					<div class="loading">
-						<img class="lazyload ajaxloader" data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="image/theme/lazy-loader.gif" alt="loader">
-					</div>
-				</div>
-			</li>
-			<li class="item item-03 youtube"> <a href="php/youtubevideo.php?account_video=PY2RLgTmiZY" class="tab-icon"><span class="fa fa-youtube"></span></a>
-				<div class="tab-content">
-					<div class="title">
-						<h5>YouTube</h5>
-					</div>
-					<div class="loading">
-					<img class="lazyload ajaxloader" data-sizes="auto" src="{% static 'image/theme/lazy-loader.gif' %}" data-src="{% static 'image/theme/lazy-loader.gif' %}" alt="loader">
-					</div>				</div>
-			</li>
-		</ul>
-	</section>	<!-- End Social widgets -->
-	
+            <!-- Floating Cart Button -->
+            <a href="{% url 'cart_view' %}"
+            id="floatingCartBtn"
+            style="
+                    position: fixed;
+                    right: 20px;
+                    bottom: 20px;
+                    background: #0B1621;
+                    color: white;
+                    width: 58px;
+                    height: 65px;
+                    border-radius: 10px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 12px;
+                    text-decoration: none;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+                    z-index: 9999;
+                    overflow: visible;">
+                
+                <!-- New icon above CART text -->
+                <i class="fa fa-shopping-cart" style="font-size:18px; margin-bottom:2px;"></i>
+
+                <i class="fa fa-shopping-bag" style="font-size:22px; margin-bottom:3px;"></i>
+                CART
+
+                <!-- Hidden JSON cart data -->
+                <span id="cartData" style="display:none;">
+                    {{ request.session.cart|safe }}
+                </span>
+
+                <!-- Badge -->
+                <span id="cartBadge"
+                    style="
+                        position: absolute;
+                        top: -5px;
+                        right: -5px;
+                        background: #FF3B30;
+                        color: white;
+                        width: 22px;
+                        height: 22px;
+                        font-size: 12px;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-weight: bold;
+                        transform: scale(1);
+                        transition: transform 0.3s ease;">
+                </span>
+            </a>
+
+            <script>
+                function updateCartBadge() {
+                    // read cart data from hidden span
+                    let cartJson = document.getElementById("cartData").innerText;
+                    let cart = JSON.parse(cartJson.replace(/'/g, '"')); // convert to valid JSON
+
+                    // calculate total quantity
+                    let totalQty = 0;
+                    for (let key in cart) {
+                        if (cart[key].qty) {
+                            totalQty += cart[key].qty;
+                        }
+                    }
+
+                    // set badge
+                    let badge = document.getElementById("cartBadge");
+                    badge.innerText = totalQty;
+
+                    // simple animation
+                    badge.style.transform = "scale(1.4)";
+                    setTimeout(() => badge.style.transform = "scale(1)", 300);
+                }
+
+                // run on page load
+                updateCartBadge();
+            </script>
+
+		
+	<!-- //end Footer Container -->
+
 	<!-- Cpanel Block -->
-	<div id="sp-cpanel_btn" class="isDown visible-lg">
-		<i class="fa fa-cog fa-spin"></i>
-	</div>		
+	<!--<div id="sp-cpanel_btn" class="isDown visible-lg">-->
+	<!--	<i class="fa fa-cog fa-spin"></i>-->
+	<!--</div>		-->
 	<div id="sp-cpanel" class="sp-delay">
 		<h2 class="sp-cpanel-title"> Demo Options <span class="sp-cpanel-close"> <i class="fa fa-times"> </i></span></h2>
 		<div id="sp-cpanel_settings">

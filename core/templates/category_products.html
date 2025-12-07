@@ -337,67 +337,71 @@
 						<!--changed listings-->
                         <div class="products-list row list">
                             {% for product in products %}
-                            <div class="product-layout col-md-3 col-sm-6 col-xs-12">
-                                <div class="product-item-container">
-                                    <div class="left-block">
-                                        <div class="product-image-container lazy second_img">
-                                            {% if product.images.all.count > 0 %}
-                                                {% with img=product.images.all.0 %}
-                                                    <img src="{{ img.image.url }}" 
-                                                        alt="{{ product.name }}" 
-                                                        class="card-img-top product-img img-responsive" 
-                                                        loading="lazy">
-                                                {% endwith %}
-                                            {% elif product.image %}
-                                                <img src="{{ product.image.url }}" 
-                                                    alt="{{ product.name }}" 
-                                                    class="card-img-top product-img img-responsive" 
-                                                    loading="lazy">
-                                            {% else %}
-                                                <img src="{% static 'img/default-product.jpg' %}" 
-                                                    alt="No Image" 
-                                                    class="card-img-top product-img img-responsive" 
-                                                    loading="lazy">
-                                            {% endif %}
-                                        </div>
+							<div class="product-layout col-md-3 col-sm-6 col-xs-12">
 
-                                        {% if product.label %}
-                                            <span class="label label-{{ product.label|lower }}">{{ product.label }}</span>
-                                        {% endif %}
-                                    </div>
+								<a href="{% url 'product_detail' product.id %}" style="text-decoration:none; color:inherit;">
+									<div class="product-item-container">
+										<div class="left-block">
+											<div class="product-image-container">
 
-                                    <div class="right-block">
-                                        <div class="caption">
-                                            <h4><a href="#">{{ product.name }}</a></h4>
-                                            <div class="price">
-                                                <span class="price-new">৳{{ product.price }}</span>
-                                                {% if product.old_price %}
-                                                    <span class="price-old">৳{{ product.old_price }}</span>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
+												{% if product.images.first %}
+													<img src="{{ product.images.first.image.url }}"
+														alt="{{ product.name }}"
+														class="card-img-top product-img img-responsive">
+												{% elif product.image %}
+													<img src="{{ product.image.url }}"
+														alt="{{ product.name }}"
+														class="card-img-top product-img img-responsive">
+												{% else %}
+													<img src="{% static 'img/default-product.jpg' %}"
+														alt="No Image"
+														class="card-img-top product-img img-responsive">
+												{% endif %}
 
-                                    <div class="button-group">
-                                        <button class="wishlist btn-button" type="button" title="Add to Wish List">
-                                            <i class="fa fa-heart"></i>
-                                        </button>
-                                        <button class="addToCart btn-button" type="button" title="Add to Cart">
-                                            <i class="fa fa-shopping-cart"></i>
-                                            <span class="hidden-xs name-cart">Add to Cart</span>
-                                        </button>
-                                        <button class="compare btn-button" type="button" title="Compare">
-                                            <i class="fa fa-exchange"></i>
-                                        </button>
-                                        <a class="quickview iframe-link visible-lg btn-button" title="Quickview" href="#">
-                                            <i class="fa fa-search"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            {% empty %}
-                                <p>No products available.</p>
-                            {% endfor %}
+											</div>
+
+											{% if product.label %}
+												<span class="label label-{{ product.label|lower }}">{{ product.label }}</span>
+											{% endif %}
+										</div>
+
+										<div class="right-block">
+											<div class="caption">
+												<h4>{{ product.name }}</h4>
+												<div class="price">
+													<span class="price-new">৳{{ product.price }}</span>
+													{% if product.old_price %}
+														<span class="price-old">৳{{ product.old_price }}</span>
+													{% endif %}
+												</div>
+											</div>
+										</div>
+
+										<div class="button-group">
+											<button class="wishlist btn-button" type="button" title="Add to Wish List">
+												<i class="fa fa-heart"></i>
+											</button>
+											<button class="addToCart btn-button" type="button" title="Add to Cart">
+												<i class="fa fa-shopping-cart"></i>
+												<span class="hidden-xs name-cart">Add to Cart</span>
+											</button>
+											<button class="compare btn-button" type="button" title="Compare">
+												<i class="fa fa-exchange"></i>
+											</button>
+											<span class="quickview iframe-link visible-lg btn-button" title="Quickview">
+												<i class="fa fa-search"></i>
+											</span>
+										</div>
+
+									</div>
+								</a>
+
+							</div>
+							{% empty %}
+							<p>No products available.</p>
+							{% endfor %}
+
+
                         </div>
 
 				

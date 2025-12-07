@@ -15,243 +15,398 @@
         <!--Middle Part Start-->
         <div id="content" class="col-md-12 col-sm-12">
             <div class="product-view row">
-                <div class="left-content-product col-lg-12 col-xs-12">
-                    <div class="row">
-                        
-                    <div class="content-product-left col-sm-6 col-xs-12">
-                        <div id="thumb-slider-vertical" class="thumb-vertical-outer">
-                            <span class="btn-more prev-thumb nt"><i class="fa fa-chevron-up"></i></span>
-                            <span class="btn-more next-thumb nt"><i class="fa fa-chevron-down"></i></span>
+    <div class="left-content-product col-lg-12 col-xs-12">
+        <div class="row">
+            <!-- Left Column -->
+<!-- Left Column -->
+<div class="content-product-left col-sm-4 col-xs-12">
 
-                            <ul class="thumb-vertical">
-                                {% for img in product.images.all %}
-                                <li class="owl2-item">
-                                    <a data-index="{{ forloop.counter0 }}" 
-                                    class="img thumbnail {% if forloop.first %}active{% endif %}" 
-                                    data-image="{{ img.image.url }}" 
-                                    title="{{ img.alt_text|default:product.name }}">
-                                        <img src="{{ img.image.url }}" 
-                                            title="{{ img.alt_text|default:product.name }}" 
-                                            alt="{{ img.alt_text|default:product.name }}">
-                                    </a>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+    {% with first_img=product.images.all|first %}
+    {% if first_img %}
+    <div class="large-image">
 
-                        {% with first_img=product.images.all|first %}
-                        {% if first_img %}
-                        <div class="large-image vertical">
-                            <img itemprop="image" 
-                                class="product-image-zoom"
-                                id="mainProductImage"
-                                src="{{ first_img.image.url }}" 
-                                data-zoom-image="{{ first_img.image.url }}" 
-                                title="{{ first_img.alt_text|default:product.name }}" 
-                                alt="{{ first_img.alt_text|default:product.name }}">
-                        </div>
+        <!-- Popup/zoom link -->
+        <a id="mainImageLink" href="{{ first_img.image.url }}" data-lightbox="product-gallery">
+            <img id="mainProductImage"
+                 src="{{ first_img.image.url }}"
+                 alt="{{ first_img.alt_text|default:product.name }}">
+        </a>
+
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="thumb-row">
+        {% for img in product.images.all %}
+        <a class="thumbnail {% if forloop.first %}active{% endif %}"
+           data-image="{{ img.image.url }}">
+            <img src="{{ img.image.url }}" alt="">
+        </a>
+        {% endfor %}
+    </div>
+
+</div>
+
+
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+$(document).ready(function() {
+
+    // Thumbnail click event
+    $('.thumb-row .thumbnail').on('click', function(e) {
+        e.preventDefault();
+
+        const newImage = $(this).attr('data-image');
+
+        // Remove active from all thumbnails
+        $('.thumb-row .thumbnail').removeClass('active');
+        $(this).addClass('active');
+
+        // Fade effect when updating main image
+        $('#mainProductImage').fadeOut(150, function() {
+            $(this).attr('src', newImage).fadeIn(150);
+        });
+    });
+
+    // Disable hover image switching
+    $('.thumb-row .thumbnail').off('mouseenter mouseleave');
+});
+</script>
+
+<!-- CSS -->
+<style>
+body, .product-view {
+    font-family: 'Roboto', sans-serif;
+    color: #222;
+}
+
+/* Main Image */
+.large-image img {
+    width: 100%;
+    height: 350px;
+    object-fit: contain;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+/* Thumbnail Row */
+.thumb-row {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+/* Each Thumbnail Image */
+.thumb-row .thumbnail img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Active or Hover Thumbnail */
+.thumb-row .thumbnail.active img,
+.thumb-row .thumbnail:hover img {
+    border-color: #ff6600;
+}
+
+/* Right Column */
+.content-product-right {
+    font-family: 'Roboto', sans-serif;
+    color: #222;
+}
+
+.content-product-right h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.content-product-right .price-new {
+    font-size: 22px;
+    color: #ff6600;
+    font-weight: 700;
+}
+
+.content-product-right .price-old {
+    font-size: 16px;
+    color: #999;
+    text-decoration: line-through;
+    margin-left: 5px;
+}
+</style>
+
+
+
+<!-- Right Column -->
+<div class="content-product-right col-sm-8 col-xs-12">
+    <style>
+        .product-tags span {
+            display: inline-block;
+            background: #f3f4f6;
+            padding: 6px 14px;
+            margin-right: 6px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .product-tags span strong {
+            font-weight: 600;
+        }
+        
+        .key-features {
+            margin-top: 25px;
+            font-size: 16px;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .payment-box {
+            border: 2px solid #ddd;
+            padding: 10px;
+            border-radius: 8px;
+            min-height: 50px;
+            cursor: pointer;
+            width:40%;
+        }
+        
+        .payment-box.active {
+            border-color: #2d4ed8;
+        }
+        
+        .payment-box input {
+            transform: scale(1.3);
+        }
+        
+        .buy-btn {
+            background: #2d3ecf;
+            color: #fff;
+            font-size: 18px;
+            padding: 14px 30px;
+            border-radius: 8px;
+            border: none;
+        }
+        
+        .qty-box {
+            border: 1px solid #ddd;
+            padding: 8px 18px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            width: fit-content;
+        }
+        
+        .qty-box span {
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0 10px;
+        }
+        
+        .qty-box input {
+            width: 50px;
+            text-align: center;
+            font-size: 16px;
+            border: none;
+        }
+        
+        </style>
+        <h1 style="font-family: 'Roboto', sans-serif !important;" class="text-3xl font-semibold text-blue-900 mb-4">
+            {{ product.name }}
+        </h1>
+        
+        <!-- TAGS -->
+        <div class="product-tags mb-5">
+        
+            <span>
+                Price:
+                <strong>{{ product.price }}৳</strong>
+                {% if product.old_price %}
+                    <del style="margin-left:5px; color:#888;">{{ product.old_price }}৳</del>
+                {% endif %}
+            </span>
+        
+            <span>
+                Regular Price:
+                <strong>{{ product.old_price|default:product.price }}৳</strong>
+            </span>
+        
+            <span>
+                Status:
+                {% if product.stock_quantity > 0 %}
+                    <strong style="color:#15803d;">In Stock</strong>
+                {% else %}
+                    <strong style="color:#dc2626;">Out of Stock</strong>
+                {% endif %}
+            </span>
+        
+            <span>
+                Product Code:
+                <strong>{{ product.id }}</strong>
+            </span>
+        
+            <span>
+                Brand:
+                <strong>{{ product.brand.name }}</strong>
+            </span>
+        
+        </div>
+        
+        
+        <!-- KEY FEATURES -->
+        <h2 class="text-xl font-semibold mb-2">Key Features</h2>
+        
+        <div class="key-features">
+            {{ product.short_description|linebreaks }}
+        </div>
+        
+        <a href="#more" class="text-red-600 font-semibold mt-2 inline-block">View More Info</a>
+        
+        
+        <!-- PAYMENT OPTIONS -->
+        <h2 class="text-xl font-semibold mt-6 mb-3">Payment Options</h2>
+        
+        <div style="display:flex; gap:20px; flex-wrap:wrap;">
+        
+            <!-- Cash Price -->
+            <label class="payment-box active" id="cashBox">
+                <div style="display:flex; gap:16px;">
+                    <input type="radio" name="pay" checked>
+                    <div>
+                        <div style="font-size:16px; font-weight:bold;">{{ product.price }}৳</div>
+                        {% if product.old_price %}
+                        <div style="color:#999; text-decoration:line-through;">{{ product.old_price }}৳</div>
                         {% endif %}
-                        {% endwith %}
-
-                        {% if product.video_url %}
-                        <a class="thumb-video pull-left" href="{{ product.video_url }}" target="_blank">
-                            <i class="fa fa-youtube-play"></i>
-                        </a>
-                        {% endif %}
+                        <div style="margin-top:5px;">Cash Discount Price</div>
+                        <div style="color:#888; font-size:14px;">Online / Cash Payment</div>
                     </div>
-
-                    <!-- ✅ Include jQuery + ElevateZoom -->
-                    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
-
-                                        
-                    <script>
-                    $(document).ready(function() {
-                        const $mainImage = $('#mainProductImage');
-
-                        // ✅ Function to initialize zoom safely
-                        function initZoom() {
-                            // Destroy old zoom first
-                            $('.zoomContainer').remove();
-                            $mainImage.removeData('elevateZoom');
-                            $mainImage.data('elevateZoom', null);
-
-                            // Init new zoom cleanly
-                            $mainImage.elevateZoom({
-                                zoomType: "lens",
-                                lensShape: "round",
-                                lensSize: 180,
-                                scrollZoom: true,
-                                containLensZoom: true,
-                                cursor: "crosshair",
-                            });
-                        }
-
-                        // ✅ Initialize zoom once for the first image
-                        initZoom();
-
-                        // ✅ When a thumbnail is clicked
-                        $('.thumb-vertical .thumbnail').on('click', function(e) {
-                            e.preventDefault();
-
-                            const newImage = $(this).attr('data-image');
-
-                            // active border
-                            $('.thumb-vertical .thumbnail').removeClass('active');
-                            $(this).addClass('active');
-
-                            // fade animation
-                            $mainImage.fadeOut(150, function() {
-                                $mainImage.attr('src', newImage);
-                                $mainImage.attr('data-zoom-image', newImage);
-
-                                // wait until the image is actually loaded
-                                $mainImage.on('load', function() {
-                                    $mainImage.fadeIn(150);
-                                    initZoom(); // ✅ re-init only after image loaded
-                                });
-                            });
-                        });
-
-                        // ✅ Hide zoom lens on mouse leave (optional)
-                        $('.large-image').on('mouseleave', function() {
-                            $('.zoomContainer').hide();
-                        }).on('mouseenter', function() {
-                            $('.zoomContainer').show();
-                        });
-                    });
-                    </script>
-
-
-                    <style>
-                    .thumb-vertical-outer {
-                        position: relative;
-                        max-height: 400px;
-                        overflow-y: auto;
-                    }
-                    .thumb-vertical li {
-                        margin-bottom: 5px;
-                    }
-                    .thumb-vertical .thumbnail img {
-                        border: 2px solid transparent;
-                        transition: all 0.3s ease;
-                        cursor: pointer;
-                    }
-                    .thumb-vertical .thumbnail.active img,
-                    .thumb-vertical .thumbnail:hover img {
-                        border-color: #ff6600;
-                    }
-                    .large-image img {
-                        width: 100%;
-                        border-radius: 6px;
-                    }
-                    .zoomContainer {
-                        z-index: 9999 !important;
-                    }
-                    </style>
-
-                       
-                        <!-- Right Column -->
-                        <div class="content-product-right col-sm-6 col-xs-12">
-                            <div class="title-product">
-                                <h1>{{ product.name }}</h1>
-                            </div>
-
-                            <!-- Review -->
-                            <div class="box-review form-group">
-                                <div class="ratings">
-                                    <div class="rating-box">
-                                        {% for i in "12345" %}
-                                            {% if forloop.counter <= product.average_rating|default:0 %}
-                                                <span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i></span>
-                                            {% else %}
-                                                <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                                <a class="reviews_button" href="" onclick="$('a[href=\'#tab-review\']').trigger('click'); return false;">
-                                    {{ product.reviews.count }} reviews
-                                </a> | 
-                                <a class="write_review_button" href="" onclick="$('a[href=\'#tab-review\']').trigger('click'); return false;">Write a review</a>
-                            </div>
-
-                            <div class="product-label form-group">
-                                <div class="stock"><span>Availability:</span>
-                                    {% if product.stock_quantity > 0 %}
-                                        <span class="status-stock">In Stock</span>
-                                    {% else %}
-                                        <span class="status-stock">Out of Stock</span>
-                                    {% endif %}  
-                                </div>
-                                <div class="product_page_price price">
-                                    <span class="price-new"> {{ product.price }} TK</span>
-                                    {% if product.old_price %}
-                                    <span class="price-old"> {{ product.old_price }} TK</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="product-box-desc">
-                                <div class="inner-box-desc">
-                                    <div class="price-tax"><span>category:</span>{{ product.category }}</div>
-                                    <div class="brand"><span>Brand:</span> <a href="#">{{ product.brand.name }}</a></div>
-                                    <div class="model"><span>Product Code:</span> #1001{{ product.id }}</div>
-                                    <div class="reward"><span>Reward Points:</span> {{ product.rating }}</div>
-                                </div>
-                            </div>
-
-                            <!-- Options -->
-                            {% if product.colors.exists %}
-                            <div id="product">
-                                <h4>Available Options</h4>
-                                <div class="image_option_type form-group required">
-                                    <label class="control-label">Colors</label>
-                                    <ul class="product-options clearfix" id="input-option231">
-                                        {% for color in product.colors.all %}
-                                        <li class="radio">
-                                            <label>
-                                                <input class="image_radio" type="radio" name="option[231]" value="{{ color.id }}">
-                                                <img src="{{ color.image.url }}" data-original-title="{{ color.name }}" class="img-thumbnail icon icon-color">
-                                                <i class="fa fa-check"></i>
-                                            </label>
-                                        </li>
-                                        {% endfor %}
-                                        <li class="selected-option"></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            {% endif %}
-
-                            <!-- Quantity & Cart -->
-                            <div class="form-group box-info-product">
-                                <div class="option quantity">
-                                    <div class="input-group quantity-control" unselectable="on" style="-webkit-user-select: none;">
-                                        <label>Qty</label>
-                                        <input class="form-control" type="text" name="quantity" value="1">
-                                        <input type="hidden" name="product_id" value="{{ product.id }}">
-                                        <span class="input-group-addon product_quantity_down">−</span>
-                                        <span class="input-group-addon product_quantity_up">+</span>
-                                    </div>
-                                </div>
-                                <div class="cart">
-                                    <input type="button" value="Add to Cart" class="btn btn-mega btn-lg" onclick="cart.add('{{ product.id }}', '1');">
-                                </div>
-                                <div class="add-to-links wish_comp">
-                                    <ul class="blank list-inline">
-                                        <li class="wishlist">
-                                            <a class="icon" onclick="wishlist.add('{{ product.id }}');"><i class="fa fa-heart"></i></a>
-                                        </li>
-                                        <li class="compare">
-                                            <a class="icon" onclick="compare.add('{{ product.id }}');"><i class="fa fa-exchange"></i></a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                </div>
+            </label>
+        
+            <!-- EMI -->
+            <label class="payment-box" id="emiBox">
+                <div style="display:flex; gap:16px;">
+                    <input type="radio" name="pay">
+                    <div>
+                        <div style="font-size:16px; font-weight:bold;">913৳/month</div>
+                        <div style="font-size:12px;">Regular Price: {{ product.old_price|default:product.price }}৳</div>
+                        <div style="margin-top:5px; color:#777; font-size:14px;">
+                            0% EMI for up to 12 Months
                         </div>
                     </div>
                 </div>
+            </label>
+        
+        </div>
+        
+        
+        <!-- QTY + BUY BUTTON -->
+        <div style="margin-top:30px; display:flex; gap:25px;">
+        
+            <!-- Qty -->
+            <div class="qty-box">
+                <span onclick="qtyDown()">−</span>
+                <input type="text" id="qty" value="1">
+                <span onclick="qtyUp()">+</span>
             </div>
+        
+            
+
+            <!-- <button class="buy-btn" onclick="addToCart('{{ product.id }}', document.getElementById('qty').value)">
+                Buy Now
+            </button> -->
+
+            <button class="buy-btn" onclick="addToCart('{{ product.id }}')">
+                Buy Now
+            </button> 
+
+        
+        </div>
+
+        <!-- ADD TO CART POPUP -->
+        <div id="cartPopup" style="
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px; background: white; padding: 20px;
+            border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            display: none; z-index: 9999; text-align: center;
+        ">
+            <h3 style="font-size:20px; color:#10b981;">✔ Added to Cart</h3>
+            <p id="cartMsg" style="margin-top:10px;"></p>
+            <div style="margin-top:20px; display:flex; justify-content:center; gap:10px;">
+                <a href="/cart/" 
+                style="background:#2563eb; color:#fff; padding:10px 18px; border-radius:6px; font-weight:600;">
+                Go to Cart
+                </a>
+                <button onclick="closeCartPopup()" 
+                        style="background:#6b7280; color:#fff; padding:10px 18px; border-radius:6px; font-weight:600;">
+                    Continue
+                </button>
+            </div>
+        </div>
+
+        <!-- BACKDROP -->
+        <div id="cartBackdrop" style="
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.5); z-index: 9998; display:none;">
+        </div>
+
+        <script>
+        function closeCartPopup() {
+            document.getElementById("cartPopup").style.display = "none";
+            document.getElementById("cartBackdrop").style.display = "none";
+        }
+
+        // ADD TO CART with AJAX & proper popup
+        function addToCart(productId) {
+            let qty = document.getElementById("qty").value;
+
+            fetch(`/add-to-cart/${productId}/?qty=${qty}`)
+            .then(res => res.json())
+            .then(data => {
+                // Show popup message
+                document.getElementById("cartMsg").innerHTML =
+                    `Product <b>${data.product_name}</b> Added Successfully<br>
+                    Quantity: <b>${qty}</b><br>
+                    Cart Qty: <b>${data.cart_qty}</b>, Total: <b>${data.cart_total}</b>`;
+
+                document.getElementById("cartPopup").style.display = "block";
+                document.getElementById("cartBackdrop").style.display = "block";
+
+                // Update floating cart badge if exists
+                let badge = document.getElementById("cartBadge");
+                if(badge){
+                    badge.innerText = data.cart_qty;
+                    badge.style.transform = "scale(1.4)";
+                    setTimeout(()=> badge.style.transform="scale(1)",300);
+                }
+
+                // Optionally auto hide after 4s
+                setTimeout(closeCartPopup,4000);
+            })
+            .catch(err => console.error("Add to cart error:", err));
+        }
+
+        // Quantity buttons
+        function qtyUp() {
+            let q = document.getElementById("qty");
+            q.value = parseInt(q.value)+1;
+        }
+
+        function qtyDown() {
+            let q = document.getElementById("qty");
+            if(parseInt(q.value)>1) q.value--;
+        }
+        </script>
+
+                
+                <br/>
+        </div>
+
+
+
 
             <!-- Product Tabs -->
             <div class="producttab">

@@ -1,0 +1,429 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="dashboard-sidebar">
+            <div class="user-info">
+                <div class="user-avatar">
+                    {% if user.profile.avatar %}
+                        <img src="{{ user.profile.avatar.url }}" alt="{{ user.get_full_name }}">
+                    {% else %}
+                        <div class="avatar-placeholder">{{ user.first_name|first }}{{ user.last_name|first }}</div>
+                    {% endif %}
+                </div>
+                <h3>{{ user.get_full_name }}</h3>
+                <p class="user-email">{{ user.email }}</p>
+            </div>
+
+            <nav class="dashboard-nav">
+                <a href="" class="nav-item {% if active_tab == 'overview' %}active{% endif %}">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="" class="nav-item {% if active_tab == 'orders' %}active{% endif %}">
+                    <span class="nav-icon">📦</span>
+                    <span>Orders</span>
+                </a>
+                <a href="" class="nav-item {% if active_tab == 'quotes' %}active{% endif %}">
+                    <span class="nav-icon">💬</span>
+                    <span>Quotes</span>
+                </a>
+                <a href="{% url 'profile_edit' %}" class="nav-item {% if active_tab == 'profile' %}active{% endif %}">
+                    <span class="nav-icon">👤</span>
+                    <span>Edit Account</span>
+                </a>
+                <a href="" class="nav-item {% if active_tab == 'password' %}active{% endif %}">
+                    <span class="nav-icon">🔒</span>
+                    <span>Password</span>
+                </a>
+                <a href="" class="nav-item {% if active_tab == 'addresses' %}active{% endif %}">
+                    <span class="nav-icon">📍</span>
+                    <span>Addresses</span>
+                </a>
+                <a href="" class="nav-item {% if active_tab == 'saved' %}active{% endif %}">
+                    <span class="nav-icon">❤️</span>
+                    <span>Saved List</span>
+                </a>
+                <a href="{% url 'logout' %}" class="nav-item logout">
+                    <span class="nav-icon">🚪</span>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="dashboard-content">
+            {% if active_tab == 'profile' %}
+            <div class="content-header">
+                <h2>Edit Profile</h2>
+                <p>Update your account information</p>
+            </div>
+
+            <div class="content-card">
+                <form method="POST" enctype="multipart/form-data" class="profile-form">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                    <div class="alert alert-error">
+                        <strong>Please correct the errors below:</strong>
+                        {{ form.errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-section">
+                        <h3>Profile Picture</h3>
+                        <div class="form-group">
+                            {{ form.avatar }}
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Personal Information</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.email.id_for_label }}">Email</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.phone.id_for_label }}">Phone Number</label>
+                            {{ form.phone }}
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Additional Information</h3>
+                        <div class="form-group">
+                            <label for="{{ form.bio.id_for_label }}">Bio</label>
+                            {{ form.bio }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth</label>
+                            {{ form.date_of_birth }}
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+            <!-- Placeholder for other tabs -->
+            <div class="content-header">
+                <h2>Welcome to Your Dashboard</h2>
+                <p>Select an option from the sidebar to get started</p>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</div>
+
+<style>
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.dashboard-wrapper {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 30px;
+    min-height: 80vh;
+}
+
+/* Sidebar Styles */
+.dashboard-sidebar {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+.user-info {
+    text-align: center;
+    padding-bottom: 25px;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 25px;
+}
+
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #f3f4f6;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.user-info h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: #111827;
+}
+
+.user-email {
+    margin: 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.dashboard-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    color: #4b5563;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-size: 15px;
+}
+
+.nav-item:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.nav-item.active {
+    background: #667eea;
+    color: white;
+}
+
+.nav-item.logout {
+    margin-top: 20px;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 20px;
+    color: #dc2626;
+}
+
+.nav-item.logout:hover {
+    background: #fee2e2;
+}
+
+.nav-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+/* Main Content Styles */
+.dashboard-content {
+    background: #fff;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.content-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.content-header h2 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    color: #111827;
+}
+
+.content-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.content-card {
+    background: #fff;
+}
+
+/* Form Styles */
+.profile-form {
+    max-width: 700px;
+}
+
+.form-section {
+    margin-bottom: 35px;
+}
+
+.form-section h3 {
+    font-size: 18px;
+    color: #111827;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #374151;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="date"],
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-group input[type="file"] {
+    padding: 8px 0;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5568d3;
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+.alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.alert-error {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .dashboard-wrapper {
+        grid-template-columns: 240px 1fr;
+        gap: 20px;
+    }
+    
+    .dashboard-sidebar {
+        padding: 20px 15px;
+    }
+    
+    .dashboard-content {
+        padding: 30px 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-sidebar {
+        position: static;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-content {
+        padding: 25px 20px;
+    }
+}
+</style>
+{% endblock %}

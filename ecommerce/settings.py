@@ -25,9 +25,10 @@ SECRET_KEY = 'django-insecure-lftih(u(l8_bpqkrtu992@(^o@$d+^pduw00nw0@)b9zg#%$6y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['ostbd.bkonsoft.com','www.ostbd.bkonsoft.com']
 ALLOWED_HOSTS = []
 
+# Application definition
+AUTH_USER_MODEL = "accounts.User"
 
 # Application definition
 
@@ -39,7 +40,42 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    
+    # allauth
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    # add other providers you need
+
+    "accounts.apps.AccountsConfig",
+    
 ]
+
+
+SITE_ID = 1
+
+# allauth adapters
+ACCOUNT_ADAPTER = "accounts.adapters.CustomAccountAdapter"
+SOCIALACCOUNT_ADAPTER = "accounts.adapters.CustomSocialAdapter"
+
+# authentication backends (allauth requires these)
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",  # default
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+# Optional policy settings
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = "username"
+LOGIN_REDIRECT_URL = "/"
+ACCOUNT_LOGOUT_ON_GET = True
+
+
+ 
+ 
+ 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,6 +85,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'ecommerce.urls'
@@ -83,6 +122,24 @@ DATABASES = {
     }
 }
 
+# import pymysql
+# pymysql.install_as_MySQLdb()
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'jisacom_db_jisa',
+#         'USER': 'jisacom_db_jisa',
+#         'PASSWORD': 'k*BUt{,QGe9kxY91',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'charset': 'utf8mb4',
+#         },
+#     }
+# }
+ 
+ 
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -129,10 +186,16 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-MEDIA_ROOT = '/home/bkonsoft25/stbd.bkonsoft.com/media'
-STATIC_ROOT = '/home/bkonsoft25/stbd.bkonsoft.com/static'
+# MEDIA_ROOT = '/home/bkonsoft25/stbd.bkonsoft.com/media'
+# STATIC_ROOT = '/home/bkonsoft25/stbd.bkonsoft.com/static'
 #MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # "media" folder in your project root
-MEDIA_URL = '/media/'  # URL for accessing media files
+  # URL for accessing media files
+
+
+MEDIA_ROOT = '/home/jisacom/public_html/media'
+STATIC_ROOT = '/home/jisacom/public_html/static'
+MEDIA_URL = '/media/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

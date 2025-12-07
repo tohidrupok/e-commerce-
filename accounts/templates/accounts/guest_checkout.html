@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  .guest-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+  }
+  .guest-box {
+    background: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 320px;
+  }
+  .guest-box h2 {
+    font-size: 18px;
+    margin: 0 0 16px;
+    text-align: center;
+    color: #333;
+  }
+  .guest-box p {
+    margin: 0 0 12px;
+  }
+  .guest-box label {
+    font-size: 12px;
+    color: #555;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .guest-box input[type="text"],
+  .guest-box input[type="email"],
+  .guest-box input[type="tel"] {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 13px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  .guest-box input:focus {
+    outline: none;
+    border-color: #f39c12;
+  }
+  .guest-box button {
+    width: 100%;
+    padding: 10px;
+    font-size: 13px;
+    background: #f39c12;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  .guest-box button:hover {
+    background: #d68910;
+  }
+  .guest-link {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 12px;
+    color: #666;
+  }
+  .guest-link a {
+    color: #f39c12;
+    text-decoration: none;
+  }
+  .guest-link a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="guest-wrap">
+  <div class="guest-box">
+    <h2>Guest Checkout</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Continue as Guest</button>
+    </form>
+    <div class="guest-link">
+      Have an account? <a href="{% url 'customer_login' %}">Login</a> for faster checkout
+    </div>
+  </div>
+</div>
+{% endblock %}

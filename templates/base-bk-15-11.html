@@ -1,0 +1,734 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic page needs -->
+    <title>{% block title %}JISA{% endblock %}</title>
+    
+    <meta charset="utf-8">
+    <meta name="keywords" content="bootstrap, responsive, html5, css3, jquery, theme, multicolor, parallax, retina, business" />
+    <meta name="author" content="Magentech">
+    <meta name="robots" content="index, follow" />
+
+    <!-- Mobile specific metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- Favicon --> 
+    <link rel="shortcut icon" href="https://jisa.bkonsoft.com/media/products/js_ULtfyAd.png">
+
+    <!-- Google web fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700|Roboto:400,500,700,900" rel="stylesheet" type="text/css">
+
+    <!-- Libs CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'js/datetimepicker/bootstrap-datetimepicker.min.css' %}">
+    <link rel="stylesheet" href="{% static 'js/owl-carousel/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themecss/lib.css' %}">
+    <link rel="stylesheet" href="{% static 'js/jquery-ui/jquery-ui.min.css' %}">
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="{% static 'css/themecss/so_megamenu.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themecss/so-categories.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themecss/so-listing-tabs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themecss/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themecss/so-super-category.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themecss/cpanel.css' %}">
+    <link id="color_scheme" rel="stylesheet" href="{% static 'css/theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+</head> 
+
+	<style>
+		body {
+			margin: 0;
+			font-family: sans-serif;
+			}
+
+			.custom-navbar-wrapper {
+			width: 100%;
+			box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+			}
+
+			.custom-navbar-top {
+			background-color: #061c2f;
+			color: white;
+			padding: 30px 20px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			}
+
+			.custom-logo img {
+			height: 40px;
+			}
+
+			.custom-search-box {
+			flex: 1;
+			margin: 0 20px;
+			display: flex;
+			}
+
+			.custom-search-box input {
+			width: 100%;
+			padding: 8px 12px;
+			border-radius: 4px 0 0 4px;
+			border: none;
+			outline: none;
+			}
+
+			.custom-search-box button {
+			padding: 8px 12px;
+			background-color: white;
+			border: none;
+			border-radius: 0 4px 4px 0;
+			cursor: pointer;
+			}
+
+			.custom-top-links {
+			display: flex;
+			gap: 20px;
+			align-items: center;
+			font-size: 14px;
+			}
+
+			.custom-top-links div {
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			}
+
+			.custom-pc-builder {
+			background: linear-gradient(to right, #245ef2, #4a90e2);
+			color: white;
+			padding: 8px 16px;
+			border-radius: 4px;
+			cursor: pointer;
+			}
+
+			.custom-navbar-bottom {
+			background-color: #ffffff;
+			padding: 10px 20px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 15px;
+			font-weight: bold;
+			font-size: 14px;
+			position: sticky;
+			top: 0;
+			z-index: 1000;
+			box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+			}
+
+			.custom-navbar-bottom a {
+			color: #000;
+			text-decoration: none;
+			cursor: pointer;
+			}
+
+			.custom-navbar-bottom a:hover {
+			text-decoration: underline;
+			}
+
+			/* For demo scrolling */
+			.custom-content {
+			height: 2000px;
+			padding: 20px;
+			background: linear-gradient(to bottom, #f9f9f9, #eaeaea);
+			}
+
+	</style>
+	<style>
+	  
+	.jio-banner-wrapper {
+	margin: 0 0 0 -5px; /* top right bottom left */
+	font-family: 'Segoe UI', sans-serif;
+	background-color: #f5f7fb;
+	} 
+
+	/* 🔁 Scrolling Notice Bar */
+	.jio-notice-wrapper {
+	background-color: #f1f1f1;
+	overflow: hidden;
+	white-space: nowrap;
+	position: relative;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	}
+
+	.jio-scrolling-text {
+	display: inline-block;
+	padding-left: 100%;
+	animation: jio-scroll-left 15s linear infinite;
+	font-size: 14px;
+	color: #333;
+	}
+
+	@keyframes jio-scroll-left {
+	0% { transform: translateX(0%); }
+	100% { transform: translateX(-100%); }
+	}
+
+	/*  Quick Service Links */
+	.jio-quick-links {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 20px;
+	padding: 30px 20px 10px;
+	}
+
+	.jio-quick-link {
+	background-color: #fff;
+	border-radius: 8px;
+	width: 220px;
+	padding: 20px;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	transition: 0.3s;
+	}
+
+	.jio-quick-link:hover {
+	box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+	}
+
+	.jio-icon-circle {
+	background-color: #f75c03;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	font-size: 20px;
+	flex-shrink: 0;
+	}
+
+	.jio-quick-link .jio-text h4 {
+	margin: 0;
+	font-size: 15px;
+	font-weight: bold;
+	}
+
+	.jio-quick-link .jio-text p {
+	margin: 3px 0 0;
+	font-size: 13px;
+	color: #666;
+	}
+
+	/*  Category Section */
+	.jio-section-title {
+	text-align: center;
+	font-weight: bold;
+	font-size: 18px;
+	margin-top: 40px;
+	}
+
+	.jio-section-subtitle {
+	text-align: center;
+	font-size: 13px;
+	color: #555;
+	margin-bottom: 25px;
+	}
+
+	.jio-category-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+	gap: 20px;
+	padding: 0 20px 40px;
+	}
+
+	.jio-category-card {
+	background-color: #fff;
+	border-radius: 12px;
+	padding: 25px 10px;
+	text-align: center;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+	transition: 0.3s;
+	}
+
+	.jio-category-card:hover {
+	box-shadow: 0 5px 12px rgba(0,0,0,0.08);
+	}
+
+	.jio-category-card .jio-icon {
+	font-size: 30px;
+	color: #2d3748;
+	margin-bottom: 10px;
+	}
+
+	.jio-category-card p {
+	margin: 0;
+	font-size: 14px;
+	color: #222;
+	} 
+   /* For category icon */
+	.jio-category-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 20px;
+		justify-content: center;
+		}
+
+		.jio-category-card {
+		width: 130px;
+		background: #fff;
+		border-radius: 14px;
+		text-align: center;
+		padding: 20px 10px;
+		box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+		transition: all 0.3s ease;
+		}
+
+		.jio-category-card:hover {
+		transform: translateY(-6px);
+		box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+		}
+
+		.jio-icon i {
+		width: 36px;
+		height: 36px;
+		stroke-width: 2;
+		}
+
+		.jio-category-card p {
+		margin-top: 10px;
+		font-size: 14px;
+		font-weight: 500;
+		color: #333;
+		}
+		
+
+
+	</style>
+
+<body class="common-home res layout-home1">
+    <div id="wrapper" class="wrapper-full banners-effect-7">
+		<!-- Header Container  -->
+		<header id="header" class=" variantleft type_1">
+			<!-- Header Top -->
+			<div class="header-top compact-hidden">
+				<div class="custom-navbar-wrapper"> 
+					<div class="custom-navbar-top">
+						<div class="custom-logo"> 
+						<img src="https://jisa.bkonsoft.com/media/products/js3_2jcjT7O.png" alt="Star Tech Logo">
+						</div>
+
+						<div class="custom-search-box">
+						<input type="text" placeholder="Search" />
+						<button>🔍</button>
+						</div>
+
+						<div class="custom-top-links">
+						<div>🎁 Offers</div>
+						<div>⚡ Happy Hour</div>
+						<div>👤 Account</div>
+						<div class="custom-pc-builder">PC Builder</div>
+						</div>
+					</div>
+					</div>
+
+			</div>
+			<!-- //Header Top -->
+			<!-- Header center -->
+			<div class="header-center">
+				<div class="container">
+					<div class="row">
+						<!-- LOGO -->
+						<div class="header-center-right col-md-12 col-sm-12 col-xs-12">
+							<div class="responsive so-megamenu  megamenu-style-dev">
+								<nav class="navbar-default">
+									<div class=" container-megamenu  horizontal">
+										<div class="navbar-header">
+											<button type="button" id="show-megamenu" data-toggle="collapse" class="navbar-toggle">
+												<span class="icon-bar"></span>
+												<span class="icon-bar"></span>
+												<span class="icon-bar"></span>
+											</button>	
+										</div>
+										
+										<div class="megamenu-wrapper">
+												<div class="megamenu-pattern">
+													<div class="container">
+														<ul class="megamenu" data-transition="slide" data-animationtime="250">
+															
+															<li class="home hover">
+																<a href="{% url 'home' %}">Home <b class="caret"></b></a>
+															</li>
+
+															{% for cat in menu_categories %}
+																<li class="with-sub-menu hover">
+																	<p class="close-menu"></p>
+																	<a href="{% url 'category_products' cat.slug %}" class="clearfix">
+																		<strong>
+																			{% if cat.icon %}
+																				<i class="{{ cat.icon }}"></i>
+																			{% endif %}
+																			{{ cat.name }}
+																		</strong>
+																		{% if cat.children.all %}
+																			<b class="caret"></b>
+																		{% endif %}
+																	</a>
+
+																	{% if cat.children.all %}
+																	<div class="sub-menu" style="width: 40%;">
+																		<div class="content">
+																			<div class="row">
+																				<div class="col-md-6">
+																					<ul class="row-list">
+																						{% for subcat in cat.children.all %}
+																							<li>
+																								<a class="subcategory_item" href="{% url 'category_products' subcat.slug %}">
+																									{{ subcat.name }}
+																								</a>
+																							</li>
+																						{% endfor %}
+																					</ul>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	{% endif %}
+																</li>
+															{% endfor %}
+														</ul>
+													</div>
+												</div>
+										</div>
+
+									</div>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- //Header center -->
+			<!-- Header Bottom -->
+			
+		</header>
+		<!-- //Header Container  -->
+		<!-- Main Container  -->
+		<main id="content" class="page-main">
+            {% block content %}
+            
+            {% endblock %}
+		</main >
+		<!-- //Main Container -->
+
+		<script type="text/javascript"><!--
+			var $typeheader = 'header-home1';
+			//-->
+		</script>
+		<!-- Footer Container -->
+		<footer class="footer-container typefooter-1">
+			<!-- FOOTER TOP -->
+			<div class="footer-top">
+				<div class="container">
+					<div class="row">
+						<div class="col-xs-12">
+							<div class="module social_block col-md-3 col-sm-12 col-xs-12" >
+								<ul class="social-block ">
+									<li class="facebook"><a class="_blank" href="https://www.facebook.com/MagenTech" target="_blank"><i class="fa fa-facebook"></i></a></li>
+									<li class="twitter"><a class="_blank" href="https://twitter.com/smartaddons" target="_blank"><i class="fa fa-twitter"></i></a></li>
+									<li class="rss"><a class="_blank" href="#" target="_blank"><i class="fa fa-rss"></i></a></li>
+									<li class="google_plus"><a class="_blank" href="https://plus.google.com/u/0/+Smartaddons/posts" target="_blank"><i class="fa  fa-google-plus"></i></a></li>
+									<li class="pinterest"><a class="_blank" href="https://www.pinterest.com/smartaddons/" target="_blank"><i class="fa fa-pinterest"></i></a></li>
+								</ul>
+							</div>
+							<div class="module news-letter col-md-9 col-sm-12 col-xs-12">
+								<div class="newsletter">
+									<div class="title-block">
+										<div class="page-heading">SIGN UP FOR OUR NEWSLETTER</div>
+										<div class="pre-text">
+											Duis at ante non massa consectetur iaculis id non tellus			
+										</div>
+									</div>
+									<div class="block_content">
+										<form method="post" name="signup" id="signup" class="btn-group form-inline signup">
+											<div class="form-group required send-mail">
+												<div class="input-box">
+													<input type="email" placeholder="Your email address..." value="" class="form-control" id="txtemail" name="txtemail" size="55">
+												</div>
+												<div class="subcribe">
+													<button class="btn btn-default btn-lg" type="submit" onclick="return subscribe_newsletter();" name="submit">
+														Subscribe						</button>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div> 
+			</div>
+			<!-- FOOTER CENTER -->
+			<div class="footer-center">
+				<div class="container content">
+					<div class="row">
+						<!-- BOX INFO -->
+						<div class="col-md-3 col-sm-6 col-xs-12 collapsed-block footer-links box-footer">
+							<div class="module ">
+								<div class="content-block-footer">
+									<div class="footer-logo">
+                                    <a href="#"><img class="lazyload img-responsive" data-sizes="auto" src="https://jisa.bkonsoft.com/media/products/js3_2jcjT7O.png" title="Your Store" alt="Your Store" /></a>
+									</div>
+									<p>Jisa is a trusted name in the eCommerce industry, providing shopping experiences. We committed to excellence online retail and customer satisfaction.</p>
+								</div>
+							</div>				
+						</div>
+						<!-- BOX ACCOUT -->
+						<div class="col-md-3 col-sm-6 box-account box-footer">
+							<div class="module clearfix">
+								<h3 class="modtitle">My Account</h3>
+								<div class="modcontent">
+									<ul class="menu">
+										<li><a href="#">Brands</a></li>
+										<li><a href="#">Gift Certificates</a></li>
+										<li><a href="#">Affiliates</a></li>
+										<li><a href="#">Specials</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<!-- BOX INFOMATION -->
+						<div class="col-md-3 col-sm-6 box-information box-footer">
+							<div class="module clearfix">
+								<h3 class="modtitle">Information</h3>
+								<div class="modcontent">
+									<ul class="menu">
+										<li><a href="#">About Us</a></li>
+										<li><a href="#">FAQ</a></li>
+										<li><a href="#">Pricing Tables</a></li>
+										<li><a href="#">Terms And Conditions</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<!-- BOX ABOUT -->
+						<div class="col-md-3  col-sm-6 collapsed-block box-footer">
+							<div class="module ">
+								<h3 class="modtitle">About Us</h3>
+								<div class="modcontent">
+									<ul class="contact-address">
+										<li><span class="fa fa-home"></span>3021, West Jurain, Shyampur, Dhaka</li>
+										<li><span class="fa fa-envelope"></span> Email: <a href="#"> sales@jisa.com</a></li>
+										<li><span class="fa fa-phone">&nbsp;</span> Phone: 0123456789</li>
+									</ul>
+									<ul class="payment-method">
+									<li><a title="Payment Method" href="#"><img class="lazyload img-responsive" data-sizes="auto" src="{% static 'image/demo/cms/payment/payment-1.png' %}" alt="Payment"></a></li>
+									<li><a title="Payment Method" href="#"><img class="lazyload img-responsive" data-sizes="auto" src="{% static 'image/demo/cms/payment/payment-2.png' %}" alt="Payment"></a></li>
+									<li><a title="Payment Method" href="#"><img class="lazyload img-responsive" data-sizes="auto" src="{% static 'image/demo/cms/payment/payment-3.png' %}" alt="Payment"></a></li>
+									<li><a title="Payment Method" href="#"><img class="lazyload img-responsive" data-sizes="auto" src="{% static 'image/demo/cms/payment/payment-4.png' %}" alt="Payment"></a></li>
+									<li><a title="Payment Method" href="#"><img class="lazyload img-responsive" data-sizes="auto" src="{% static 'image/demo/cms/payment/payment-5.png' %}" alt="Payment"></a></li>
+									</ul>
+								</div>
+							</div>				
+						</div>
+					</div>
+				</div>
+			</div>		
+			<!-- FOOTER BOTTOM -->
+			<div class="footer-bottom ">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-12">
+						JISA © 2025. All Rights Reserved.				
+						</div>
+						<div class="back-to-top"><i class="fa fa-angle-up"></i><span> Top </span></div>
+					</div>
+				</div>
+			</div>
+
+		</footer>
+		<!-- //end Footer Container -->
+
+    </div>
+	<!-- Social widgets -->
+	<section class="social-widgets visible-lg">
+		<ul class="items">
+			<li class="item item-01 facebook"> <a href="#" class="tab-icon"><span class="fa fa-facebook"></span></a>
+				<div class="tab-content">
+					<div class="title">
+						<h5>FACEBOOK</h5>
+					</div>
+					<div class="loading">
+						<img class="lazyload ajaxloader" data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="image/theme/lazy-loader.gif" alt="loader">
+					</div>
+				</div>
+			</li>
+			<li class="item item-02 twitter"> <a href="php/twitter.php?account_twitter=envato" class="tab-icon"><span class="fa fa-twitter"></span></a>
+				<div class="tab-content">
+					<div class="title">
+						<h5>TWITTER FEEDS</h5> 
+					</div>
+					<div class="loading">
+						<img class="lazyload ajaxloader" data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="image/theme/lazy-loader.gif" alt="loader">
+					</div>
+				</div>
+			</li>
+			<li class="item item-03 youtube"> <a href="php/youtubevideo.php?account_video=PY2RLgTmiZY" class="tab-icon"><span class="fa fa-youtube"></span></a>
+				<div class="tab-content">
+					<div class="title">
+						<h5>YouTube</h5>
+					</div>
+					<div class="loading">
+					<img class="lazyload ajaxloader" data-sizes="auto" src="{% static 'image/theme/lazy-loader.gif' %}" data-src="{% static 'image/theme/lazy-loader.gif' %}" alt="loader">
+					</div>				</div>
+			</li>
+		</ul>
+	</section>	<!-- End Social widgets -->
+	
+	<!-- Cpanel Block -->
+	<div id="sp-cpanel_btn" class="isDown visible-lg">
+		<i class="fa fa-cog fa-spin"></i>
+	</div>		
+	<div id="sp-cpanel" class="sp-delay">
+		<h2 class="sp-cpanel-title"> Demo Options <span class="sp-cpanel-close"> <i class="fa fa-times"> </i></span></h2>
+		<div id="sp-cpanel_settings">
+			<div class="panel-group">
+				<label>Color Scheme</label>
+				<div class="group-schemes" >
+					<a data-scheme="default" title="Orange"  data-toggle="tooltip" class="item_scheme selected"><span style="background: #ea3a3c;"></span></a>
+					<a data-scheme="blue" title="Blue"  data-toggle="tooltip" class="item_scheme"><span style="background: #5f87d1;"></span></a>
+					<a data-scheme="orange"  title="Orange"  data-toggle="tooltip" class="item_scheme"><span style="background: #F4A137;"></span></a>
+					<a data-scheme="cyan" title="Cyan"  data-toggle="tooltip" class="item_scheme"><span style="background: #009688;"></span></a>
+					<a data-scheme="green" title="Green" data-toggle="tooltip" class="item_scheme "><span style="background: #20bc5a;"></span></a>
+					
+				 </div>
+			</div>
+			
+			<div class="panel-group ">
+				<label>Header style</label>
+				<div class="group-boxed">
+					<select id="change_header_type" name="cpheaderstype" class="form-control" onchange="headerTypeChange(this.value);">
+						<option value="header-home1" >Header 1</option>
+						<option value="header-home2" >Header 2</option>
+						<option value="header-home3" >Header 3</option>
+						<option value="header-home4" >Header 4</option>
+						<option value="header-home5" >Header 5</option>
+						<option value="header-home6" >Header 6</option>
+						<option value="header-home7" >Header 7</option>
+						<option value="header-home8" >Header 8</option>
+						<option value="header-home9" >Header 9</option>
+						<option value="header-home10" >Header 10</option>
+					</select>
+				</div>
+			</div>
+			
+			
+			<div class="panel-group ">
+				<label>Layout Box</label>
+				<div class="group-boxed">
+					<select id="cp-layoutbox" name="cplayoutbox" class="form-control" onchange="changeLayoutBox(this.value);">
+						<option value="full">Wide</option>
+						<option value="boxed">Boxed</option>
+						<option value="iframed">Iframed</option>
+						<option value="rounded">Rounded</option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="panel-group">
+				<label>Body Image</label>
+				
+                <div class="group-pattern">
+				<div data-pattern="28" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/28.png' %}" alt="pattern 28">
+				</div>
+				<div data-pattern="29" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/29.png' %}" alt="pattern 29">
+				</div>
+				<div data-pattern="30" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/30.png' %}" alt="pattern 30">
+				</div>
+				<div data-pattern="31" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/31.png' %}" alt="pattern 31">
+				</div>
+				<div data-pattern="32" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/32.png' %}" alt="pattern 32">
+				</div>
+				<div data-pattern="33" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/33.png' %}" alt="pattern 33">
+				</div>
+				<div data-pattern="34" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/34.png' %}" alt="pattern 34">
+				</div>
+				<div data-pattern="35" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/35.png' %}" alt="pattern 35">
+				</div>
+				<div data-pattern="36" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/36.png' %}" alt="pattern 36">
+				</div>
+				<div data-pattern="37" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/37.png' %}" alt="pattern 37">
+				</div>
+				<div data-pattern="38" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/38.png' %}" alt="pattern 38">
+				</div>
+				<div data-pattern="39" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/39.png' %}" alt="pattern 39">
+				</div>
+				<div data-pattern="40" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/40.png' %}" alt="pattern 40">
+				</div>
+				<div data-pattern="41" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/41.png' %}" alt="pattern 41">
+				</div>
+				<div data-pattern="42" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/42.png' %}" alt="pattern 42">
+				</div>
+				<div data-pattern="43" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/43.png' %}" alt="pattern 43">
+				</div>
+				<div data-pattern="44" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/44.png' %}" alt="pattern 44">
+				</div>
+				<div data-pattern="45" class="img-pattern">
+					<img class="lazyload" data-sizes="auto" src="{% static 'image/theme/patterns/45.png' %}" alt="pattern 45">
+				</div>
+				</div>
+				<p class="label-sm">Background only applies for Boxed,Framed, Rounded Layout</p>
+			</div>
+			
+			<div class="reset-group">
+				<a href="index.html" class="btn btn-success " onclick="ResetAll()">Reset</a>
+			</div>
+			
+		</div>
+	</div>
+
+{% load static %}
+
+<!-- CSS -->
+<link rel="stylesheet" href="{% static 'css/themecss/cpanel.css' %}" type="text/css" media="all" />
+
+
+
+<!-- JS Libs & Plugins -->
+<script src="{% static 'js/jquery-2.2.4.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/owl-carousel/owl.carousel.js' %}"></script>
+<script src="{% static 'js/themejs/libs.js' %}"></script>
+<script src="{% static 'js/unveil/jquery.unveil.js' %}"></script>
+<script src="{% static 'js/countdown/jquery.countdown.min.js' %}"></script>
+<script src="{% static 'js/dcjqaccordion/jquery.dcjqaccordion.2.8.min.js' %}"></script>
+<script src="{% static 'js/datetimepicker/moment.js' %}"></script>
+<script src="{% static 'js/datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'js/jquery-ui/jquery-ui.min.js' %}"></script>
+
+<!-- Theme JS -->
+<script src="{% static 'js/themejs/application.js' %}"></script>
+<script src="{% static 'js/themejs/toppanel.js' %}"></script>
+<script src="{% static 'js/themejs/so_megamenu.js' %}"></script>
+<script src="{% static 'js/themejs/addtocart.js' %}"></script>
+<script src="{% static 'js/themejs/cpanel.js' %}"></script>
+
+</body>
+</html>

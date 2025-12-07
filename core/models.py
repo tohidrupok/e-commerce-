@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 class Brand(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -11,10 +12,11 @@ class Brand(models.Model):
 
     def __str__(self):
         return self.name
+   
     
 class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=120, unique=True)
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=120)
     icon = models.CharField(max_length=100, blank=True, null=True)
     is_featured = models.BooleanField(default=False)
     parent = models.ForeignKey(
@@ -24,17 +26,36 @@ class Category(models.Model):
         blank=True,
         null=True
     )
-
+    
     class Meta:
         verbose_name_plural = "Categories"
+        unique_together = ('parent', 'slug')  # slug unique per parent
+        ordering = ['parent__name', 'name']
 
     def __str__(self):
+        # show parent in string optionally
+        if self.parent:
+            return f"{self.parent.name} → {self.name}"
         return self.name
 
     @property
     def has_children(self):
         return self.children.exists()
 
+    def save(self, *args, **kwargs):
+        # Auto-generate slug based on name + parent
+        base_slug = slugify(self.name)
+        if self.parent:
+            base_slug = f"{slugify(self.parent.name)}-{base_slug}"
+
+        slug = base_slug
+        counter = 1
+        while Category.objects.filter(parent=self.parent, slug=slug).exclude(pk=self.pk).exists():
+            slug = f"{base_slug}-{counter}"
+            counter += 1
+
+        self.slug = slug
+        super().save(*args, **kwargs) 
 
 
 class Product(models.Model):
@@ -47,7 +68,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
-    short_description = models.CharField(max_length=255, blank=True, null=True)
+    short_description = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -73,7 +94,22 @@ class Product(models.Model):
         if self.discount_percent > 0:
             return self.price - (self.price * self.discount_percent / 100)
         return self.price
+        
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+            while Product.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.name
+        
+        
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
@@ -97,3 +133,30 @@ class HotDeal(models.Model):
 
 
 
+
+from django.db import models
+from django.utils import timezone
+
+class Coupon(models.Model):
+    COUPON_TYPES = (
+        ('coupon', 'Coupon'),
+        ('gift', 'Gift Code'),
+    )
+
+    code = models.CharField(max_length=50, unique=True)
+    type = models.CharField(max_length=10, choices=COUPON_TYPES, default='coupon')
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    is_active = models.BooleanField(default=True)
+    expiry_date = models.DateField(null=True, blank=True)
+
+    def is_valid(self):
+        if not self.is_active:
+            return False
+        
+        if self.expiry_date and self.expiry_date < timezone.now().date():
+            return False
+        
+        return True
+
+    def __str__(self):
+        return f"{self.code} ({self.type})"

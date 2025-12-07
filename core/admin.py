@@ -51,4 +51,15 @@ class HotDealAdmin(admin.ModelAdmin):
 class BrandAdmin(admin.ModelAdmin):
     list_display = ('name', 'is_active')
     search_fields = ('name',)
-    list_filter = ('is_active',)
+    list_filter = ('is_active',)  
+
+
+from django.contrib import admin
+from .models import Coupon
+
+@admin.register(Coupon)
+class CouponAdmin(admin.ModelAdmin):
+    list_display = ("code", "type", "discount_amount", "is_active", "expiry_date")
+    list_filter = ("type", "is_active")
+    search_fields = ("code",)
+    ordering = ("-expiry_date",)

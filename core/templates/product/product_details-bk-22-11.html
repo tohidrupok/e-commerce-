@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="main-container container">
+    <ul class="breadcrumb">
+        <li><a href="{% url 'home' %}"><i class="fa fa-home"></i></a></li>
+        <li><a href="#">{{ product.category.name }}</a></li>
+        <li><a href="#">{{ product.name }}</a></li>
+    </ul>
+
+    <div class="row">
+        <!--Middle Part Start-->
+        <div id="content" class="col-md-12 col-sm-12">
+            <div class="product-view row">
+    <div class="left-content-product col-lg-12 col-xs-12">
+        <div class="row">
+            <!-- Left Column -->
+<!-- Left Column -->
+<div class="content-product-left col-sm-6 col-xs-12">
+    {% with first_img=product.images.all|first %}
+    {% if first_img %}
+    <div class="large-image">
+        <!-- Link to product detail page -->
+        <a href="{% url 'product_detail' product.id %}">
+            <img id="mainProductImage"
+                 src="{{ first_img.image.url }}" 
+                 title="{{ first_img.alt_text|default:product.name }}" 
+                 alt="{{ first_img.alt_text|default:product.name }}">
+        </a>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="thumb-row">
+        {% for img in product.images.all %}
+        <a class="thumbnail {% if forloop.first %}active{% endif %}" 
+           data-image="{{ img.image.url }}" 
+           title="{{ img.alt_text|default:product.name }}">
+            <img src="{{ img.image.url }}" 
+                 title="{{ img.alt_text|default:product.name }}" 
+                 alt="{{ img.alt_text|default:product.name }}">
+        </a>
+        {% endfor %}
+    </div>
+
+    {% if product.video_url %}
+    <a class="thumb-video" href="{{ product.video_url }}" target="_blank">
+        <i class="fa fa-youtube-play"></i>
+    </a>
+    {% endif %}
+</div>
+
+<!-- Right Column -->
+<div class="content-product-right col-sm-6 col-xs-12">
+    <div class="title-product">
+        <h1>
+            <a href="{% url 'product_detail' product.id %}">{{ product.name }}</a>
+        </h1>
+    </div>
+
+    <!-- Review -->
+    <div class="box-review form-group">
+        <div class="ratings">
+            <div class="rating-box">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= product.average_rating|default:0 %}
+                        <span class="fa fa-star"></span>
+                    {% else %}
+                        <span class="fa fa-star-o"></span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <a class="reviews_button" href="" onclick="$('a[href=\'#tab-review\']').trigger('click'); return false;">
+            {{ product.reviews.count }} reviews
+        </a> | 
+        <a class="write_review_button" href="" onclick="$('a[href=\'#tab-review\']').trigger('click'); return false;">Write a review</a>
+    </div>
+
+    <div class="product-label form-group">
+        <div class="stock"><span>Availability:</span>
+            {% if product.stock_quantity > 0 %}
+                <span class="status-stock">In Stock</span>
+            {% else %}
+                <span class="status-stock">Out of Stock</span>
+            {% endif %}  
+        </div>
+        <div class="product_page_price price">
+            <span class="price-new"> {{ product.price }} TK</span>
+            {% if product.old_price %}
+            <span class="price-old"> {{ product.old_price }} TK</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="product-box-desc">
+        <div class="inner-box-desc">
+            <div class="price-tax">
+                <span>Category:</span> 
+                <a href="{% url 'category_products' product.category.slug %}">{{ product.category }}</a>
+            </div>
+            <div class="brand">
+                <span>Brand:</span> 
+                <a href="{% url 'brand_list' %}">{{ product.brand.name }}</a>
+            </div>
+            <div class="model"><span>Product Code:</span> #1001{{ product.id }}</div>
+            <div class="reward"><span>Reward Points:</span> {{ product.rating }}</div>
+        </div>
+    </div>
+
+    <!-- Add to Cart as link -->
+    <div class="form-group box-info-product">
+         <!-- Quantity & Cart -->
+                            <div class="form-group box-info-product">
+                                <div class="option quantity">
+                                    <div class="input-group quantity-control" unselectable="on" style="-webkit-user-select: none;">
+                                        <label>Qty</label>
+                                        <input class="form-control" type="text" name="quantity" value="1">
+                                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                                        <span class="input-group-addon product_quantity_down">−</span>
+                                        <span class="input-group-addon product_quantity_up">+</span>
+                                    </div>
+                                </div>
+                                <div class="cart">
+                                    <input type="button" value="Add to Cart" class="btn btn-mega btn-lg" onclick="cart.add('{{ product.id }}', '1');">
+                                </div>
+                                <div class="add-to-links wish_comp">
+                                    <ul class="blank list-inline">
+                                        <li class="wishlist">
+                                            <a class="icon" onclick="wishlist.add('{{ product.id }}');"><i class="fa fa-heart"></i></a>
+                                        </li>
+                                        <li class="compare">
+                                            <a class="icon" onclick="compare.add('{{ product.id }}');"><i class="fa fa-exchange"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+    </div>
+</div>
+
+<!-- JS for thumbnail click -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.thumb-row .thumbnail').on('click', function(e) {
+        e.preventDefault();
+        const newImage = $(this).attr('data-image');
+
+        // Remove active from all thumbnails
+        $('.thumb-row .thumbnail').removeClass('active');
+        $(this).addClass('active');
+
+        // Update main image
+        $('#mainProductImage').fadeOut(150, function() {
+            $(this).attr('src', newImage).fadeIn(150);
+        });
+    });
+
+    // Prevent hover from changing image
+    $('.thumb-row .thumbnail').off('mouseenter mouseleave');
+});
+</script>
+
+<!-- CSS -->
+<style>
+body, .product-view {
+    font-family: 'Roboto', sans-serif;
+    color: #222;
+}
+
+.large-image img {
+    width: 100%;
+    height: 350px; /* smaller height */
+    object-fit: contain;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.thumb-row {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.thumb-row .thumbnail img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.thumb-row .thumbnail.active img,
+.thumb-row .thumbnail:hover img {
+    border-color: #ff6600;
+}
+
+/* Right Column Styling */
+.content-product-right {
+    font-family: 'Roboto', sans-serif;
+    color: #222;
+}
+
+.content-product-right h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.content-product-right .ratings {
+    margin-bottom: 10px;
+}
+
+.content-product-right .product-label,
+.content-product-right .product-box-desc,
+.content-product-right .box-info-product {
+    font-size: 14px;
+    color: #222;
+}
+
+.content-product-right .price-new {
+    font-size: 22px;
+    color: #ff6600;
+    font-weight: 700;
+}
+
+.content-product-right .price-old {
+    font-size: 16px;
+    color: #999;
+    text-decoration: line-through;
+    margin-left: 5px;
+}
+</style>
+
+
+
+            <!-- Product Tabs -->
+            <div class="producttab">
+                <div class="tabsslider col-xs-12">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#tab-1">Description</a></li>
+                        <li class="item_nonactive"><a data-toggle="tab" href="#tab-review">Reviews ({{ product.reviews.count }})</a></li>
+                        <li class="item_nonactive"><a data-toggle="tab" href="#tab-4">Tags</a></li>
+                        <li class="item_nonactive"><a data-toggle="tab" href="#tab-5">Custom Tab</a></li>
+                    </ul>
+
+                    <div class="tab-content col-xs-12">
+                        <!-- Description -->
+                        <div id="tab-1" class="tab-pane fade active in">
+                            {{ product.description|linebreaks }}
+                        </div>
+
+                        <!-- Reviews -->
+                        <div id="tab-review" class="tab-pane fade">
+                            {% for review in product.reviews.all %}
+                            <div class="review-item">
+                                <strong>{{ review.user.get_full_name|default:review.user.username }}</strong> - {{ review.created_at|date:"d/m/Y" }}
+                                <p>{{ review.text }}</p>
+                            </div>
+                            {% empty %}
+                            <p>No reviews yet.</p>
+                            {% endfor %}
+
+                            <h2>Write a review</h2>
+                            <form method="post" action="">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <input type="text" name="name" class="form-control" placeholder="Your Name">
+                                </div>
+                                <div class="form-group">
+                                    <textarea name="text" class="form-control" placeholder="Your Review"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <b>Rating</b>
+                                    {% for i in "12345" %}
+                                        <input type="radio" name="rating" value="{{ forloop.counter }}"> 
+                                    {% endfor %}
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+
+                        <!-- Tags -->
+                        <div id="tab-4" class="tab-pane fade">
+                            {% for tag in product.tags.all %}
+                                <a href="#">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                <p>No tags.</p>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Custom Tab -->
+                        <div id="tab-5" class="tab-pane fade">
+                            <table class="data-table" style="width: 100%;" border="1">
+                                <tbody>
+                                    <tr>
+                                        <td>Brand</td>
+                                        <td>
+                                            {% if product.brand.logo %}
+                                                <img src="{{ product.brand.logo.url }}" alt="{{ product.brand.name }}">
+                                            {% else %}
+                                                {{ product.brand.name }}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>History</td>
+                                        <td>{{ product.brand.history|linebreaks }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related/Upsell Products -->
+            <div class="related upsell titleLine products-list grid module">
+                <h3 class="modtitle"><span>Upsell Products</span></h3>
+                <div class="upsell-products">
+                    {% for related in product.related_products.all %}
+                    <div class="product-layout">
+                        <div class="product-item-container">
+                            <div class="left-block">
+                                <div class="product-image-container second_img">
+                                    <img src="{{ related.image_main.url }}" class="img-1 img-responsive">
+                                    {% if related.images.all %}
+                                        <img src="{{ related.images.first.image.url }}" class="img-2 img-responsive">
+                                    {% endif %}
+                                </div>
+                                {% if related.old_price %}
+                                <span class="label label-sale">Sale</span>
+                                {% endif %}
+                            </div>
+                            <div class="button-group">
+                                <button class="wishlist btn-button" type="button" onclick="wishlist.add('{{ related.id }}');"><i class="fa fa-heart"></i></button>
+                                <button class="addToCart" type="button" onclick="cart.add('{{ related.id }}', '1');"><i class="fa fa-shopping-cart"></i></button>
+                                <button class="compare" type="button" onclick="compare.add('{{ related.id }}');"><i class="fa fa-exchange"></i></button>
+                                <a class="quickview iframe-link visible-lg btn-button" href="{% url 'product_quickview' related.id %}"><i class="fa fa-search"></i></a>
+                            </div>
+                            <div class="right-block">
+                                <div class="caption">
+                                    <h4><a href="{% url 'product_detail' related.id %}">{{ related.name }}</a></h4>
+                                    <div class="ratings">
+                                        <div class="rating-box">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= related.average_rating|default:0 %}
+                                                    <span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i></span>
+                                                {% else %}
+                                                    <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="price">
+                                        <span class="price-new">${{ related.price }}</span>
+                                        {% if related.old_price %}
+                                            <span class="price-old">${{ related.old_price }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

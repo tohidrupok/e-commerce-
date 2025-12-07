@@ -5271,7 +5271,7 @@ h2.title-category {
   /*BLOCK CART*/
   /*MENU MEGA*/ }
   .type_1 .header-top {
-    height: 90px;
+    height: 60px;
     background-color: #ddd;
     border-bottom: 1px solid #ddd; }
     .type_1 .header-top .header-top-left {
@@ -5301,13 +5301,13 @@ h2.title-category {
       text-align: right; }
   .type_1 .header-center {
     padding: 5px 0 9px;
-    background: #eee; }
+    background-color: #FFFFFF; }
     @media (min-width: 1200px) {
       .type_1 .header-center .navbar-logo {
         position: relative;
         top: -5px; } }
     .type_1 .header-center.center .header-center-right {
-      margin-top: 16px; }
+      margin-top: 1px; }
     .type_1 .header-center.left .header-center-right {
       text-align: right;
       float: right;

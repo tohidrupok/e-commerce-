@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% load static %}
+{% load math_filters %}
+
+
+{% block content %}
+
+<!-- Main Container -->
+<div class="main-container container">
+
+    <ul class="breadcrumb">
+        <li><a href="/"><i class="fa fa-home"></i></a></li>
+        <li><a>Shopping Cart</a></li>
+    </ul>
+
+    <div class="row">
+        <div id="content" class="col-sm-12">
+
+            <h2 class="title">Shopping Cart</h2>
+
+            <!-- CART TABLE -->
+            <div class="table-responsive form-group">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td class="text-center">Image</td>
+                            <td class="text-left">Product Name</td>
+                            <td class="text-left">Quantity</td>
+                            <td class="text-right">Unit Price</td>
+                            <td class="text-right">Total</td>
+                            <td class="text-right">Action</td>
+                        </tr>
+                    </thead>
+
+                    <tbody> 
+                        
+                        {% if cart %} 
+                        {% for key, item in cart.items %}
+                        <tr>
+                            <td class="text-center">
+                                <img width="70px" src="{{ item.image.url }}" class="img-thumbnail">
+                            </td>
+
+                            <td class="text-left">{{ item.name }}</td>
+
+                            <!-- QTY -->
+                            <td class="text-left" width="200px">
+                                <div class="input-group btn-block quantity">
+                                    <input type="text" class="form-control" value="{{ item.qty }}" readonly>
+
+                                    <span class="input-group-btn">
+                                        <a href="{% url 'update_cart' key %}?type=plus" class="btn btn-primary">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+
+                                        <a href="{% url 'update_cart' key %}?type=minus" class="btn btn-warning">
+                                            <i class="fa fa-minus"></i>
+                                        </a>
+                                    </span>
+                                </div>
+                            </td>
+
+                            <td class="text-right">৳ {{ item.price }}</td>
+                            <td class="text-right">৳ {{ item.price|mul:item.qty }}</td>
+
+                            <td class="text-right">
+                                <a href="{% url 'remove_from_cart' key %}" 
+                                   class="btn btn-danger">
+                                    <i class="fa fa-times-circle"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                <h4>Your cart is empty.</h4>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- COUPON + GIFT CODE -->
+            <div style="margin-top:30px; padding:20px; border:1px solid #ddd; border-radius:8px;">
+
+                <h4 style="margin-bottom:12px;">Apply Coupon or Gift Code</h4>
+
+                <div style="display:flex; gap:10px;">
+                    <input 
+                        type="text" 
+                        id="couponInput" 
+                        placeholder="Enter coupon or gift code"
+                        style="
+                            flex:1;
+                            padding:12px;
+                            border:1px solid #ccc;
+                            border-radius:5px;
+                        "
+                    >
+
+                    <button 
+                        onclick="applyCoupon()"
+                        style="
+                            padding:12px 20px;
+                            background:#FD7211;
+                            border:none;
+                            color:white;
+                            border-radius:5px;
+                            cursor:pointer;
+                        "
+                    >
+                        Apply
+                    </button>
+                </div>
+
+                <p id="couponMessage" style="margin-top:10px; display:none; font-weight:600;"></p>
+            </div>
+
+            <!-- TOTAL -->
+            <div class="row" style="margin-top:30px;">
+                <div class="col-sm-4 col-sm-offset-8">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td class="text-right"><strong>Subtotal:</strong></td>
+                            <td class="text-right">৳ {{ total }}</td>
+                        </tr>
+
+                        <tr id="discountRow" style="display:none;">
+                            <td class="text-right"><strong>Discount:</strong></td>
+                            <td class="text-right" id="discountAmount">৳ 0</td>
+                        </tr>
+
+                        <tr>
+                            <td class="text-right"><strong>Grand Total:</strong></td>
+                            <td class="text-right" id="grandTotal">৳ {{ total }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="buttons">
+                <div class="pull-left">
+                    <a href="/" class="btn btn-default">Continue Shopping</a>
+                </div>
+                <div class="pull-right">
+                    <a href="/checkout/" class="btn btn-primary">Checkout</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- APPLY COUPON JS -->
+<script>
+function applyCoupon() {
+    let code = document.getElementById("couponInput").value.trim();
+    let msg = document.getElementById("couponMessage");
+
+    if (code === "") {
+        msg.style.display = "block";
+        msg.style.color = "red";
+        msg.innerText = "Please enter a valid code.";
+        return;
+    }
+
+    fetch(`/apply-coupon/?code=${code}`)
+        .then(res => res.json())
+        .then(data => {
+            msg.style.display = "block";
+
+            if (data.status === "error") {
+                msg.style.color = "red";
+                msg.innerText = data.message;
+            } else {
+                msg.style.color = "green";
+                msg.innerText = data.message;
+
+                // Show Discount Row
+                document.getElementById("discountRow").style.display = "table-row";
+
+                // Set Discount Amount
+                document.getElementById("discountAmount").innerText = "৳ " + data.discount;
+
+                // Update Grand Total
+                let total = {{ total }};
+                let grand = total - data.discount;
+                document.getElementById("grandTotal").innerText = "৳ " + grand;
+            }
+        });
+}
+</script>
+
+{% endblock %}
