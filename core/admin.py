@@ -63,3 +63,101 @@ class CouponAdmin(admin.ModelAdmin):
     list_filter = ("type", "is_active")
     search_fields = ("code",)
     ordering = ("-expiry_date",)
+
+
+from django.contrib import admin
+from .models import Order, OrderItem
+
+
+# Inline inside Order Admin
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    extra = 0
+    readonly_fields = ("product_name", "price", "qty", "total_display")
+
+    def total_display(self, obj):
+        price = obj.price or 0
+        qty = obj.qty or 0
+        return price * qty
+
+
+# Main Order Admin
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "user",
+        "first_name",
+        "mobile",
+        "delivery_method",
+        "payment_method",
+        "total",
+        "created_at",
+    )
+
+    list_filter = (
+        "delivery_method",
+        "payment_method",
+        "district",
+        "upazila",
+        "created_at",
+    )
+
+    search_fields = (
+        "id",
+        "first_name",
+        "last_name",
+        "mobile",
+        "email",
+    )
+
+    readonly_fields = (
+        "subtotal",
+        "total",
+        "created_at",
+    )
+
+    inlines = [OrderItemInline]
+
+    date_hierarchy = "created_at"
+
+    fieldsets = (
+        ("Customer Info", {
+            "fields": (
+                "user",
+                "first_name",
+                "last_name",
+                "mobile",
+                "email",
+            )
+        }),
+        ("Address Info", {
+            "fields": (
+                "address",
+                "upazila",
+                "district",
+                "comment",
+            )
+        }),
+        ("Order Details", {
+            "fields": (
+                "delivery_method",
+                "delivery_charge",
+                "payment_method",
+                "subtotal",
+                "total",
+                "created_at",
+            )
+        }),
+    )
+
+
+# Optional: Register OrderItem separately (not necessary but helpful)
+@admin.register(OrderItem)
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ("order", "product_name", "price", "qty", "total_amount")
+
+    def total_amount(self, obj):
+        return obj.price * obj.qty
+
+    total_amount.short_description = "Total"

@@ -39,6 +39,12 @@ urlpatterns = [
     path('remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
     path("apply-coupon/", views.apply_coupon, name="apply_coupon"),
     path("update-cart/<str:key>/", views.update_cart, name="update_cart"),
-    
+
+    # path("checkout/", views.checkout, name="checkout"),
+    # path("confirm-order/", views.confirm_order, name="confirm_order"),
+
+    path("checkout/", views.checkout, name="checkout"),
+    path("success/", views.success_page, name="success_page"),
+        
 
 ]

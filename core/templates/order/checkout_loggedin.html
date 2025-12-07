@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% load math_filters %}
+{% block content %}
+<div class="container" style="max-width:1000px; margin-top:30px; margin-bottom:60px;">
+    <h2>Checkout</h2>
+
+    <form action="{% url 'confirm_order' %}" method="post" id="checkoutForm">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-7">
+                <div class="card p-3 mb-3">
+                    <h4>1. Customer Information</h4>
+                    {{ checkout_form.non_field_errors }}
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>First Name*</label>
+                            {{ checkout_form.first_name }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Last Name*</label>
+                            {{ checkout_form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Address*</label>
+                        {{ checkout_form.address }}
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Mobile*</label>
+                            {{ checkout_form.mobile }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Email*</label>
+                            {{ checkout_form.email }}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Upazila/Thana*</label>
+                            {{ checkout_form.upazila }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>District*</label>
+                            {{ checkout_form.district }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comment</label>
+                        {{ checkout_form.comment }}
+                    </div>
+                </div>
+
+                <div class="card p-3 mb-3">
+                    <h4>2. Payment Method</h4>
+                    {{ checkout_form.payment_method }}
+                    <p class="mt-2"><strong>We Accept :</strong> BKash, Nagad, Rocket, Cards</p>
+                </div>
+
+                <div class="card p-3 mb-3">
+                    <h4>3. Delivery Method</h4>
+                    {{ checkout_form.delivery_method }}
+                    <div class="mt-3">
+                        <label for="voucher">Gift Voucher</label>
+                        <div class="input-group mb-2">
+                            <input id="voucher" class="form-control" placeholder="Apply voucher code" />
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary" onclick="applyVoucher()">Apply Voucher</button>
+                            </div>
+                        </div>
+
+                        <label for="coupon">Promo / Coupon Code</label>
+                        <div class="input-group">
+                            <input id="coupon" class="form-control" placeholder="Enter coupon code" />
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-primary" onclick="applyCoupon()">Apply Coupon</button>
+                            </div>
+                        </div>
+
+                        <p id="couponMsg" style="display:none; font-weight:600; margin-top:8px;"></p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-5">
+                <div class="card p-3 mb-3">
+                    <h4>4. Order Overview</h4>
+
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th class="text-right">Price</th>
+                                <th class="text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key, item in cart.items %}
+                            <tr>
+                                <td style="vertical-align:middle;">{{ item.name }} <br/><small>qty: {{ item.qty }}</small></td>
+                                <td class="text-right">৳ {{ item.price|floatformat:2 }}</td>
+                                <td class="text-right">৳ {{ item.price|mul:item.qty|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm">
+                        <tr>
+                            <td><strong>Sub-Total:</strong></td>
+                            <td class="text-right">৳ <span id="subtotalVal">{{ subtotal|floatformat:2 }}</span></td>
+                        </tr>
+                        <tr id="discountRow" style="display:none;">
+                            <td><strong>Discount:</strong></td>
+                            <td class="text-right">- ৳ <span id="discountVal">0.00</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Delivery:</strong></td>
+                            <td class="text-right">৳ <span id="deliveryCharge">60.00</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total:</strong></td>
+                            <td class="text-right"><strong>৳ <span id="grandTotal">{{ subtotal|floatformat:2 }}</span></strong></td>
+                        </tr>
+                    </table>
+
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="agree" required>
+                        <label class="form-check-label" for="agree">I have read and agree to the <a href="/terms/" target="_blank">Terms and Conditions</a>, <a href="/privacy/" target="_blank">Privacy Policy</a> and <a href="/refund/" target="_blank">Refund and Return Policy</a></label>
+                    </div>
+
+                    <input type="hidden" name="delivery_charge" id="delivery_charge_input" value="60">
+
+                    <button type="submit" class="btn btn-success btn-block">Confirm Order</button>
+                </div>
+
+                <div class="text-muted small">You can place order as a guest. Registered users will have order history in their account.</div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- JS: keep your recalc code; minor tweak – set delivery_charge before submit -->
+<script>
+(function(){
+    const subtotal = parseFloat("{{ subtotal }}") || 0;
+    let discount = 0;
+    let deliveryCharge = 60;
+
+    function recalc() {
+        const grand = (subtotal - discount) + deliveryCharge;
+        document.getElementById('discountRow').style.display = discount > 0 ? 'table-row' : 'none';
+        document.getElementById('discountVal').innerText = discount.toFixed(2);
+        document.getElementById('deliveryCharge').innerText = deliveryCharge.toFixed(2);
+        document.getElementById('grandTotal').innerText = grand.toFixed(2);
+    }
+
+    // when using Django ChoiceField rendering, radios will have name="delivery_method"
+    document.querySelectorAll('input[name="delivery_method"]').forEach(r => {
+        r.addEventListener('change', function(){
+            deliveryCharge = parseFloat(this.dataset.charge || this.value === 'express' ? 300 : (this.value === 'home' ? 60 : 0));
+            // if using data-charge attributes, prefer those. above is fallback
+            document.getElementById('delivery_charge_input').value = deliveryCharge;
+            recalc();
+        });
+    });
+
+    window.applyCoupon = function(){
+        const code = document.getElementById('coupon').value.trim();
+        const msg = document.getElementById('couponMsg');
+        if(!code){ msg.style.display='block'; msg.style.color='red'; msg.innerText='Enter coupon code'; return; }
+
+        fetch(`/apply-coupon/?code=${encodeURIComponent(code)}`)
+            .then(res => res.json())
+            .then(data => {
+                msg.style.display = 'block';
+                if(data.status === 'error'){
+                    msg.style.color='red';
+                    msg.innerText = data.message;
+                } else {
+                    msg.style.color='green';
+                    msg.innerText = data.message;
+                    discount = parseFloat(data.discount) || 0;
+                    recalc();
+                }
+            }).catch(err => {
+                msg.style.display='block'; msg.style.color='red'; msg.innerText='Server error';
+            });
+    }
+
+    window.applyVoucher = function(){
+        const code = document.getElementById('voucher').value.trim();
+        alert('Voucher apply not implemented on demo. You can wire it similar to coupon endpoint.');
+    }
+
+    document.getElementById('checkoutForm').addEventListener('submit', function(e){
+        document.getElementById('delivery_charge_input').value = deliveryCharge;
+    });
+
+    recalc();
+})();
+</script>
+{% endblock %}

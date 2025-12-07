@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load static %}
+{% load math_filters %}
+{% block content %}
+<div class="container" style="max-width:1000px; margin-top:30px; margin-bottom:60px;">
+    <h2>Checkout</h2>
+    <form action="{% url 'checkout' %}" method="post" id="checkoutForm">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-7">
+                <div class="card p-3 mb-3">
+                    <h4>1. Customer Information</h4>
+
+                    {% if not user.is_authenticated %}
+                        <div class="form-group">
+                            <label>Mobile*</label>
+                            <input type="text" name="phone" required class="form-control" placeholder="01XXXXXXXXX">
+                        </div>
+                    {% else %}
+                        <div class="form-group">
+                            <label>Mobile*</label>
+                            <input type="text" name="phone" required class="form-control" 
+                                value="{{ user.phone }}" >
+                        </div>
+                    {% endif %}
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>First Name*</label>
+                            <input type="text" name="first_name" value="{{ user.first_name }}" required class="form-control">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Last Name*</label>
+                            <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Address*</label>
+                        <input type="text" name="address" value="{{ user.profile.address }}" required class="form-control">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Email</label>
+                            <input type="email" name="email" value="{{ user.email }}" class="form-control">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Upazila/Thana*</label>
+                            <input type="text" name="upazila" required class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>District*</label>
+                        <input type="text" name="district" required class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comment</label>
+                        <textarea name="comment" class="form-control"></textarea>
+                    </div>
+                </div>
+
+                <div class="card p-3 mb-3">
+                    <h4>2. Payment Method</h4>
+                    <select name="payment_method" class="form-control">
+                        <option value="cod">Cash on Delivery</option>
+                        <option value="bkash">bKash</option>
+                        <option value="nagad">Nagad</option>
+                    </select>
+                </div>
+
+                <div class="card p-3 mb-3">
+                    <h4>3. Delivery Method</h4>
+                    <select name="delivery_method" id="deliveryMethod" class="form-control">
+                        <option value="home" data-charge="60">Home Delivery – 60 TK</option>
+                        <option value="pickup" data-charge="0">Pickup – FREE</option>
+                        <option value="express" data-charge="300">Express – 300 TK</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="card p-3 mb-3">
+                    <h4>4. Order Overview</h4>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th class="text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key, item in cart.items %}
+                            <tr>
+                                <td>{{ item.name }} <br><small>x {{ item.qty }}</small></td>
+                                <td class="text-right">৳ {{ item.price|mul:item.qty }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <table class="table">
+                        <tr>
+                            <td><strong>Subtotal</strong></td>
+                            <td class="text-right">৳ {{ subtotal }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Delivery</strong></td>
+                            <td class="text-right" id="deliveryChargeCell">৳ 60</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td class="text-right"><strong id="grandTotal">৳ {{ subtotal|add:60 }}</strong></td>
+                        </tr>
+                    </table>
+
+                    <input type="hidden" name="delivery_charge" id="delivery_charge_input" value="60">
+                    <button type="submit" class="btn btn-success btn-block">Confirm Order</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+document.getElementById('deliveryMethod').addEventListener('change', function(){
+    const charge = parseFloat(this.selectedOptions[0].dataset.charge);
+    const subtotal = {{ subtotal }};
+    document.getElementById('deliveryChargeCell').innerText = "৳ " + charge;
+    document.getElementById('grandTotal').innerText = "৳ " + (subtotal + charge);
+    document.getElementById('delivery_charge_input').value = charge;
+});
+</script>
+{% endblock %}

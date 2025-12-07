@@ -151,6 +151,22 @@
                 </div>
             </div>
 
+
+            {% if not user.is_authenticated %}
+            <h3>Guest Checkout</h3>
+            <form method="POST" action="{% url 'checkout' %}">
+                {% csrf_token %}
+                {{ guest_form.as_p }}
+                <button type="submit" class="btn btn-warning w-100">Continue to Checkout</button>
+            </form>
+            {% else %}
+            <h3>Checkout</h3>
+            <p>Hello, {{ user.first_name }}!</p>
+            <!-- Your checkout fields -->
+            {% endif %}
+ 
+
+
         </div>
     </div>
 </div>

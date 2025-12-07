@@ -85,3 +85,36 @@ class CategoryForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+
+
+from django import forms
+
+class GuestCheckoutForm(forms.Form):
+    phone = forms.CharField(max_length=30, label="Phone", widget=forms.TextInput(attrs={"placeholder": "01XXXXXXXXX"}))
+    name = forms.CharField(max_length=150, required=False, label="Full name (optional)")
+    email = forms.EmailField(required=False, label="Email (optional)")
+
+class CheckoutForm(forms.Form):
+    first_name = forms.CharField(max_length=100)
+    last_name = forms.CharField(max_length=100)
+    address = forms.CharField(widget=forms.Textarea(attrs={"rows":2}))
+    mobile = forms.CharField(max_length=20)
+    email = forms.EmailField()
+    upazila = forms.CharField(max_length=100)
+    district = forms.CharField(max_length=100)
+    comment = forms.CharField(widget=forms.Textarea(attrs={"rows":2}), required=False)
+
+    DELIVERY_CHOICES = [
+        ("home", "Home Delivery - 60৳"),
+        ("pickup", "Store Pickup - 0৳"),
+        ("express", "Request Express - 300৳"),
+    ]
+    PAYMENT_CHOICES = [
+        ("cod", "Cash on Delivery"),
+        ("online", "Online Payment"),
+        ("pos", "POS on Delivery"),
+    ]
+
+    delivery_method = forms.ChoiceField(choices=DELIVERY_CHOICES)
+    payment_method = forms.ChoiceField(choices=PAYMENT_CHOICES)

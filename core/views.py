@@ -1,6 +1,11 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth import login
 from django.utils import timezone
 from .models import *
+from accounts.forms import GuestCheckoutForm
+from accounts.utils import generate_username_from_phone, generate_unique_username
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 def home(request):
     products = Product.objects.filter(is_active=True).order_by('-created_at')
@@ -57,20 +62,6 @@ def product_detail(request, pk):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 from django.shortcuts import render, redirect
 from django.forms import modelformset_factory
 from .models import Product, ProductImage
@@ -107,6 +98,7 @@ def product_list(request):
 #         'form': form,
 #         'formset': formset,
 #     })
+
 
 from django.http import QueryDict
 from django.http import JsonResponse
@@ -464,6 +456,7 @@ def apply_coupon(request):
     }) 
 
 
+
 def update_cart(request, key):
     cart = request.session.get("cart", {})
     action = request.GET.get("type")
@@ -482,3 +475,608 @@ def update_cart(request, key):
 
     request.session["cart"] = cart
     return redirect("cart_view")  
+
+
+# def checkout(request):
+#     cart = request.session.get("cart", {})
+
+#     if not cart:
+#         return redirect("cart_view")
+
+#     subtotal = sum(item['price'] * item['qty'] for item in cart.values())
+
+#     # Default Delivery Charges
+#     delivery = {
+#         "home": 60,
+#         "pickup": 0,
+#         "express": 300
+#     }
+
+#     return render(request, "order/checkout.html", {
+#         "cart": cart,
+#         "subtotal": subtotal,
+#         "delivery": delivery,
+#     })
+
+
+# def checkout(request):
+#     cart = request.session.get("cart", {})
+#     if not cart:
+#         return redirect("cart_view")
+
+#     subtotal = sum(item['price'] * item['qty'] for item in cart.values())
+#     delivery = {"home": 60, "pickup": 0, "express": 300}
+
+#     # ---------------------------------------
+#     # If user not logged in → process guest form
+#     # ---------------------------------------
+#     if not request.user.is_authenticated:
+#         if request.method == "POST" and "guest_submit" in request.POST:
+#             form = GuestCheckoutForm(request.POST)
+#             if form.is_valid():
+#                 phone = form.cleaned_data["phone"].strip()
+#                 name = form.cleaned_data.get("name") or ""
+#                 email = form.cleaned_data.get("email") or ""
+
+#                 try:
+#                     user = User.objects.get(phone=phone)
+#                 except User.DoesNotExist:
+#                     base = generate_username_from_phone(phone)
+#                     username = generate_unique_username(User, base)
+#                     user = User.objects.create(
+#                         username=username,
+#                         email=email,
+#                         phone=phone,
+#                         role="customer"
+#                     )
+#                     user.set_unusable_password()
+
+#                     if name:
+#                         parts = name.split()
+#                         user.first_name = parts[0]
+#                         if len(parts) > 1:
+#                             user.last_name = " ".join(parts[1:])
+#                     user.save()
+
+#                 login(request, user,
+#                       backend="django.contrib.auth.backends.ModelBackend")
+
+#                 return redirect("checkout")
+#         else:
+#             form = GuestCheckoutForm()
+#     else:
+#         form = None  # Logged in user doesn't need guest form
+
+#     return render(request, "order/checkout.html", {
+#         "cart": cart,
+#         "subtotal": subtotal,
+#         "delivery": delivery,
+#         "guest_form": form,
+#     }) 
+
+
+
+# def generate_username_from_phone(phone):
+#     return "user" + phone[-6:]
+
+# def generate_unique_username(model, base):
+#     username = base
+#     i = 1
+#     while model.objects.filter(username=username).exists():
+#         username = f"{base}{i}"
+#         i += 1
+#     return username
+
+
+
+
+
+# def checkout(request):
+#     print("1st duckha")
+#     cart = request.session.get("cart", {})
+#     if not cart:
+#         return redirect("cart_view")
+
+#     subtotal = sum(item['price'] * item['qty'] for item in cart.values())
+#     delivery = {"home": 60, "pickup": 0, "express": 300}
+
+#     guest_form = None
+
+#     # ---------------- Guest login/create ----------------
+#     if not request.user.is_authenticated:
+#         print("2nd duckha")
+#         if request.method == "POST":
+#             print("3rd duckha")
+#             guest_form = GuestCheckoutForm(request.POST)
+#             print(guest_form)
+#             if guest_form.is_valid():
+#                 print("4th duckha")
+#                 phone = guest_form.cleaned_data["phone"].strip()
+#                 name = guest_form.cleaned_data.get("name") or ""
+#                 email = guest_form.cleaned_data.get("email") or ""
+
+#                 # Check if user exists
+#                 try:
+#                     user = User.objects.get(phone=phone)
+#                 except User.DoesNotExist:
+#                     print("5th duckha")
+#                     base = generate_username_from_phone(phone)
+#                     username = generate_unique_username(User, base)
+#                     user = User.objects.create(
+#                         username=username,
+#                         email=email or "",
+#                         phone=phone,
+#                         role="customer"
+#                     )
+#                     user.set_unusable_password()
+#                     if name:
+#                         parts = name.strip().split()
+#                         user.first_name = parts[0]
+#                         if len(parts) > 1:
+#                             user.last_name = " ".join(parts[1:])
+#                     user.save()
+
+#                 # Login the guest user
+#                 login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+#                 return redirect("checkout")  # reload page as logged-in
+
+#         else:
+#             guest_form = GuestCheckoutForm()
+
+#         return render(request, "order/checkout.html", {
+#             "cart": cart,
+#             "subtotal": subtotal,
+#             "delivery": delivery,
+#             "guest_form": guest_form,
+#         })
+
+#     # ---------------- Logged-in checkout ----------------
+#     # Here you can render your normal checkout form
+#     return render(request, "order/checkout.html", {
+#         "cart": cart,
+#         "subtotal": subtotal,
+#         "delivery": delivery,
+#         "guest_form": None,  # not needed for logged-in
+#     }) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def confirm_order(request):
+#     if request.method != "POST":
+#         return redirect("checkout")
+
+#     cart = request.session.get("cart", {})
+#     if not cart:
+#         return redirect("cart_view")
+
+#     subtotal = sum(item["price"] * item["qty"] for item in cart.values())
+
+#     # User Logged In or Guest
+#     user = request.user if request.user.is_authenticated else None
+
+#     delivery_method = request.POST.get("delivery_method")
+#     delivery_charge = float(request.POST.get("delivery_charge"))
+#     payment_method = request.POST.get("payment_method")
+
+#     # Create Order
+#     order = Order.objects.create(
+#         user=user,
+#         first_name=request.POST.get("first_name"),
+#         last_name=request.POST.get("last_name"),
+#         address=request.POST.get("address"),
+#         mobile=request.POST.get("mobile"),
+#         email=request.POST.get("email"),
+#         upazila=request.POST.get("upazila"),
+#         district=request.POST.get("district"),
+#         comment=request.POST.get("comment"),
+
+#         delivery_method=delivery_method,
+#         delivery_charge=delivery_charge,
+#         payment_method=payment_method,
+
+#         subtotal=subtotal,
+#         total=subtotal + delivery_charge,
+#     )
+
+#     # Order Items Save
+#     for key, item in cart.items():
+#         OrderItem.objects.create(
+#             order=order,
+#             product_name=item["name"],
+#             price=item["price"],
+#             qty=item["qty"],
+#         )
+
+#     # Clear Cart After Order
+#     del request.session["cart"]
+
+#     return render(request, "order/success.html", {
+#         "order": order,
+#         "items": order.items.all()
+#     })
+
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from django.contrib.auth import get_user_model
+from django.urls import reverse
+from .forms import GuestCheckoutForm, CheckoutForm
+from .models import Order, OrderItem
+
+User = get_user_model()
+
+# small helpers to build username
+def generate_username_from_phone(phone):
+    # ensure phone is string and short unique base
+    base = "user" + phone[-6:]
+    return base
+
+def generate_unique_username(model, base):
+    username = base
+    i = 1
+    while model.objects.filter(username=username).exists():
+        username = f"{base}{i}"
+        i += 1
+    return username
+
+# def checkout(request):
+#     """
+#     If user not authenticated -> show guest page (collect phone/name/email).
+#     After guest submit -> create/login user and redirect back to checkout_loggedin.
+#     If authenticated -> show full checkout form.
+#     """
+#     cart = request.session.get("cart", {})
+#     if not cart:
+#         return redirect("cart_view")
+
+#     # subtotal calculation (ensure numbers)
+#     subtotal = sum((float(item.get("price", 0)) * int(item.get("qty", 0))) for item in cart.values())
+#     delivery_charges = {"home": 60.0, "pickup": 0.0, "express": 300.0}
+
+#     # Guest flow
+#     if not request.user.is_authenticated:
+#         if request.method == "POST":
+#             guest_form = GuestCheckoutForm(request.POST)
+#             if guest_form.is_valid():
+#                 phone = guest_form.cleaned_data["phone"].strip()
+#                 name = guest_form.cleaned_data.get("name") or ""
+#                 email = guest_form.cleaned_data.get("email") or ""
+
+#                 # find or create user by phone
+#                 try:
+#                     user = User.objects.get(phone=phone)
+#                 except User.DoesNotExist:
+#                     base = generate_username_from_phone(phone)
+#                     username = generate_unique_username(User, base)
+
+#                     user = User.objects.create(
+#                         username=username,
+#                         email=email or "",
+#                         phone=phone,
+#                     )
+#                     user.set_unusable_password()
+#                     if name:
+#                         parts = name.strip().split()
+#                         user.first_name = parts[0]
+#                         if len(parts) > 1:
+#                             user.last_name = " ".join(parts[1:])
+#                     user.save()
+
+#                 # login the user and redirect to same checkout (now authenticated)
+#                 login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+#                 return redirect("checkout")
+#         else:
+#             guest_form = GuestCheckoutForm()
+
+#         return render(request, "order/checkout_guest.html", {
+#             "guest_form": guest_form,
+#             "cart": cart,
+#             "subtotal": subtotal,
+#             "delivery": delivery_charges,
+#         })
+
+#     # Authenticated: show full checkout form (POST will be handled by confirm_order view)
+#     # We render checkout page with a CheckoutForm pre-filled
+#     initial = {
+#         "first_name": request.user.first_name or "",
+#         "last_name": request.user.last_name or "",
+#         "email": request.user.email or "",
+#     }
+#     form = CheckoutForm(initial=initial)
+
+#     return render(request, "order/checkout_loggedin.html", {
+#         "checkout_form": form,
+#         "cart": cart,
+#         "subtotal": subtotal,
+#         "delivery": delivery_charges,
+#     })
+
+# def checkout(request):
+#     cart = request.session.get("cart", {})
+#     if not cart:
+#         return redirect("cart_view")
+
+#     subtotal = sum(item["price"] * item["qty"] for item in cart.values())
+
+#     if request.method == "POST":
+
+#         # if guest
+#         if not request.user.is_authenticated:
+#             phone = request.POST.get("phone")
+
+#             user, created = User.objects.get_or_create(phone=phone)
+
+#             if created:
+#                 username = "user" + phone[-6:]
+#                 user.username = username
+#                 user.set_unusable_password()
+#                 user.save()
+
+#             login(request, user)
+
+#         # Now user is logged in → save order
+#         order = Order.objects.create(
+#             user=request.user,
+#             first_name=request.POST.get("first_name"),
+#             last_name=request.POST.get("last_name"),
+#             address=request.POST.get("address"),
+#             upazila=request.POST.get("upazila"),
+#             district=request.POST.get("district"),
+#             email=request.POST.get("email"),
+#             comment=request.POST.get("comment"),
+#             payment_method=request.POST.get("payment_method"),
+#             delivery_method=request.POST.get("delivery_method"),
+#             delivery_charge=request.POST.get("delivery_charge"),
+#             subtotal=subtotal,
+#             total=subtotal + int(request.POST.get("delivery_charge")),
+#         )
+
+#         for key, item in cart.items():
+#             OrderItem.objects.create(
+#                 order=order,
+#                 product_name=item["name"],  # name -> product_name
+#                 price=item["price"],
+#                 qty=item["qty"]              # quantity -> qty
+#             ) 
+
+#         # for key, item in cart.items():
+#         #     OrderItem.objects.create(
+#         #         order=order,
+#         #         product_id=key,
+#         #         name=item["name"],
+#         #         quantity=item["qty"],
+#         #         price=item["price"],
+#         #         total=item["qty"] * item["price"]
+#         #     )
+
+#         request.session["cart"] = {}
+#         return redirect("success_page")
+
+#     return render(request, "order/checkout.html", {
+#         "cart": cart,
+#         "subtotal": subtotal,
+#     }) 
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model, login
+from .models import Order, OrderItem
+
+User = get_user_model()
+
+# def checkout(request):
+#     cart = request.session.get("cart", {})
+#     if not cart:
+#         return redirect("cart_view")
+
+#     subtotal = sum(item["price"] * item["qty"] for item in cart.values())
+
+#     if request.method == "POST":
+
+#         # --- Guest user handling ---
+#         if not request.user.is_authenticated:
+#             phone = request.POST.get("phone")
+
+#             user, created = User.objects.get_or_create(phone=phone)
+
+#             if created:
+#                 username = "user" + phone[-6:]
+#                 user.username = username
+#                 user.set_unusable_password()
+#                 user.save()
+
+#             # Fix multiple backends issue
+#             backend = 'django.contrib.auth.backends.ModelBackend'  # default Django backend
+#             user.backend = backend
+#             login(request, user)
+
+#         # --- Save Order ---
+#         delivery_charge = float(request.POST.get("delivery_charge", 0)) 
+
+#         mobile = request.POST.get("mobile") or request.POST.get("phone") 
+#         print("My Contact: ",mobile)
+#         order = Order.objects.create(
+#             user=request.user,
+#             first_name=request.POST.get("first_name"),
+#             last_name=request.POST.get("last_name"),
+#             address=request.POST.get("address"),
+#             mobile=mobile,
+#             upazila=request.POST.get("upazila"),
+#             district=request.POST.get("district"),
+#             email=request.POST.get("email"),
+#             comment=request.POST.get("comment"),
+#             payment_method=request.POST.get("payment_method"),
+#             delivery_method=request.POST.get("delivery_method"),
+#             delivery_charge=delivery_charge,
+#             subtotal=subtotal,
+#             total=subtotal + delivery_charge,
+#         )
+
+#         # --- Save Order Items ---
+#         for key, item in cart.items():
+#             OrderItem.objects.create(
+#                 order=order,
+#                 product_name=item["name"],
+#                 price=item["price"],
+#                 qty=item["qty"]
+#             )
+
+#         # --- Clear Cart ---
+#         request.session["cart"] = {}
+
+#         return redirect("success_page")
+
+#     return render(request, "order/checkout.html", {
+#         "cart": cart,
+#         "subtotal": subtotal,
+#     }) 
+
+def checkout(request):
+    cart = request.session.get("cart", {})
+    if not cart:
+        return redirect("cart_view")
+
+    subtotal = sum(item["price"] * item["qty"] for item in cart.values())
+
+    if request.method == "POST":
+
+        # Guest or logged-in
+        if not request.user.is_authenticated:
+            phone = request.POST.get("phone")
+            user, created = User.objects.get_or_create(phone=phone)
+            if created:
+                username = "user" + phone[-6:]
+                user.username = username
+                user.set_unusable_password()
+                user.save()
+            # Login user
+            backend = 'django.contrib.auth.backends.ModelBackend'
+            user.backend = backend
+            login(request, user)
+
+        # Save order
+        delivery_charge = float(request.POST.get("delivery_charge", 0))
+        mobile = request.POST.get("phone") or request.POST.get("phone")
+        order = Order.objects.create(
+            user=request.user,
+            first_name=request.POST.get("first_name"),
+            last_name=request.POST.get("last_name"),
+            address=request.POST.get("address"),
+            mobile=mobile,
+            upazila=request.POST.get("upazila"),
+            district=request.POST.get("district"),
+            email=request.POST.get("email"),
+            comment=request.POST.get("comment"),
+            payment_method=request.POST.get("payment_method"),
+            delivery_method=request.POST.get("delivery_method"),
+            delivery_charge=delivery_charge,
+            subtotal=subtotal,
+            total=subtotal + delivery_charge
+        )
+
+        for key, item in cart.items():
+            OrderItem.objects.create(
+                order=order,
+                product_name=item["name"],
+                price=item["price"],
+                qty=item["qty"]
+            )
+
+        request.session["cart"] = {}
+        return redirect("success_page")
+
+    return render(request, "order/checkout.html", {"cart": cart, "subtotal": subtotal}) 
+
+def success_page(request):
+    return render(request, "order/success.html") 
+
+
+# def confirm_order(request):
+#     """
+#     Accept POST from checkout_loggedin form, validate, create Order+OrderItems, clear cart.
+#     """
+#     if request.method != "POST":
+#         return redirect("checkout")
+
+#     if not request.user.is_authenticated:
+#         # safety: only logged-in users should confirm order here
+#         return redirect("checkout")
+
+#     cart = request.session.get("cart", {})
+#     if not cart:
+#         return redirect("cart_view")
+
+#     form = CheckoutForm(request.POST)
+#     if not form.is_valid():
+#         # re-render loggedin checkout with errors
+#         subtotal = sum((float(item.get("price", 0)) * int(item.get("qty", 0))) for item in cart.values())
+#         delivery_charges = {"home": 60.0, "pickup": 0.0, "express": 300.0}
+#         return render(request, "order/checkout_loggedin.html", {
+#             "checkout_form": form,
+#             "cart": cart,
+#             "subtotal": subtotal,
+#             "delivery": delivery_charges,
+#         })
+
+#     # valid -> create order
+#     cleaned = form.cleaned_data
+#     delivery_method = cleaned["delivery_method"]
+#     delivery_charge = {"home": 60.0, "pickup": 0.0, "express": 300.0}.get(delivery_method, 0.0)
+#     subtotal = sum((float(item.get("price", 0)) * int(item.get("qty", 0))) for item in cart.values())
+#     total = subtotal + delivery_charge
+
+#     order = Order.objects.create(
+#         user=request.user,
+#         first_name=cleaned["first_name"],
+#         last_name=cleaned["last_name"],
+#         address=cleaned["address"],
+#         mobile=cleaned["mobile"],
+#         email=cleaned["email"],
+#         upazila=cleaned["upazila"],
+#         district=cleaned["district"],
+#         comment=cleaned.get("comment", ""),
+#         delivery_method=delivery_method,
+#         delivery_charge=delivery_charge,
+#         payment_method=cleaned["payment_method"],
+#         subtotal=subtotal,
+#         total=total,
+#     )
+
+#     # save items
+#     for key, item in cart.items():
+#         # make sure item has name, price, qty
+#         OrderItem.objects.create(
+#             order=order,
+#             product_name=item.get("name", "Product"),
+#             price=float(item.get("price", 0)),
+#             qty=int(item.get("qty", 0)),
+#         )
+
+#     # clear cart
+#     request.session["cart"] = {}
+
+#     # render success
+#     return render(request, "order/success.html", {"order": order})

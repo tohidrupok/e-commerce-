@@ -1,6 +1,19 @@
+# from django import template
+# register = template.Library()
+
+# @register.filter
+# def mul(value, arg):
+#     return float(value) * int(arg)
+
+
+
 from django import template
 register = template.Library()
 
 @register.filter
 def mul(value, arg):
-    return float(value) * int(arg)
+    try:
+        return float(value) * float(arg)
+    except:
+        return 0
+ 
