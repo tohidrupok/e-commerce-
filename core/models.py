@@ -181,8 +181,23 @@ class Order(models.Model):
     delivery_charge = models.FloatField(default=0)
 
     payment_method = models.CharField(max_length=50)
+    payment_status = models.CharField(
+        max_length=20,
+        choices=(
+            ("pending", "Pending"),
+            ("paid", "Paid"),
+            ("failed", "Failed"),
+            ("partial paid", "partial Paid"),
+        ),
+        default="pending"
+    )
+    payment_transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    amount_paid = models.FloatField(default=0)  # How much customer has paid
+
+   
 
     subtotal = models.FloatField()
+    discount = models.FloatField(default=0)
     total = models.FloatField()
 
     created_at = models.DateTimeField(auto_now_add=True)

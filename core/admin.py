@@ -91,6 +91,8 @@ class OrderAdmin(admin.ModelAdmin):
         "mobile",
         "delivery_method",
         "payment_method",
+        "subtotal",
+        "discount",        
         "total",
         "created_at",
     )
@@ -113,6 +115,7 @@ class OrderAdmin(admin.ModelAdmin):
 
     readonly_fields = (
         "subtotal",
+        "discount",        
         "total",
         "created_at",
     )
@@ -145,12 +148,12 @@ class OrderAdmin(admin.ModelAdmin):
                 "delivery_charge",
                 "payment_method",
                 "subtotal",
+                "discount",       
                 "total",
                 "created_at",
             )
         }),
     )
-
 
 # Optional: Register OrderItem separately (not necessary but helpful)
 @admin.register(OrderItem)

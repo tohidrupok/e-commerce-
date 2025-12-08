@@ -2,135 +2,629 @@
 {% load static %}
 {% load math_filters %}
 {% block content %}
-<div class="container" style="max-width:1000px; margin-top:30px; margin-bottom:60px;">
-    <h2>Checkout</h2>
+
+<style>
+.checkout-container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 15px;
+}
+
+.checkout-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.checkout-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 5px;
+}
+
+.checkout-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+.checkout-card {
+    background: white;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    border: 1px solid #e8e8e8;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #28a745;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.08);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+textarea.form-control {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* Payment & Delivery Combined Card */
+.payment-delivery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.method-section {
+    min-height: 100%;
+}
+
+.method-section h5 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.method-option {
+    padding: 10px 12px;
+    border: 1.5px solid #e8e8e8;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fafafa;
+}
+
+.method-option:hover {
+    border-color: #28a745;
+    background: #f8fcf9;
+}
+
+.method-option.selected {
+    border-color: #28a745;
+    background: #f0f9f3;
+}
+
+.radio-dot {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #d1d5db;
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.method-option.selected .radio-dot {
+    border-color: #28a745;
+}
+
+.method-option.selected .radio-dot::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #28a745;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.option-info {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.option-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+.option-price {
+    color: #28a745;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* Coupon Card - Compact */
+.coupon-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.coupon-card h4 {
+    color: white;
+    margin-bottom: 12px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.coupon-input-group {
+    display: flex;
+    gap: 8px;
+}
+
+.coupon-input-group input {
+    flex: 1;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.coupon-input-group button {
+    padding: 10px 20px;
+    background: white;
+    color: #667eea;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.coupon-input-group button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.coupon-message {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Order Summary - Compact */
+.order-summary {
+    background: #f9fafb;
+    border-radius: 10px;
+    padding: 20px;
+    position: sticky;
+    top: 20px;
+}
+
+.order-summary h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #1a1a1a;
+}
+
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #e8e8e8;
+    gap: 12px;
+}
+
+.product-info {
+    flex: 1;
+}
+
+.product-name {
+    font-weight: 500;
+    color: #1a1a1a;
+    font-size: 13px;
+    margin-bottom: 3px;
+}
+
+.product-qty {
+    font-size: 12px;
+    color: #666;
+}
+
+.product-price {
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 13px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-size: 13px;
+}
+
+.summary-row.total {
+    border-top: 2px solid #e8e8e8;
+    margin-top: 10px;
+    padding-top: 14px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.summary-row.discount {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.confirm-btn {
+    width: 100%;
+    padding: 14px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 16px;
+}
+
+.confirm-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(40, 167, 69, 0.25);
+}
+
+.secure-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 12px;
+    color: #666;
+    font-size: 12px;
+}
+
+@media (max-width: 768px) {
+    .form-row,
+    .payment-delivery-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="checkout-container">
+    <div class="checkout-header">
+        <h2>Checkout</h2>
+        <p>Complete your order securely</p>
+    </div>
+
     <form action="{% url 'checkout' %}" method="post" id="checkoutForm">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-7">
-                <div class="card p-3 mb-3">
-                    <h4>1. Customer Information</h4>
 
-                    {% if not user.is_authenticated %}
+                <!-- CUSTOMER INFORMATION -->
+                <div class="checkout-card">
+                    <h4 class="section-title">
+                        <span class="section-number">1</span>
+                        Customer Information
+                    </h4>
+
+                    <div class="form-row">
                         <div class="form-group">
-                            <label>Mobile*</label>
+                            <label>First Name *</label>
+                            <input type="text" name="first_name" value="{{ user.first_name }}" required class="form-control" placeholder="First name">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control" placeholder="Last name">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        {% if not user.is_authenticated %}
+                        <div class="form-group">
+                            <label>Mobile *</label>
                             <input type="text" name="phone" required class="form-control" placeholder="01XXXXXXXXX">
                         </div>
-                    {% else %}
+                        {% else %}
                         <div class="form-group">
-                            <label>Mobile*</label>
-                            <input type="text" name="phone" required class="form-control" 
-                                value="{{ user.phone }}" >
+                            <label>Mobile *</label>
+                            <input type="text" name="phone" required class="form-control" value="{{ user.phone }}" placeholder="01XXXXXXXXX">
                         </div>
-                    {% endif %}
+                        {% endif %}
 
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label>First Name*</label>
-                            <input type="text" name="first_name" value="{{ user.first_name }}" required class="form-control">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>Last Name*</label>
-                            <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Address*</label>
-                        <input type="text" name="address" value="{{ user.profile.address }}" required class="form-control">
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group">
                             <label>Email</label>
-                            <input type="email" name="email" value="{{ user.email }}" class="form-control">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>Upazila/Thana*</label>
-                            <input type="text" name="upazila" required class="form-control">
+                            <input type="email" name="email" value="{{ user.email }}" class="form-control" placeholder="your@email.com">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>District*</label>
-                        <input type="text" name="district" required class="form-control">
+                        <label>Address *</label>
+                        <input type="text" name="address" value="{{ user.profile.address }}" required class="form-control" placeholder="House/Flat, Street">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Upazila/Thana *</label>
+                            <input type="text" name="upazila" required class="form-control" placeholder="Upazila">
+                        </div>
+
+                        <div class="form-group">
+                            <label>District *</label>
+                            <input type="text" name="district" required class="form-control" placeholder="District">
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Comment</label>
-                        <textarea name="comment" class="form-control"></textarea>
+                        <label>Order Notes</label>
+                        <textarea name="comment" class="form-control" placeholder="Special instructions..."></textarea>
                     </div>
                 </div>
 
-                <div class="card p-3 mb-3">
-                    <h4>2. Payment Method</h4>
-                    <select name="payment_method" class="form-control">
-                        <option value="cod">Cash on Delivery</option>
-                        <option value="bkash">bKash</option>
-                        <option value="nagad">Nagad</option>
-                    </select>
+                <!-- PAYMENT & DELIVERY COMBINED -->
+                <div class="checkout-card">
+                    <h4 class="section-title">
+                        <span class="section-number">2</span>
+                        Payment & Delivery
+                    </h4>
+
+                    <div class="payment-delivery-grid">
+                        <!-- Payment Method -->
+                        <div class="method-section">
+                            <h5>Payment Method</h5>
+
+                            <input type="radio" name="payment_method" value="cod" id="payment_cod" checked style="display:none;">
+                            <input type="radio" name="payment_method" value="bkash" id="payment_bkash" style="display:none;">
+                            <input type="radio" name="payment_method" value="nagad" id="payment_nagad" style="display:none;">
+
+                            <div class="method-option selected" data-type="payment" data-value="cod">
+                                <div class="radio-dot"></div>
+                                <div class="option-info">
+                                    <span class="option-name">Cash on Delivery</span>
+                                </div>
+                            </div>
+
+                            <div class="method-option" data-type="payment" data-value="bkash">
+                                <div class="radio-dot"></div>
+                                <div class="option-info">
+                                    <span class="option-name">bKash</span>
+                                </div>
+                            </div>
+
+                            <div class="method-option" data-type="payment" data-value="nagad">
+                                <div class="radio-dot"></div>
+                                <div class="option-info">
+                                    <span class="option-name">Nagad</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Delivery Method -->
+                        <div class="method-section">
+                            <h5>Delivery Method</h5>
+
+                            <input type="radio" name="delivery_method" value="home" id="delivery_home" checked style="display:none;">
+                            <input type="radio" name="delivery_method" value="pickup" id="delivery_pickup" style="display:none;">
+                            <input type="radio" name="delivery_method" value="express" id="delivery_express" style="display:none;">
+
+                            <div class="method-option selected" data-type="delivery" data-value="home" data-charge="60">
+                                <div class="radio-dot"></div>
+                                <div class="option-info">
+                                    <span class="option-name">Home Delivery</span>
+                                    <span class="option-price">৳60</span>
+                                </div>
+                            </div>
+
+                            <div class="method-option" data-type="delivery" data-value="pickup" data-charge="0">
+                                <div class="radio-dot"></div>
+                                <div class="option-info">
+                                    <span class="option-name">Store Pickup</span>
+                                    <span class="option-price">FREE</span>
+                                </div>
+                            </div>
+
+                            <div class="method-option" data-type="delivery" data-value="express" data-charge="300">
+                                <div class="radio-dot"></div>
+                                <div class="option-info">
+                                    <span class="option-name">Express</span>
+                                    <span class="option-price">৳300</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card p-3 mb-3">
-                    <h4>3. Delivery Method</h4>
-                    <select name="delivery_method" id="deliveryMethod" class="form-control">
-                        <option value="home" data-charge="60">Home Delivery – 60 TK</option>
-                        <option value="pickup" data-charge="0">Pickup – FREE</option>
-                        <option value="express" data-charge="300">Express – 300 TK</option>
-                    </select>
-                </div>
             </div>
 
             <div class="col-md-5">
-                <div class="card p-3 mb-3">
-                    <h4>4. Order Overview</h4>
-                    <table class="table table-sm table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th class="text-right">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for key, item in cart.items %}
-                            <tr>
-                                <td>{{ item.name }} <br><small>x {{ item.qty }}</small></td>
-                                <td class="text-right">৳ {{ item.price|mul:item.qty }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
 
-                    <table class="table">
-                        <tr>
-                            <td><strong>Subtotal</strong></td>
-                            <td class="text-right">৳ {{ subtotal }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Delivery</strong></td>
-                            <td class="text-right" id="deliveryChargeCell">৳ 60</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Total</strong></td>
-                            <td class="text-right"><strong id="grandTotal">৳ {{ subtotal|add:60 }}</strong></td>
-                        </tr>
-                    </table>
+                <!-- COUPON -->
+                <div class="coupon-card" style="background-color:#000; color:#fff; padding:15px; border-radius:8px;">
+                    <h4 style="color:#fff;">🎁 Have a Coupon?</h4>
+                    <div class="coupon-input-group" style="display:flex; gap:5px;">
+                        <input type="text" name="coupon" id="couponCode" placeholder="Enter coupon code" style="background-color:#222; color:#fff; border:1px solid #555; padding:5px 10px; border-radius:4px;">
+                        <button type="button" id="applyCouponBtn" style="background-color:#444; color:#fff; border:none; padding:5px 15px; border-radius:4px; cursor:pointer;">Apply</button>
+                    </div>
+                    <div id="couponMessage" class="coupon-message" style="display:none; margin-top:10px; color:#0f0;"></div>
+                </div>
+
+                <!-- ORDER SUMMARY -->
+                <div class="order-summary">
+                    <h4>Order Summary</h4>
+
+                    <div class="products-list">
+                        {% for key, item in cart.items %}
+                        <div class="product-item">
+                            <div class="product-info">
+                                <div class="product-name">{{ item.name }}</div>
+                                <div class="product-qty">Qty: {{ item.qty }}</div>
+                            </div>
+                            <div class="product-price">৳{{ item.price|mul:item.qty }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>৳{{ subtotal }}</span>
+                    </div>
+
+                    <div class="summary-row discount" id="couponRow" style="display:none;">
+                        <span>Discount</span>
+                        <span id="couponDiscountCell">-৳0</span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Delivery</span>
+                        <span id="deliveryChargeCell">৳60</span>
+                    </div>
+
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span id="grandTotal">৳{{ subtotal|add:60 }}</span>
+                    </div>
 
                     <input type="hidden" name="delivery_charge" id="delivery_charge_input" value="60">
-                    <button type="submit" class="btn btn-success btn-block">Confirm Order</button>
+                    <input type="hidden" name="coupon_discount" id="coupon_discount_input" value="0">
+
+                    <button type="submit" class="confirm-btn">Confirm Order</button>
+
+                    <div class="secure-badge">
+                        🔒 Secure Checkout
+                    </div>
                 </div>
+
             </div>
         </div>
     </form>
 </div>
 
 <script>
-document.getElementById('deliveryMethod').addEventListener('change', function(){
-    const charge = parseFloat(this.selectedOptions[0].dataset.charge);
-    const subtotal = {{ subtotal }};
-    document.getElementById('deliveryChargeCell').innerText = "৳ " + charge;
-    document.getElementById('grandTotal').innerText = "৳ " + (subtotal + charge);
-    document.getElementById('delivery_charge_input').value = charge;
+// Payment method selection
+document.querySelectorAll('[data-type="payment"]').forEach(option => {
+    option.addEventListener('click', function() {
+        document.querySelectorAll('[data-type="payment"]').forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        document.getElementById('payment_' + this.dataset.value).checked = true;
+    });
+});
+
+// Delivery method selection
+document.querySelectorAll('[data-type="delivery"]').forEach(option => {
+    option.addEventListener('click', function() {
+        document.querySelectorAll('[data-type="delivery"]').forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        
+        const charge = parseFloat(this.dataset.charge);
+        const value = this.dataset.value;
+        const subtotal = {{ subtotal }};
+        const discount = parseFloat(document.getElementById('coupon_discount_input').value);
+
+        document.getElementById('delivery_' + value).checked = true;
+        document.getElementById('deliveryChargeCell').innerText = "৳" + charge;
+        document.getElementById('grandTotal').innerText = "৳" + (subtotal - discount + charge);
+        document.getElementById('delivery_charge_input').value = charge;
+    });
+});
+
+// Coupon application
+document.getElementById("applyCouponBtn").addEventListener("click", function() {
+    let code = document.getElementById("couponCode").value.trim();
+    let msg = document.getElementById("couponMessage");
+
+    if (code === "") {
+        msg.innerText = "Please enter a coupon code";
+        msg.style.color = "#ffcccc";
+        msg.style.display = "block";
+        return;
+    }
+
+    fetch(`/apply-coupon/?code=${code}`)
+        .then(res => res.json())
+        .then(data => {
+            msg.style.display = "block";
+
+            if (data.status === "error") {
+                msg.style.color = "#ffcccc";
+                msg.innerText = data.message;
+
+                document.getElementById("couponRow").style.display = "none";
+                document.getElementById("coupon_discount_input").value = 0;
+
+                const delivery = parseFloat(document.getElementById('delivery_charge_input').value);
+                document.getElementById("grandTotal").innerText = "৳" + ({{ subtotal }} + delivery);
+            } 
+            else {
+                msg.style.color = "#ccffcc";
+                msg.innerText = data.message;
+
+                let discount = data.discount;
+
+                document.getElementById("couponRow").style.display = "flex";
+                document.getElementById("couponDiscountCell").innerText = "-৳" + discount;
+                document.getElementById("coupon_discount_input").value = discount;
+
+                const delivery = parseFloat(document.getElementById('delivery_charge_input').value);
+                document.getElementById("grandTotal").innerText = "৳" + ({{ subtotal }} - discount + delivery);
+            }
+        })
+        .catch(err => {
+            msg.style.color = "#ffcccc";
+            msg.innerText = "Failed to apply coupon";
+            msg.style.display = "block";
+        });
 });
 </script>
+
 {% endblock %}

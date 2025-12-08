@@ -84,7 +84,7 @@
             </div>
 
             <!-- COUPON + GIFT CODE -->
-            <div style="margin-top:30px; padding:20px; border:1px solid #ddd; border-radius:8px;">
+            <!-- <div style="margin-top:30px; padding:20px; border:1px solid #ddd; border-radius:8px;">
 
                 <h4 style="margin-bottom:12px;">Apply Coupon or Gift Code</h4>
 
@@ -117,7 +117,7 @@
                 </div>
 
                 <p id="couponMessage" style="margin-top:10px; display:none; font-weight:600;"></p>
-            </div>
+            </div> -->
 
             <!-- TOTAL -->
             <div class="row" style="margin-top:30px;">
@@ -125,7 +125,7 @@
                     <table class="table table-bordered">
                         <tr>
                             <td class="text-right"><strong>Subtotal:</strong></td>
-                            <td class="text-right">৳ {{ total }}</td>
+                            <td class="text-right">৳ {{ total|floatformat:2 }}</td>
                         </tr>
 
                         <tr id="discountRow" style="display:none;">
@@ -135,7 +135,7 @@
 
                         <tr>
                             <td class="text-right"><strong>Grand Total:</strong></td>
-                            <td class="text-right" id="grandTotal">৳ {{ total }}</td>
+                            <td class="text-right" id="grandTotal">৳ {{ total|floatformat:2 }}</td>
                         </tr>
                     </table>
                 </div>
@@ -152,7 +152,7 @@
             </div>
 
 
-            {% if not user.is_authenticated %}
+            <!-- {% if not user.is_authenticated %}
             <h3>Guest Checkout</h3>
             <form method="POST" action="{% url 'checkout' %}">
                 {% csrf_token %}
@@ -161,9 +161,9 @@
             </form>
             {% else %}
             <h3>Checkout</h3>
-            <p>Hello, {{ user.first_name }}!</p>
+            <p>Hello, {{ user.first_name }}!</p> -->
             <!-- Your checkout fields -->
-            {% endif %}
+            <!-- {% endif %} -->
  
 
 

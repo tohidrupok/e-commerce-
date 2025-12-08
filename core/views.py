@@ -979,6 +979,7 @@ def checkout(request):
 
         # Save order
         delivery_charge = float(request.POST.get("delivery_charge", 0))
+        discount = float(request.POST.get("coupon_discount", 0))
         mobile = request.POST.get("phone") or request.POST.get("phone")
         order = Order.objects.create(
             user=request.user,
@@ -994,7 +995,8 @@ def checkout(request):
             delivery_method=request.POST.get("delivery_method"),
             delivery_charge=delivery_charge,
             subtotal=subtotal,
-            total=subtotal + delivery_charge
+            discount=discount,
+            total=subtotal + delivery_charge - discount 
         )
 
         for key, item in cart.items():

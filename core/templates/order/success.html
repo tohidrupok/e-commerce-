@@ -1,12 +1,228 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container" style="margin-top:50px; margin-bottom:70px;">
-    <div class="text-center">
-        <h2 class="text-success">Order Placed Successfully!</h2>
-        <p>Thank you for your order. We will contact you soon.</p>
+<style>
+.success-container {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
 
-        <a href="/" class="btn btn-primary mt-3">Back to Home</a>
+.success-card {
+    background: white;
+    border-radius: 16px;
+    padding: 48px 32px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    animation: scaleIn 0.5s ease-out;
+}
+
+.success-icon svg {
+    width: 48px;
+    height: 48px;
+    stroke: white;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+}
+
+.checkmark {
+    animation: drawCheck 0.5s ease-out 0.3s forwards;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+}
+
+@keyframes scaleIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes drawCheck {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.success-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+}
+
+.success-message {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 32px;
+    line-height: 1.6;
+}
+
+.order-info {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 28px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-size: 14px;
+    color: #666;
+}
+
+.info-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.btn-primary-custom {
+    padding: 14px 32px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary-custom:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-secondary-custom {
+    padding: 14px 32px;
+    background: white;
+    color: #28a745;
+    border: 2px solid #28a745;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-secondary-custom:hover {
+    background: #f0f9f3;
+    color: #28a745;
+    text-decoration: none;
+}
+
+.support-text {
+    margin-top: 24px;
+    font-size: 13px;
+    color: #999;
+}
+
+@media (max-width: 576px) {
+    .success-card {
+        padding: 36px 24px;
+    }
+    
+    .success-title {
+        font-size: 24px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-primary-custom,
+    .btn-secondary-custom {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="success-container">
+    <div class="success-card">
+        <!-- Success Icon -->
+        <div class="success-icon">
+            <svg viewBox="0 0 52 52">
+                <polyline class="checkmark" points="14 27 22 35 38 19"/>
+            </svg>
+        </div>
+
+        <!-- Success Message -->
+        <h2 class="success-title">Order Placed Successfully!</h2>
+        <p class="success-message">
+            Thank you for your order! We've received your request and will contact you shortly to confirm the details.
+        </p>
+
+        <!-- Order Info -->
+        <div class="order-info">
+            <div class="info-item">
+                <span class="info-label">📦 Order Status</span>
+                <span class="info-value">Processing</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">📞 Contact</span>
+                <span class="info-value">Via Phone</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">⏱️ Response Time</span>
+                <span class="info-value">Within 24 hours</span>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="/" class="btn-primary-custom">Continue Shopping</a>
+            <a href="/orders/" class="btn-secondary-custom">View Orders</a>
+        </div>
+
+        <!-- Support Text -->
+        <p class="support-text">
+            Need help? Contact our support team
+        </p>
     </div>
 </div>
 
