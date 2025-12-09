@@ -357,6 +357,28 @@ textarea.form-control {
                         <span class="section-number">1</span>
                         Customer Information
                     </h4>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div 
+                                class="alert alert-danger" 
+                                style="
+                                    background:#ffdddd;
+                                    border-left:5px solid #e60000;
+                                    padding:10px 15px;
+                                    margin-bottom:10px;
+                                    border-radius:5px;
+                                    color:#b30000;
+                                    font-weight:600;
+                                ">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <script>
+                        setTimeout(() => {
+                            document.querySelectorAll('.alert').forEach(el => el.style.display = 'none');
+                        }, 4000);
+                    </script>
 
                     <div class="form-row">
                         <div class="form-group">
@@ -372,14 +394,62 @@ textarea.form-control {
 
                     <div class="form-row">
                         {% if not user.is_authenticated %}
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label>Mobile *</label>
                             <input type="text" name="phone" required class="form-control" placeholder="01XXXXXXXXX">
-                        </div>
-                        {% else %}
+                        </div> -->
                         <div class="form-group">
                             <label>Mobile *</label>
+                            <input 
+                                type="text" 
+                                name="phone" 
+                                required 
+                                class="form-control" 
+                                placeholder="01XXXXXXXXX"
+                                maxlength="15"
+                                oninput="
+                                    // Allow only digits and '+'
+                                    this.value = this.value.replace(/[^0-9+]/g, '');
+
+                                    // Allow '+' only at the beginning
+                                    if (this.value.indexOf('+') > 0) {
+                                        this.value = this.value.replace(/\+/g, '');
+                                    }
+
+                                    // If more than 1 '+', keep only the first
+                                    let plusCount = (this.value.match(/\+/g) || []).length;
+                                    if (plusCount > 1) {
+                                        this.value = this.value.replace(/\+/g, '');
+                                        this.value = '+' + this.value;
+                                    }
+                                "
+                            >
+                        </div>
+                        {% else %}
+                        <!-- <div class="form-group">
+                            <label>Mobile *</label>
                             <input type="text" name="phone" required class="form-control" value="{{ user.phone }}" placeholder="01XXXXXXXXX">
+                        </div> -->
+                        <div class="form-group">
+                            <label>Mobile *</label>
+                            <input 
+                                type="text" 
+                                name="phone" 
+                                required 
+                                class="form-control" 
+                                value="{{ user.phone }}" 
+                                placeholder="01XXXXXXXXX"
+                                oninput="
+                                    // Allow only digits and plus sign
+                                    this.value = this.value.replace(/[^0-9+]/g, '');
+
+                                    // Ensure '+' appears only at the start
+                                    if (this.value.indexOf('+') > 0) {
+                                        this.value = this.value.replace(/\+/g, '');
+                                    }
+                                "
+                                maxlength="15"
+                            >
                         </div>
                         {% endif %}
 

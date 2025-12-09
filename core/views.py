@@ -4,6 +4,8 @@ from django.utils import timezone
 from .models import *
 from accounts.forms import GuestCheckoutForm
 from accounts.utils import generate_username_from_phone, generate_unique_username
+import re
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -954,6 +956,48 @@ User = get_user_model()
 #         "subtotal": subtotal,
 #     }) 
 
+import re
+
+def validate_bd_phone(phone):
+    # Trim spaces, just in case
+    phone = phone.strip()
+
+    # 1. Contains invalid characters (letters or symbols except +)
+    if re.search(r'[^0-9+]', phone):
+        return "Phone number can only contain digits or '+' at start."
+
+    # 2. More than one plus sign
+    if phone.count('+') > 1:
+        return "Phone number can't contain multiple '+' symbols."
+
+    # 3. '+' not at the beginning
+    if '+' in phone and not phone.startswith('+'):
+        return "Plus sign (+) must be at the beginning only."
+
+    # 4. Handle international format
+    if phone.startswith('+'):
+        if not phone.startswith('+880'):
+            return "International format must start with +880."
+        if len(phone) != 14:
+            return "International number must be 14 characters (+8801XXXXXXXXX)."
+        if not re.fullmatch(r'\+8801[3-9]\d{8}', phone):
+            return "Invalid Bangladeshi operator code in international number."
+        return None  # valid international
+
+    # 5. Handle local BD format
+    if not phone.startswith('01'):
+        return "Local Bangladeshi numbers must start with 01."
+
+    if len(phone) != 11:
+        return "Local Bangladeshi numbers must be exactly 11 digits."
+
+    if not re.fullmatch(r'01[3-9]\d{8}', phone):
+        return "Invalid Bangladeshi operator code."
+
+    # Passed all checks
+    return None
+ 
+ 
 def checkout(request):
     cart = request.session.get("cart", {})
     if not cart:
@@ -962,7 +1006,13 @@ def checkout(request):
     subtotal = sum(item["price"] * item["qty"] for item in cart.values())
 
     if request.method == "POST":
+        phone = request.POST.get("phone")
 
+        error = validate_bd_phone(phone)
+        if error:
+            messages.error(request, error)
+            return redirect("checkout")
+        
         # Guest or logged-in
         if not request.user.is_authenticated:
             phone = request.POST.get("phone")
