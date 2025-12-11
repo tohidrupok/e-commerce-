@@ -423,6 +423,10 @@ body, .product-view {
                         <div id="tab-1" class="tab-pane fade active in">
                             {{ product.description|linebreaks }}
                         </div>
+                        
+                        <div class="product-specifications">
+                            {{ product.specifications|safe }}
+                        </div> 
 
                         <!-- Reviews -->
                         <div id="tab-review" class="tab-pane fade">

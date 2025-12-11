@@ -497,6 +497,58 @@
                             Detailed product description with features
                         </div>
                     </div>
+                    <!-- Specifications Field -->
+<div class="col-span-12 sm:col-span-12">
+    <style>
+        .cke_inner {
+            resize: both;
+            overflow: auto;
+            min-width: 200px;
+            min-height: 90px;
+        }
+    </style>
+
+    <div class="preview relative">
+        <label for="specifications-editor" class="inline-block mb-2">
+            Specifications
+        </label>
+        <textarea 
+            id="specifications-editor" 
+            name="specifications" 
+            spellcheck="true" 
+            placeholder="Enter product specifications here" 
+            style="height:300px" 
+            class="w-full text-sm border-slate-200 shadow-sm rounded-md focus:ring-4 focus:ring-primary focus:ring-opacity-20 resize-x"
+        ></textarea>
+    </div>
+
+    <!-- CKEditor 5 Classic -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/38.0.1/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#specifications-editor'), {
+                toolbar: [
+                    'heading', '|', 'bold', 'italic', 'underline', 'strikethrough',
+                    'link', 'bulletedList', 'numberedList', 'blockQuote',
+                    'insertTable', 'undo', 'redo'
+                ],
+                table: {
+                    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+                },
+                // Optional: enable resizing in CKEditor
+                resize_enabled: true
+            })
+            .then(editor => {
+                editor.model.document.on('change:data', () => {
+                    console.log("Specifications content changed!");
+                });
+            })
+            .catch(error => {
+                console.error("Error initializing CKEditor:", error);
+            });
+    </script>
+</div>
+
                 </div>
             </div>
 

@@ -57,10 +57,13 @@ def product_quickview(request, pk):
     return render(request, 'product/quickview.html', {'product': product})
 
 
-
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk)
+def product_detail(request, slug):
+    product = get_object_or_404(Product, slug=slug)
     return render(request, 'product/product_details.html', {'product': product})
+
+# def product_detail(request, pk):
+#     product = get_object_or_404(Product, pk=pk)
+#     return render(request, 'product/product_details.html', {'product': product})
 
 
 
@@ -122,7 +125,7 @@ def product_create(request):
         formset = ProductImageFormSet(post_data, request.FILES)
 
         if form.is_valid() and formset.is_valid():
-            product = form.save()
+            product = form.save()  # specifications saved automatically
 
             for img in formset:
                 if img.cleaned_data.get("image"):

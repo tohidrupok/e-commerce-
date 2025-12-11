@@ -643,28 +643,107 @@
                                         </div>
                                         <div class="megamenu-wrapper">
                                             <div class="megamenu-pattern">
+
                                                 <div class="container">
+                                                    <style>
+                                                        .megamenu > li > a {
+                                                            padding: 12px 18px;
+                                                            display: block;
+                                                            color: #000;
+                                                            background: transparent;
+                                                            transition: 0.3s;
+                                                            font-weight: 500;
+                                                        }
+
+                                                        /* Hover effect */
+                                                        .megamenu > li:hover > a {
+                                                            background: #FF6600;
+                                                            color: #fff !important;
+                                                        }
+
+                                                        /* ACTIVE category stays highlighted */
+                                                        .megamenu > li.active > a {
+                                                            background: #FF6600 !important;
+                                                            color: #fff !important;
+                                                        }
+
+                                                        /* Sub menu container */
+                                                        .sub-menu {
+                                                            padding: 15px 0;
+                                                        }
+
+                                                        /* Sub menu items */
+                                                        .sub-menu ul li a {
+                                                            color: #333;
+                                                            padding: 10px 20px;
+                                                            display: block;
+                                                            transition: 0.3s;
+                                                            position: relative;
+                                                        }
+
+                                                        /* Category indicator - ">" sign */
+                                                        .sub-menu ul li a .arrow {
+                                                            margin-left: 8px;
+                                                            font-size: 16px;
+                                                            color: #666;
+                                                        }
+
+                                                        /* Sub menu hover */
+                                                        .sub-menu ul li:hover > a {
+                                                            background: #FF6600;
+                                                            color: #fff !important;
+                                                            padding-left: 25px;
+                                                        }
+
+                                                        .sub-menu ul li:hover > a .arrow {
+                                                            color: #fff;
+                                                        }
+
+                                                        /* Level 2 submenu */
+                                                        .sub-menu.level-2 {
+                                                            padding: 10px 0;
+                                                            margin-left: 15px;
+                                                        }
+
+                                                        .sub-menu.level-2 li a {
+                                                            padding: 8px 20px;
+                                                            font-size: 14px;
+                                                        }
+
+                                                        .sub-menu.level-2 li:hover > a {
+                                                            padding-left: 25px;
+                                                        }
+
+                                                        /* Has sublevel styling */
+                                                        .has-sublevel > a {
+                                                            font-weight: 500;
+                                                        }
+                                                    </style>
+
                                                     <ul class="megamenu" data-transition="slide" data-animationtime="250">
                                                         {% for cat in menu_categories|slice:":12" %}
-                                                            <li class="with-sub-menu hover main-item">
+                                                            <li class="with-sub-menu hover main-item 
+                                                                {% if request.resolver_match.kwargs.slug == cat.slug %}active{% endif %}
+                                                            ">
                                                                 <a href="{% url 'category_products' cat.slug %}">
                                                                     {{ cat.name }}
+                                                                    {% if cat.has_children %}
+                                                                        <span class="arrow">›</span>
+                                                                    {% endif %}
                                                                 </a>
-                                                    
+
                                                                 {% if cat.has_children %}
                                                                     <div class="sub-menu level-1">
                                                                         <ul>
                                                                             {% for subcat in cat.children.all %}
                                                                                 <li class="has-sublevel">
-                                                    
                                                                                     <a href="{% url 'category_products' subcat.slug %}" class="subcat-link">
                                                                                         {{ subcat.name }}
-                                                    
                                                                                         {% if subcat.children.exists %}
-                                                                                            <span class="arrow">›</span>
+                                                                                            <span class="arrow">⮞</span>
                                                                                         {% endif %}
                                                                                     </a>
-                                                    
+
                                                                                     {% if subcat.children.exists %}
                                                                                         <ul class="sub-menu level-2">
                                                                                             {% for subsub in subcat.children.all %}
@@ -676,15 +755,16 @@
                                                                                             {% endfor %}
                                                                                         </ul>
                                                                                     {% endif %}
-                                                                                </li>
-                                                                            {% endfor %}
-                                                                        </ul>
-                                                                    </div>
-                                                                {% endif %}
-                                                            </li>
-                                                        {% endfor %}
-                                                    </ul>
-                                                </div>
+                                                                                                </li>
+                                                                                            {% endfor %}
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                {% endif %}
+                                                                            </li>
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                </div>
+ 
                                             </div>
                                         </div>
             
@@ -1211,7 +1291,7 @@
 <script src="{% static 'js/themejs/toppanel.js' %}"></script>
 <script src="{% static 'js/themejs/so_megamenu.js' %}"></script>
 <script src="{% static 'js/themejs/addtocart.js' %}"></script>
-<script src="{% static 'js/themejs/cpanel.js' %}"></script>
+
 
 </body>
 </html>

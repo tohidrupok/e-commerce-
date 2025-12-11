@@ -1,5 +1,10 @@
 from django.contrib import admin
 from .models import Category, Product, ProductImage, HotDeal, Brand
+from django.contrib import admin
+from .models import Product
+from ckeditor.widgets import CKEditorWidget
+from django import forms
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -22,6 +27,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    
+    pecifications = forms.CharField(widget=CKEditorWidget())
     list_display = [
         'name', 'category', 'price', 'old_price', 'discount_percent',
         'stock_quantity', 'status', 'is_featured', 'created_at', 'is_active'

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'admin_panel',
+    'ckeditor',
     
     # allauth
     "allauth",
@@ -52,6 +53,17 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     
 ]
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Full',  
+        'height': 300,
+        'width': '100%',
+        'extraPlugins': ','.join([
+            'codesnippet', 'table', 'justify', 'uploadimage'
+        ]),
+    },
+}
 
 
 SITE_ID = 1

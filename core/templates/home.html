@@ -787,7 +787,7 @@
                                     </div>
                                     {% endif %}
                         
-                                    <a class="product-img" href="{% url 'product_detail' product.id %}">
+                                    <a class="product-img" href="{% url 'product_detail' product.slug  %}">
                                         {% with img=product.images.all.0 %}
                                         <img src="{{ img.image.url }}" alt="{{ product.name }}">
                                         {% endwith %}
