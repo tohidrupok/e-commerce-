@@ -1,30 +1,5 @@
 from django import forms
-from .models import Product, ProductImage
-
-# class ProductForm(forms.ModelForm):
-#     class Meta:
-#         model = Product
-#         fields = [
-#             'category', 'brand', 'name', 'short_description', 'description',
-#             'price', 'old_price', 'discount_percent', 'stock_quantity',
-#             'status', 'is_featured', 'is_active', 'specifications'
-#         ]
-
-# class ProductForm(forms.ModelForm):
-#     class Meta:
-#         model = Product
-#         fields = [
-#             'category', 'brand', 'name', 'short_description', 'description',
-#             'price', 'old_price', 'discount_percent', 'stock_quantity',
-#             'status', 'is_featured', 'is_active', 'specifications'
-#         ]
-
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         # hide original category dropdown
-#         self.fields['category'].widget = forms.HiddenInput() 
-
-   
+from .models import Product, ProductImage  
 from ckeditor.widgets import CKEditorWidget
 
 class ProductForm(forms.ModelForm):

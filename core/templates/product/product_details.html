@@ -411,22 +411,49 @@ body, .product-view {
             <!-- Product Tabs -->
             <div class="producttab">
                 <div class="tabsslider col-xs-12">
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a data-toggle="tab" href="#tab-1">Description</a></li>
-                        <li class="item_nonactive"><a data-toggle="tab" href="#tab-review">Reviews ({{ product.reviews.count }})</a></li>
-                        <li class="item_nonactive"><a data-toggle="tab" href="#tab-4">Tags</a></li>
-                        <li class="item_nonactive"><a data-toggle="tab" href="#tab-5">Custom Tab</a></li>
-                    </ul>
+
+                <ul class="nav nav-tabs">
+                    {% if product.specifications %}
+                        <li class="active">
+                            <a data-toggle="tab" href="#tab-0">Specifications</a>
+                        </li>
+                    {% endif %}
+
+                    <li class="{% if not product.specifications %}active{% else %}item_nonactive{% endif %}">
+                        <a data-toggle="tab" href="#tab-1">Description</a>
+                    </li>
+
+                    <li class="item_nonactive">
+                        <a data-toggle="tab" href="#tab-review">
+                            Reviews ({{ product.reviews.count }})
+                        </a>
+                    </li>
+
+                    <li class="item_nonactive">
+                        <a data-toggle="tab" href="#tab-4">Tags</a>
+                    </li>
+
+                    <li class="item_nonactive">
+                        <a data-toggle="tab" href="#tab-5">Custom Tab</a>
+                    </li>
+                </ul>
+
 
                     <div class="tab-content col-xs-12">
-                        <!-- Description -->
-                        <div id="tab-1" class="tab-pane fade active in">
+
+                        {% if product.specifications %}
+                        <!-- specifications -->
+                        <div id="tab-0" class="tab-pane fade active in">
+                            {{ product.specifications|safe }}
+                        </div>
+
+                        {% endif %}
+
+                        <!-- Description --> 
+                        <div id="tab-1" class="tab-pane fade {% if not product.specifications %}active in{% endif %}">
                             {{ product.description|linebreaks }}
                         </div>
-                        
-                        <div class="product-specifications">
-                            {{ product.specifications|safe }}
-                        </div> 
+
 
                         <!-- Reviews -->
                         <div id="tab-review" class="tab-pane fade">
