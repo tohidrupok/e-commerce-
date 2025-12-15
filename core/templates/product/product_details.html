@@ -442,9 +442,53 @@ body, .product-view {
                     <div class="tab-content col-xs-12">
 
                         {% if product.specifications %}
-                        <!-- specifications -->
+                         !-- specifications -->
                         <div id="tab-0" class="tab-pane fade active in">
-                            {{ product.specifications|safe }}
+
+                            <style>
+                                /* UNIQUE & FORCE TABLE VISIBILITY */
+                                #tab-0 .spec-table-wrapper table {
+                                    width: 100% !important;
+                                    border-collapse: collapse !important;
+                                    margin: 16px 0 !important;
+                                    background-color: #ffffff !important;
+                                    display: table !important;
+                                }
+
+                                #tab-0 .spec-table-wrapper th,
+                                #tab-0 .spec-table-wrapper td {
+                                    border: 1px solid #d1d5db !important;
+                                    padding: 12px 14px !important;
+                                    text-align: left !important;
+                                    vertical-align: top !important;
+                                    font-size: 14px !important;
+                                    color: #111827 !important;
+                                    background-color: #ffffff !important;
+                                }
+
+                                #tab-0 .spec-table-wrapper th {
+                                    font-weight: 600 !important;
+                                    background-color: #f3f4f6 !important;
+                                }
+
+                                #tab-0 .spec-table-wrapper tr:nth-child(even) td {
+                                    background-color: #f9fafb !important;
+                                }
+
+                                /* Fix hidden table issues */
+                                #tab-0 .spec-table-wrapper table,
+                                #tab-0 .spec-table-wrapper thead,
+                                #tab-0 .spec-table-wrapper tbody,
+                                #tab-0 .spec-table-wrapper tr {
+                                    visibility: visible !important;
+                                    opacity: 1 !important;
+                                }
+                            </style>
+
+                            <div class="spec-table-wrapper">
+                                {{ product.specifications|safe }}
+                            </div>
+
                         </div>
 
                         {% endif %}

@@ -50,7 +50,6 @@ def category_products(request, slug):
     return render(request, 'category_products.html', context)
 
 
-
 def product_quickview(request, pk):
     product = get_object_or_404(Product, pk=pk)
     print(product)

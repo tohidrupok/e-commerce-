@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Listing One Stop Solution{% endblock %}
+
+{% block content %}
+
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Apple MacBook — StarTech clone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* small helpers to mimic the original look */
+    .site-header { background:#0b3b6f; }
+    .site-topbar { background:#0a2d53; }
+    .product-card img{height:190px;object-fit:contain}
+    .badge{background:#ffcf00;color:#111;padding:.25rem .5rem;border-radius:.25rem;font-weight:600}
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+
+
+  <!-- Breadcrumb -->
+  <div class="max-w-7xl mx-auto px-4 py-3 text-sm text-gray-600">
+    Home / Laptop / MacBook
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 grid grid-cols-12 gap-6">
+    <!-- Sidebar filters -->
+    <aside class="col-span-3 bg-white p-4 rounded shadow-sm space-y-6">
+      <!-- Price Range -->
+      <div>
+        <h3 class="font-semibold mb-3">Price Range</h3>
+        <input type="range" min="105000" max="535000" class="w-full accent-orange-500" />
+        <div class="flex justify-between mt-2">
+          <input type="text" value="105,000" class="w-24 border rounded px-2 py-1 text-sm" />
+          <input type="text" value="535,000" class="w-24 border rounded px-2 py-1 text-sm" />
+        </div>
+      </div>
+
+      <!-- Availability -->
+      <div>
+        <h3 class="font-semibold mb-2">Availability</h3>
+        <div class="space-y-2 text-sm">
+          <label class="flex items-center gap-2"><input type="checkbox" class="h-4 w-4" /> In Stock</label>
+          <label class="flex items-center gap-2"><input type="checkbox" class="h-4 w-4" /> Pre Order</label>
+          <label class="flex items-center gap-2"><input type="checkbox" class="h-4 w-4" /> Up Coming</label>
+        </div>
+      </div>
+
+      <!-- Series -->
+      <div>
+        <h3 class="font-semibold mb-2">Series</h3>
+        <div class="space-y-2 text-sm">
+          <label class="flex items-center gap-2"><input type="checkbox" class="h-4 w-4"> MacBook Air (2022)</label>
+          <label class="flex items-center gap-2"><input type="checkbox" class="h-4 w-4"> MacBook Air (2024)</label>
+          <label class="flex items-center gap-2"><input type="checkbox" class="h-4 w-4"> MacBook Pro (2024)</label>
+          <label class="flex items-center gap-2"><input type="checkbox" class="h-4 w-4"> MacBook Pro (2025)</label>
+        </div>
+      </div>
+
+      <!-- Processor -->
+      <div>
+        <h3 class="font-semibold mb-2">Processor</h3>
+        <div class="space-y-2 text-sm">
+          <label class="flex items-center gap-2"><input type="checkbox" class="h-4 w-4"> M2 Chip</label>
+          <label class="flex items-center gap-2"><input type="checkbox" class="h-4 w-4"> M3 Chip</label>
+        </div>
+      </div>
+    </aside>
+
+      <!-- Product grid -->
+    <section class="col-span-9">
+      <div class="bg-white p-4 rounded shadow-sm mb-4 flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-semibold">Apple MacBook</h2>
+          <p class="text-sm text-gray-500">Showing 1–24 of 60 results</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="text-sm">Sort by:</label>
+          <select class="rounded border px-2 py-1">
+            <option>Newest</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-6">
+        <!-- repeat product card -->
+        <!-- Product card 1 -->
+        <article class="product-card bg-white p-4 rounded shadow-sm">
+          <div class="flex justify-center mb-3">
+            <img src="https://via.placeholder.com/300x200?text=MacBook+Air" alt="MacBook Air" />
+          </div>
+          <h3 class="text-md font-semibold">Apple MacBook Air M1 13-inch</h3>
+          <p class="text-sm text-gray-500">Apple | 8GB RAM | 256GB SSD</p>
+          <div class="mt-3 flex items-center justify-between">
+            <div>
+              <div class="text-lg font-bold">৳ 95,000</div>
+              <div class="text-sm text-gray-500 line-through">৳ 110,000</div>
+            </div>
+            <div class="text-right">
+              <div class="badge">In Stock</div>
+              <button class="mt-2 block border rounded px-3 py-1 text-sm">Add to cart</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product card 2 -->
+        <article class="product-card bg-white p-4 rounded shadow-sm">
+          <div class="flex justify-center mb-3">
+            <img src="https://via.placeholder.com/300x200?text=MacBook+Pro" alt="MacBook Pro" />
+          </div>
+          <h3 class="text-md font-semibold">Apple MacBook Pro 14-inch M2 Pro</h3>
+          <p class="text-sm text-gray-500">Apple | 16GB RAM | 512GB SSD</p>
+          <div class="mt-3 flex items-center justify-between">
+            <div>
+              <div class="text-lg font-bold">৳ 240,000</div>
+              <div class="text-sm text-gray-500 line-through">৳ 260,000</div>
+            </div>
+            <div class="text-right">
+              <div class="badge">Limited</div>
+              <button class="mt-2 block border rounded px-3 py-1 text-sm">Add to cart</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product card 3 -->
+        <article class="product-card bg-white p-4 rounded shadow-sm">
+          <div class="flex justify-center mb-3">
+            <img src="https://via.placeholder.com/300x200?text=MacBook+Pro+16" alt="MacBook Pro 16" />
+          </div>
+          <h3 class="text-md font-semibold">Apple MacBook Pro 16-inch M2 Max</h3>
+          <p class="text-sm text-gray-500">Apple | 32GB RAM | 1TB SSD</p>
+          <div class="mt-3 flex items-center justify-between">
+            <div>
+              <div class="text-lg font-bold">৳ 420,000</div>
+            </div>
+            <div class="text-right">
+              <div class="badge">Preorder</div>
+              <button class="mt-2 block border rounded px-3 py-1 text-sm">Preorder</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- more cards: repeat as needed -->
+      </div>
+
+      <!-- Pagination -->
+      <div class="mt-6 flex justify-center">
+        <nav class="inline-flex items-center gap-2">
+          <a class="px-3 py-1 bg-white rounded shadow">&laquo; Prev</a>
+          <a class="px-3 py-1 bg-white rounded shadow">1</a>
+          <a class="px-3 py-1 bg-white rounded shadow">2</a>
+          <a class="px-3 py-1 bg-white rounded shadow">Next &raquo;</a>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+
+</body>
+</html>
+
+
+{% endblock %}
