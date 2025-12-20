@@ -33,20 +33,69 @@ def get_all_subcategories(category):
     return subcategories
 
 
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Max, Q
+from .models import Product, Category
+from .models import Brand   
+
 def category_products(request, slug):
     category = get_object_or_404(Category, slug=slug)
 
-    # include category + all its subcategories (recursively)
     subcats = get_all_subcategories(category)
     all_category_ids = [category.id] + [c.id for c in subcats]
 
-    # show all products under these categories
-    products = Product.objects.filter(category_id__in=all_category_ids, is_active=True).order_by('-created_at')
+    products = Product.objects.filter(
+        category_id__in=all_category_ids,
+        is_active=True
+    )
+
+    # GET values
+    selected_status = request.GET.getlist('status')
+    selected_brands = request.GET.getlist('brand')
+    selected_rating = request.GET.get('rating')
+    selected_featured = request.GET.get('featured')
+    selected_max_price = request.GET.get('max_price')
+    in_stock = request.GET.get('in_stock')
+
+    # Filters
+    if selected_max_price:
+        products = products.filter(price__lte=selected_max_price)
+
+    if in_stock:
+        products = products.filter(stock_quantity__gt=0)
+
+    if selected_status:
+        products = products.filter(status__in=selected_status)
+
+    if selected_brands:
+        products = products.filter(brand_id__in=selected_brands)
+
+    if selected_rating:
+        products = products.filter(rating__gte=selected_rating)
+
+    if selected_featured:
+        products = products.filter(is_featured=True)
+
+    max_price = products.aggregate(Max('price'))['price__max'] or 0
+
+    brands = Brand.objects.filter(
+        brand__category_id__in=all_category_ids
+    ).distinct()
 
     context = {
         'category': category,
         'products': products,
+        'brands': brands,
+        'max_price': int(max_price),
+
+        # 🔥 send selected values
+        'selected_status': selected_status,
+        'selected_brands': selected_brands,
+        'selected_rating': selected_rating,
+        'selected_featured': selected_featured,
+        'in_stock': in_stock,
     }
+
     return render(request, 'category_products.html', context)
 
 
