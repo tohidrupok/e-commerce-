@@ -1,0 +1,342 @@
+{% extends "admin-base.html" %}
+{% block content %}
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .back-button {
+        background: white;
+        color: #64748b;
+        border: 1px solid #e2e8f0;
+        padding: 0.625rem 1.25rem;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .back-button:hover {
+        background: #f8fafc;
+        color: #334155;
+        border-color: #cbd5e1;
+    }
+
+    /* Form Container */
+    .form-container {
+        max-width: 800px;
+    }
+
+    /* Error Alert */
+    .alert-custom {
+        background: #fee2e2;
+        border: 1px solid #fca5a5;
+        color: #991b1b;
+        padding: 1rem 1.25rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .alert-custom i {
+        font-size: 1.5rem;
+    }
+
+    /* Card Styles */
+    .form-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.25rem 1.75rem;
+        border-bottom: none;
+    }
+
+    .card-header-custom h4 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .card-body-custom {
+        padding: 2rem 1.75rem;
+    }
+
+    /* Form Elements */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        display: block;
+    }
+
+    .required {
+        color: #ef4444;
+        margin-left: 0.25rem;
+    }
+
+    .form-control, .form-select, input[type="text"], input[type="number"], input[type="date"], select {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.625rem 0.875rem;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        width: 100%;
+    }
+
+    .form-control:focus, .form-select:focus, input:focus, select:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+
+    /* Checkbox */
+    .form-check-custom {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
+
+    .form-check-custom input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+        cursor: pointer;
+    }
+
+    .form-check-custom label {
+        font-size: 0.95rem;
+        color: #475569;
+        cursor: pointer;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    /* Help Text */
+    .form-text {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-top: 0.375rem;
+        display: block;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        padding: 1.5rem 0;
+    }
+
+    .btn-custom {
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary-custom {
+        background: white;
+        color: #64748b;
+        border: 1px solid #e2e8f0;
+    }
+
+    .btn-secondary-custom:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #334155;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .action-buttons {
+            flex-direction: column-reverse;
+        }
+
+        .btn-custom {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1>
+        <i class="bi bi-{% if coupon %}pencil-square{% else %}plus-circle-fill{% endif %}"></i>
+        {% if coupon %}Edit Coupon{% else %}Create New Coupon{% endif %}
+    </h1>
+    <a href="{% url 'coupon_list' %}" class="back-button">
+        <i class="bi bi-arrow-left"></i>
+        Back to Coupons
+    </a>
+</div>
+
+<!-- Error Alert -->
+{% if error %}
+<div class="alert-custom">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <div>
+        <strong>Error!</strong> {{ error }}
+    </div>
+</div>
+{% endif %}
+
+<!-- Form Container -->
+<div class="form-container">
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Coupon Information Card -->
+        <div class="form-card">
+            <div class="card-header-custom">
+                <h4>
+                    <i class="bi bi-ticket-detailed"></i>
+                    Coupon Details
+                </h4>
+            </div>
+            <div class="card-body-custom">
+                <!-- Coupon Code -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Coupon Code <span class="required">*</span>
+                    </label>
+                    <input type="text" 
+                           name="code" 
+                           class="form-control" 
+                           placeholder="e.g., SAVE20, WELCOME2024" 
+                           value="{{ coupon.code|default:'' }}" 
+                           required>
+                    <span class="form-text">Enter a unique code that customers will use</span>
+                </div>
+
+                <!-- Coupon Type -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Coupon Type <span class="required">*</span>
+                    </label>
+                    <select name="type" class="form-select">
+                        <option value="coupon" {% if coupon.type == 'coupon' %}selected{% endif %}>
+                            Coupon
+                        </option>
+                        <option value="gift" {% if coupon.type == 'gift' %}selected{% endif %}>
+                            Gift Code
+                        </option>
+                    </select>
+                    <span class="form-text">Choose the type of discount code</span>
+                </div>
+
+                <!-- Discount Amount -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Discount Amount <span class="required">*</span>
+                    </label>
+                    <input type="number" 
+                           name="discount_amount" 
+                           class="form-control" 
+                           placeholder="e.g., 20 or 500" 
+                           step="0.01" 
+                           min="0"
+                           value="{{ coupon.discount_amount|default:0 }}" 
+                           required>
+                    <span class="form-text">Enter the discount value</span>
+                </div>
+
+                <!-- Expiry Date -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Expiry Date
+                    </label>
+                    <input type="date" 
+                           name="expiry_date" 
+                           class="form-control" 
+                           value="{{ coupon.expiry_date|date:'Y-m-d' }}">
+                    <span class="form-text">Leave empty for no expiry date</span>
+                </div>
+
+                <!-- Active Status -->
+                <div class="form-check-custom">
+                    <input type="checkbox" 
+                           name="is_active" 
+                           id="is_active"
+                           {% if coupon.is_active or not coupon %}checked{% endif %}>
+                    <label for="is_active">
+                        <i class="bi bi-toggle-on"></i> Active (Coupon is available for use)
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{% url 'coupon_list' %}" class="btn-custom btn-secondary-custom">
+                <i class="bi bi-x-circle"></i>
+                Cancel
+            </a>
+            <button type="submit" class="btn-custom btn-primary-custom">
+                <i class="bi bi-check-circle"></i>
+                {% if coupon %}Update Coupon{% else %}Create Coupon{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

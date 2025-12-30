@@ -1,0 +1,418 @@
+{% extends "admin-base.html" %}
+{% block content %}
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .back-button {
+        background: white;
+        color: #64748b;
+        border: 1px solid #e2e8f0;
+        padding: 0.625rem 1.25rem;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .back-button:hover {
+        background: #f8fafc;
+        color: #334155;
+        border-color: #cbd5e1;
+    }
+
+    /* Form Container */
+    .form-container {
+        max-width: 800px;
+    }
+
+    /* Card Styles */
+    .form-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.25rem 1.75rem;
+        border-bottom: none;
+    }
+
+    .card-header-custom h4 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .card-body-custom {
+        padding: 2rem 1.75rem;
+    }
+
+    /* Order Info Bar */
+    .order-info-bar {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .order-info-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .order-info-label {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-bottom: 0.25rem;
+    }
+
+    .order-info-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    /* Form Elements */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        display: block;
+    }
+
+    .required {
+        color: #ef4444;
+        margin-left: 0.25rem;
+    }
+
+    .form-select, 
+    select {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.75rem 0.875rem;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        width: 100%;
+        background: white;
+        cursor: pointer;
+    }
+
+    .form-select:focus, 
+    select:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+
+    textarea {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.75rem 0.875rem;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        width: 100%;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    textarea:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+
+    /* Status Preview */
+    .status-preview {
+        background: #f1f5f9;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .status-preview-label {
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    .status-badge {
+        padding: 0.4rem 0.75rem;
+        font-weight: 500;
+        font-size: 0.8rem;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+    }
+
+    /* Status Badge Colors */
+    .status-order_placed { background: #dbeafe; color: #1e40af; }
+    .status-confirmed { background: #dcfce7; color: #166534; }
+    .status-preparing { background: #fef3c7; color: #92400e; }
+    .status-processing { background: #e0e7ff; color: #3730a3; }
+    .status-packed { background: #fce7f3; color: #831843; }
+    .status-shipped { background: #cffafe; color: #0e7490; }
+    .status-out_for_delivery { background: #ddd6fe; color: #5b21b6; }
+    .status-delivered { background: #d1fae5; color: #065f46; }
+    .status-completed { background: #a7f3d0; color: #064e3b; }
+    .status-refunded { background: #fed7aa; color: #9a3412; }
+    .status-cancelled { background: #fee2e2; color: #991b1b; }
+    .status-failed { background: #fecaca; color: #7f1d1d; }
+    .status-on_hold { background: #f3f4f6; color: #374151; }
+
+    /* Help Text */
+    .form-text {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-top: 0.375rem;
+        display: block;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        padding: 1.5rem 0;
+    }
+
+    .btn-custom {
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary-custom {
+        background: white;
+        color: #64748b;
+        border: 1px solid #e2e8f0;
+    }
+
+    .btn-secondary-custom:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #334155;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .order-info-bar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .action-buttons {
+            flex-direction: column-reverse;
+        }
+
+        .btn-custom {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1>
+        <i class="bi bi-arrow-repeat"></i>
+        Update Order Status
+    </h1>
+    <a href="{% url 'admin_order_detail' order.id %}" class="back-button">
+        <i class="bi bi-arrow-left"></i>
+        Back to Order
+    </a>
+</div>
+
+<!-- Order Info Bar -->
+<div class="order-info-bar">
+    <div class="order-info-item">
+        <span class="order-info-label">Order ID</span>
+        <span class="order-info-value">#{{ order.id }}</span>
+    </div>
+    <div class="order-info-item">
+        <span class="order-info-label">Customer</span>
+        <span class="order-info-value">{{ order.user.get_full_name|default:order.user.username }}</span>
+    </div>
+    <div class="order-info-item">
+        <span class="order-info-label">Order Date</span>
+        <span class="order-info-value">{{ order.created_at|date:"M d, Y" }}</span>
+    </div>
+    <div class="order-info-item">
+        <span class="order-info-label">Total Amount</span>
+        <span class="order-info-value">৳{{ order.total_amount }}</span>
+    </div>
+</div>
+
+<!-- Form Container -->
+<div class="form-container">
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Order Status Card -->
+        <div class="form-card">
+            <div class="card-header-custom">
+                <h4>
+                    <i class="bi bi-clipboard-check"></i>
+                    Update Order Status
+                </h4>
+            </div>
+            <div class="card-body-custom">
+                <!-- Order Status -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Order Status <span class="required">*</span>
+                    </label>
+                    <select name="order_status" id="order_status" class="form-select" required onchange="updateStatusPreview()">
+                        <option value="order_placed" {% if order.order_status == "order_placed" %}selected{% endif %}>📦 Order Placed</option>
+                        <option value="confirmed" {% if order.order_status == "confirmed" %}selected{% endif %}>✅ Order Confirmed</option>
+                        <option value="preparing" {% if order.order_status == "preparing" %}selected{% endif %}>👨‍🍳 Preparing</option>
+                        <option value="processing" {% if order.order_status == "processing" %}selected{% endif %}>⚙️ Processing</option>
+                        <option value="packed" {% if order.order_status == "packed" %}selected{% endif %}>📦 Packed</option>
+                        <option value="shipped" {% if order.order_status == "shipped" %}selected{% endif %}>🚚 Shipped</option>
+                        <option value="out_for_delivery" {% if order.order_status == "out_for_delivery" %}selected{% endif %}>🚴 Out for Delivery</option>
+                        <option value="delivered" {% if order.order_status == "delivered" %}selected{% endif %}>✅ Delivered</option>
+                        <option value="completed" {% if order.order_status == "completed" %}selected{% endif %}>🎉 Order Completed</option>
+                        <option value="refunded" {% if order.order_status == "refunded" %}selected{% endif %}>💰 Refunded</option>
+                        <option value="cancelled" {% if order.order_status == "cancelled" %}selected{% endif %}>❌ Cancelled</option>
+                        <option value="failed" {% if order.order_status == "failed" %}selected{% endif %}>⚠️ Payment Failed</option>
+                        <option value="on_hold" {% if order.order_status == "on_hold" %}selected{% endif %}>⏸️ On Hold</option>
+                    </select>
+                    <small class="form-text">Select the new status for this order</small>
+                    
+                    <!-- Status Preview -->
+                    <div class="status-preview">
+                        <span class="status-preview-label">Current Status:</span>
+                        <span class="status-badge status-{{ order.order_status }}" id="statusPreview">
+                            <i class="bi bi-circle-fill"></i>
+                            <span id="statusText">{{ order.get_order_status_display }}</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Note -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Additional Notes
+                    </label>
+                    <textarea name="note" 
+                              id="note" 
+                              class="form-control" 
+                              placeholder="Add any notes about this status update (optional)...">{{ order.note }}</textarea>
+                    <small class="form-text">Optional notes for internal reference or customer communication</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{% url 'admin_order_detail' order.id %}" class="btn-custom btn-secondary-custom">
+                <i class="bi bi-x-circle"></i>
+                Cancel
+            </a>
+            <button type="submit" class="btn-custom btn-primary-custom">
+                <i class="bi bi-check-circle"></i>
+                Update Status
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Status display names
+    const statusNames = {
+        'order_placed': 'Order Placed',
+        'confirmed': 'Order Confirmed',
+        'preparing': 'Preparing',
+        'processing': 'Processing',
+        'packed': 'Packed',
+        'shipped': 'Shipped',
+        'out_for_delivery': 'Out for Delivery',
+        'delivered': 'Delivered',
+        'completed': 'Order Completed',
+        'refunded': 'Refunded',
+        'cancelled': 'Cancelled',
+        'failed': 'Payment Failed',
+        'on_hold': 'On Hold'
+    };
+
+    function updateStatusPreview() {
+        const select = document.getElementById('order_status');
+        const preview = document.getElementById('statusPreview');
+        const statusText = document.getElementById('statusText');
+        const selectedValue = select.value;
+        
+        // Remove all status classes
+        preview.className = 'status-badge';
+        // Add new status class
+        preview.classList.add('status-' + selectedValue);
+        // Update text
+        statusText.textContent = statusNames[selectedValue];
+    }
+</script>
+
+{% endblock %}

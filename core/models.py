@@ -193,9 +193,30 @@ class Order(models.Model):
         ),
         default="pending"
     )
-    payment_transaction_id = models.CharField(max_length=100, blank=True, null=True)
-    amount_paid = models.FloatField(default=0)  # How much customer has paid
 
+    order_status = models.CharField(
+        max_length=30,
+        choices=(
+        ("order_placed", "Order Placed"),               # Customer placed order
+        ("confirmed", "Order Confirmed"),              # Admin/staff confirmed
+        ("preparing", "Preparing"),                    # Restaurant / warehouse preparing
+        ("processing", "Processing"),                  # Payment / packaging processing
+        ("packed", "Packed"),                          # Packed & ready to ship
+        ("shipped", "Shipped"),                        # Out for delivery
+        ("out_for_delivery", "Out for Delivery"),     # Courier / delivery on the way
+        ("delivered", "Delivered"),                    # Customer received
+        ("completed", "Order Completed"),              # All done, finalized
+        ("refunded", "Refunded"),                      # Payment refunded
+        ("cancelled", "Cancelled"),                    # Order cancelled
+        ("failed", "Payment Failed"),                  # Payment failed
+        ("on_hold", "On Hold"),   
+        ),
+        default="order_placed"
+    )
+
+    payment_transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    amount_paid = models.FloatField(default=0)  
+    payment_note = models.TextField(blank=True, null=True)
    
 
     subtotal = models.FloatField()

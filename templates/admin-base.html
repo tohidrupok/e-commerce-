@@ -237,10 +237,40 @@
             </div>
 
             <div class="navbar-right" style="display: flex; align-items: center; gap: 25px; font-size: 22px;">
-                <i class="bi bi-bell" title="Notifications" style="cursor: pointer; transition: all 0.3s;"></i>
-                <i class="bi bi-gear" title="Settings" style="cursor: pointer; transition: all 0.3s;"></i>
-                <i class="bi bi-person-circle" title="Profile" style="cursor: pointer; transition: all 0.3s;"></i>
+
+                <i class="bi bi-bell"
+                title="Notifications"
+                style="cursor: pointer; transition: all 0.3s;"></i>
+
+                <i class="bi bi-gear"
+                title="Settings"
+                style="cursor: pointer; transition: all 0.3s;"></i>
+
+                <a href="{% url 'logout' %}"
+                title="Logout"
+                style="
+                        display:flex;
+                        align-items:center;
+                        gap:8px;
+                        padding:6px 12px;
+                        font-size:14px;
+                        font-weight:500;
+                        color:#dc3545;
+                        border:1px solid #dc3545;
+                        border-radius:18px;
+                        text-decoration:none;
+                        line-height:1;
+                        transition:all 0.25s ease;
+                "
+                onmouseover="this.style.background='#dc3545';this.style.color='#fff';"
+                onmouseout="this.style.background='transparent';this.style.color='#dc3545';"
+                >
+                    <i class="bi bi-box-arrow-right" style="font-size:16px;"></i>
+                    <span>Logout</span>
+                </a>
+
             </div>
+
         </nav>
 
     <!-- Sidebar -->
@@ -266,7 +296,11 @@
                 <i class="bi bi-cart-fill"></i>
                 <span>Orders</span>
             </a>
-            <a href="#" class="menu-item">
+            <a href="{% url 'coupon_list' %}" class="menu-item active">
+                    <i class="bi bi-ticket-perforated"></i>
+                    <span>Coupons</span>
+            </a>
+            <a href="{% url 'client_list' %}" class="menu-item">
                 <i class="bi bi-people-fill"></i>
                 <span>Customers</span>
             </a>
@@ -278,10 +312,7 @@
                 <i class="bi bi-wallet2"></i>
                 <span>Payments</span>
             </a>
-            <a href="{% url 'logout' %}" class="menu-item">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Logout</span>
-            </a>
+            
             <a href="#" class="menu-item">
                 <i class="bi bi-gear-fill"></i>
                 <span>Settings</span>

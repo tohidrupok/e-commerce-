@@ -4,7 +4,7 @@ from django.utils import timezone
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
-
+ 
     def create_user(self, username, email=None, password=None, **extra_fields):
         if not username:
             raise ValueError("Username must be set")

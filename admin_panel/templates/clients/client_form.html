@@ -1,0 +1,290 @@
+{% extends "admin-base.html" %}
+{% block content %}
+<style>
+    .form-container {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .form-header {
+        margin-bottom: 32px;
+    }
+    
+    .form-header h2 {
+        margin: 0 0 8px 0;
+        font-size: 28px;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+    
+    .form-header p {
+        margin: 0;
+        color: #6c757d;
+        font-size: 14px;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .form-section {
+        margin-bottom: 24px;
+    }
+    
+    .form-section:last-of-type {
+        margin-bottom: 32px;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+    }
+    
+    .form-label .required {
+        color: #e74c3c;
+        margin-left: 4px;
+    }
+    
+    .form-input,
+    .form-textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: all 0.2s;
+        box-sizing: border-box;
+    }
+    
+    .form-input:focus,
+    .form-textarea:focus {
+        outline: none;
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    }
+    
+    .form-textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+    
+    .form-help-text {
+        display: block;
+        margin-top: 6px;
+        font-size: 13px;
+        color: #6c757d;
+    }
+    
+    .input-icon-wrapper {
+        position: relative;
+    }
+    
+    .input-icon-wrapper .input-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        font-size: 16px;
+    }
+    
+    .input-icon-wrapper .form-input {
+        padding-left: 42px;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        padding-top: 24px;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .btn-primary {
+        background: #4a90e2;
+        color: white;
+        flex: 1;
+    }
+    
+    .btn-primary:hover {
+        background: #357abd;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    }
+    
+    .btn-secondary {
+        background: #f8f9fa;
+        color: #495057;
+        border: 1px solid #dee2e6;
+    }
+    
+    .btn-secondary:hover {
+        background: #e9ecef;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+    
+    @media (max-width: 600px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-card {
+            padding: 24px 20px;
+        }
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #6c757d;
+        cursor: pointer;
+        padding: 4px;
+        font-size: 16px;
+    }
+    
+    .password-toggle:hover {
+        color: #495057;
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <h2>{% if client %}Edit Client{% else %}Add New Client{% endif %}</h2>
+        <p>{% if client %}Update client information and settings{% else %}Create a new client account{% endif %}</p>
+    </div>
+    
+    <div class="form-card">
+        <form method="post" id="clientForm">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <label class="form-label">
+                    Username<span class="required">*</span>
+                </label>
+                <div class="input-icon-wrapper">
+                    <span class="input-icon">👤</span>
+                    <input 
+                        type="text" 
+                        name="username" 
+                        class="form-input"
+                        value="{{ client.username|default:'' }}" 
+                        required
+                        placeholder="Enter username">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-section">
+                    <label class="form-label">Email</label>
+                    <div class="input-icon-wrapper">
+                        <span class="input-icon">📧</span>
+                        <input 
+                            type="email" 
+                            name="email" 
+                            class="form-input"
+                            value="{{ client.email|default:'' }}"
+                            placeholder="client@example.com">
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label">Phone</label>
+                    <div class="input-icon-wrapper">
+                        <span class="input-icon">📱</span>
+                        <input 
+                            type="text" 
+                            name="phone" 
+                            class="form-input"
+                            value="{{ client.phone|default:'' }}"
+                            placeholder="+1 (555) 000-0000">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <label class="form-label">
+                    Password{% if not client %}<span class="required">*</span>{% endif %}
+                </label>
+                <div class="input-icon-wrapper">
+                    <span class="input-icon">🔒</span>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        class="form-input"
+                        id="passwordInput"
+                        placeholder="{% if client %}Leave blank to keep current password{% else %}Enter password{% endif %}"
+                        {% if not client %}required{% endif %}>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        👁️
+                    </button>
+                </div>
+                {% if client %}
+                <span class="form-help-text">Leave blank to keep the current password unchanged</span>
+                {% endif %}
+            </div>
+            
+            {% if profile or not client %}
+            <div class="form-section">
+                <label class="form-label">Address</label>
+                <textarea 
+                    name="address" 
+                    class="form-textarea"
+                    placeholder="Enter full address including street, city, state, and postal code">{% if profile %}{{ profile.address }}{% endif %}</textarea>
+                <span class="form-help-text">Optional: Client's physical address</span>
+            </div>
+            {% endif %}
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    {% if client %}💾 Update Client{% else %}✨ Create Client{% endif %}
+                </button>
+                <a href="{% url 'client_list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('passwordInput');
+    const toggleBtn = document.querySelector('.password-toggle');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleBtn.textContent = '🙈';
+    } else {
+        passwordInput.type = 'password';
+        toggleBtn.textContent = '👁️';
+    }
+}
+</script>
+
+{% endblock %}
