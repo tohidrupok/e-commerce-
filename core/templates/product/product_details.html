@@ -23,23 +23,27 @@
 
     {% with first_img=product.images.all|first %}
     {% if first_img %}
-    <div class="large-image">
+    <div class="main-image">
+        <!-- Main Image Popup -->
+        <a id="mainImageLink"
+           href="{{ first_img.image.url }}"
+           data-lightbox="product-gallery">
 
-        <!-- Popup/zoom link -->
-        <a id="mainImageLink" href="{{ first_img.image.url }}" data-lightbox="product-gallery">
             <img id="mainProductImage"
                  src="{{ first_img.image.url }}"
                  alt="{{ first_img.alt_text|default:product.name }}">
         </a>
-
     </div>
     {% endif %}
     {% endwith %}
 
+    <!-- Thumbnails (Popup ONLY) -->
     <div class="thumb-row">
         {% for img in product.images.all %}
         <a class="thumbnail {% if forloop.first %}active{% endif %}"
-           data-image="{{ img.image.url }}">
+           href="{{ img.image.url }}"
+           data-lightbox="product-gallery">
+
             <img src="{{ img.image.url }}" alt="">
         </a>
         {% endfor %}
@@ -47,32 +51,27 @@
 
 </div>
 
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <!-- JS -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-$(document).ready(function() {
+$(document).ready(function () {
 
-    // Thumbnail click event
-    $('.thumb-row .thumbnail').on('click', function(e) {
-        e.preventDefault();
+    // Only active class toggle (popup handled by lightbox automatically)
+    $('.thumb-row .thumbnail').on('click', function () {
 
-        const newImage = $(this).attr('data-image');
-
-        // Remove active from all thumbnails
         $('.thumb-row .thumbnail').removeClass('active');
         $(this).addClass('active');
 
-        // Fade effect when updating main image
-        $('#mainProductImage').fadeOut(150, function() {
-            $(this).attr('src', newImage).fadeIn(150);
-        });
+        // ❌ NO preventDefault
+        // ❌ NO main image change
+        // ✅ ONLY popup
     });
 
-    // Disable hover image switching
-    $('.thumb-row .thumbnail').off('mouseenter mouseleave');
 });
 </script>
+
 
 <!-- CSS -->
 <style>

@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from core.models import Order, OrderItem
+from core.models import Order, OrderItem, Product, PaymentHistory
 from accounts.models import Profile 
+from django.db import transaction
+
 
 # Check superuser
 def superuser_required(view_func):
@@ -18,7 +20,7 @@ from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q, Sum
 
-
+ 
 @superuser_required
 def admin_order_list(request):
     # Start with all orders
@@ -68,24 +70,83 @@ def admin_order_detail(request, pk):
     return render(request, "order/admin_order_detail.html", {"order": order, "items": items})
 
 # 3. Superuser: Update payment info
+def get_payment_status(amount_paid, total):
+    if amount_paid >= total:
+        return "paid"
+    elif amount_paid > 0:
+        return "partial paid"
+    return "pending"
+
+
 @superuser_required
 def admin_update_payment(request, pk):
     order = get_object_or_404(Order, pk=pk)
 
     if request.method == "POST":
-        amount_paid = float(request.POST.get("amount_paid", 0))
-        status = request.POST.get("payment_status")
-        transaction_id = request.POST.get("payment_transaction_id", "")
+        try:
+            amount = float(request.POST.get("amount_paid", 0))
+        except ValueError:
+            messages.error(request, "Invalid amount entered.")
+            return redirect("admin_update_payment", pk=order.id)
 
-        order.amount_paid = amount_paid
-        order.payment_status = status
-        order.payment_transaction_id = transaction_id
-        order.save()
+        method = request.POST.get("payment_method")
+        txn_id = request.POST.get("payment_transaction_id", "").strip()
+        note = request.POST.get("payment_note", "")
 
-        messages.success(request, "Payment info updated successfully!")
+        # ❌ non-cash must have transaction id
+        if method != "cash" and not txn_id:
+            messages.error(
+                request,
+                "Transaction ID is required for non-cash payments."
+            )
+            return redirect("admin_update_payment", pk=order.id)
+
+        # ✅ Transaction-safe block
+        with transaction.atomic():
+
+            # 🔹 Check stock for all items first
+            for item in order.items.select_related("product"):
+                if not item.product:
+                    continue
+                if item.product.stock_quantity < item.qty:
+                    raise ValueError(
+                        f"Insufficient stock for '{item.product.name}'. "
+                        f"Available: {item.product.stock_quantity}, Required: {item.qty}"
+                    )
+
+            # 🔹 Add payment
+            order.amount_paid += amount
+            order.payment_status = get_payment_status(order.amount_paid, order.total)
+            order.payment_method = method
+            order.payment_transaction_id = txn_id or None
+            order.payment_note = note
+            order.save()
+
+            # 🔹 Create payment history
+            PaymentHistory.objects.create(
+                order=order,
+                amount=amount,
+                payment_method=method,
+                transaction_id=txn_id or None,
+                note=note
+            )
+
+            # 🔹 Reduce stock (first payment only)
+            if order.amount_paid > 0 and not order.is_stock_reduced:
+                for item in order.items.select_related("product"):
+                    if not item.product:
+                        continue
+                    product = item.product
+                    product.stock_quantity -= item.qty
+                    product.save()
+                order.is_stock_reduced = True
+                order.save()
+
+        messages.success(request, "Payment added successfully!")
         return redirect("admin_order_detail", pk=order.id)
 
     return render(request, "order/admin_update_payment.html", {"order": order})
+
 
 @superuser_required
 def admin_update_status(request, pk):

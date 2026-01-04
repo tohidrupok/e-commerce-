@@ -217,7 +217,7 @@ class Order(models.Model):
     payment_transaction_id = models.CharField(max_length=100, blank=True, null=True)
     amount_paid = models.FloatField(default=0)  
     payment_note = models.TextField(blank=True, null=True)
-   
+    is_stock_reduced = models.BooleanField(default=False)
 
     subtotal = models.FloatField()
     discount = models.FloatField(default=0)
@@ -231,6 +231,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, null=True, blank=True)
     product_name = models.CharField(max_length=255)
     price = models.FloatField()
     qty = models.IntegerField()
@@ -239,3 +240,17 @@ class OrderItem(models.Model):
         return self.price * self.qty
  
 
+class PaymentHistory(models.Model):
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="payments"
+    )
+    amount = models.FloatField()
+    payment_method = models.CharField(max_length=50)
+    transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    note = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Payment {self.amount} for Order #{self.order.id}"
