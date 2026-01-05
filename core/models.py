@@ -214,7 +214,7 @@ class Order(models.Model):
         default="order_placed"
     )
 
-    payment_transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    payment_transaction_id = models.CharField(unique=True, max_length=100, blank=True, null=True)
     amount_paid = models.FloatField(default=0)  
     payment_note = models.TextField(blank=True, null=True)
     is_stock_reduced = models.BooleanField(default=False)
@@ -248,7 +248,7 @@ class PaymentHistory(models.Model):
     )
     amount = models.FloatField()
     payment_method = models.CharField(max_length=50)
-    transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    transaction_id = models.CharField(unique=True, max_length=100, blank=True, null=True)
     note = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -451,7 +451,14 @@
       Order Management
     </h2>
   </div>
-  
+              {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}  
+            
   <div class="orders-card">
     <div class="filters-section">
       <form method="get" id="filterForm">

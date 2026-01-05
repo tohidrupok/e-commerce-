@@ -110,7 +110,14 @@
 
 <div class="voucher-container">
     <div class="voucher-card">
-
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %} 
+            
         <!-- Header -->
         <div class="voucher-header">
             <h2>Order Voucher - #{{ order.id }}</h2>

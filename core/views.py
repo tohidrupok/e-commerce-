@@ -1100,13 +1100,18 @@ def checkout(request):
             total=subtotal + delivery_charge - discount 
         )
 
+        
         for key, item in cart.items():
+            product = Product.objects.filter(id=key).first()
+
             OrderItem.objects.create(
                 order=order,
+                product=product,          # ✅ FK saved
                 product_name=item["name"],
                 price=item["price"],
                 qty=item["qty"]
             )
+            
 
         request.session["cart"] = {}
         return redirect("success_page")

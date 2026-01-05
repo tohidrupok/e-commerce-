@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, ProductImage, HotDeal, Brand
+from .models import Category, Product, ProductImage, HotDeal, Brand, PaymentHistory
 from django.contrib import admin
 from .models import Product
 from ckeditor.widgets import CKEditorWidget
@@ -171,3 +171,41 @@ class OrderItemAdmin(admin.ModelAdmin):
         return obj.price * obj.qty
 
     total_amount.short_description = "Total"
+
+
+
+@admin.register(PaymentHistory)
+class PaymentHistoryAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "order",
+        "amount",
+        "payment_method",
+        "transaction_id",
+        "created_at",
+    )
+
+    list_filter = (
+        "payment_method",
+        "created_at",
+    )
+
+    search_fields = (
+        "transaction_id",
+        "order__id",
+    )
+
+    readonly_fields = (
+        "order",
+        "amount",
+        "payment_method",
+        "transaction_id",
+        "note",
+        "created_at",
+    )
+
+    ordering = ("-created_at",)
+
+
+
+    

@@ -77,23 +77,29 @@ def get_payment_status(amount_paid, total):
         return "partial paid"
     return "pending"
 
+from django.db.models import F
+from django.db import IntegrityError
 
 @superuser_required
 def admin_update_payment(request, pk):
     order = get_object_or_404(Order, pk=pk)
 
     if request.method == "POST":
+
+        # 🔹 Validate amount
         try:
             amount = float(request.POST.get("amount_paid", 0))
+            if amount <= 0:
+                raise ValueError
         except ValueError:
-            messages.error(request, "Invalid amount entered.")
+            messages.error(request, "Invalid payment amount.")
             return redirect("admin_update_payment", pk=order.id)
 
         method = request.POST.get("payment_method")
         txn_id = request.POST.get("payment_transaction_id", "").strip()
         note = request.POST.get("payment_note", "")
 
-        # ❌ non-cash must have transaction id
+        # 🔹 Non-cash must have transaction id
         if method != "cash" and not txn_id:
             messages.error(
                 request,
@@ -101,51 +107,81 @@ def admin_update_payment(request, pk):
             )
             return redirect("admin_update_payment", pk=order.id)
 
-        # ✅ Transaction-safe block
-        with transaction.atomic():
+        # 🔹 STOCK CHECK (before payment)
+        for item in order.items.select_related("product"):
 
-            # 🔹 Check stock for all items first
-            for item in order.items.select_related("product"):
-                if not item.product:
-                    continue
+            if not order.is_stock_reduced:
+
                 if item.product.stock_quantity < item.qty:
-                    raise ValueError(
-                        f"Insufficient stock for '{item.product.name}'. "
-                        f"Available: {item.product.stock_quantity}, Required: {item.qty}"
+                    
+                    messages.error(
+                        request,
+                        f"Insufficient stock for {item.product.name}. "
+                        f"Available: {item.product.stock_quantity}, "
+                        f"Required: {item.qty}"
                     )
+                    return redirect("admin_update_payment", pk=order.id)
 
-            # 🔹 Add payment
-            order.amount_paid += amount
-            order.payment_status = get_payment_status(order.amount_paid, order.total)
-            order.payment_method = method
-            order.payment_transaction_id = txn_id or None
-            order.payment_note = note
-            order.save()
+        # ✅ All validations passed → atomic transaction
+        try:
+            with transaction.atomic():
 
-            # 🔹 Create payment history
-            PaymentHistory.objects.create(
-                order=order,
-                amount=amount,
-                payment_method=method,
-                transaction_id=txn_id or None,
-                note=note
-            )
-
-            # 🔹 Reduce stock (first payment only)
-            if order.amount_paid > 0 and not order.is_stock_reduced:
-                for item in order.items.select_related("product"):
-                    if not item.product:
-                        continue
-                    product = item.product
-                    product.stock_quantity -= item.qty
-                    product.save()
-                order.is_stock_reduced = True
+                # 🔹 Update order payment info
+                order.amount_paid += amount
+                order.payment_status = get_payment_status(
+                    order.amount_paid, order.total
+                )
+                order.payment_method = method
+                order.payment_transaction_id = txn_id or None
+                order.payment_note = note
                 order.save()
+
+                # 🔹 Save payment history
+                try:
+                    PaymentHistory.objects.create(
+                        order=order,
+                        amount=amount,
+                        payment_method=method,
+                        transaction_id=txn_id or None,
+                        note=note
+                    )
+                except IntegrityError:
+                    messages.error(
+                        request,
+                        "This Transaction ID already exists. Please use a unique Transaction ID."
+                    )
+                    raise  # 🔴 MUST: rollback transaction.atomic()
+
+                # 🔹 Reduce stock only once
+                if not order.is_stock_reduced:
+                    for item in order.items.select_related("product"):
+                        if not item.product:
+                            continue
+
+                        Product.objects.filter(
+                            id=item.product.id
+                        ).update(
+                            stock_quantity=F("stock_quantity") - item.qty
+                        )
+
+                    order.is_stock_reduced = True
+                    order.save(update_fields=["is_stock_reduced"])
+
+        except Exception:
+            messages.error(
+                request,
+                "Payment failed."
+            )
+            return redirect("admin_update_payment", pk=order.id)
 
         messages.success(request, "Payment added successfully!")
         return redirect("admin_order_detail", pk=order.id)
 
-    return render(request, "order/admin_update_payment.html", {"order": order})
+    return render(
+        request,
+        "order/admin_update_payment.html",
+        {"order": order}
+    ) 
 
 
 @superuser_required
