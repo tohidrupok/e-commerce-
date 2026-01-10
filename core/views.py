@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login
 from django.utils import timezone
 from .models import *
+from admin_panel.models import *
 from accounts.forms import GuestCheckoutForm
 from accounts.utils import generate_username_from_phone, generate_unique_username
 import re
@@ -14,11 +15,14 @@ def home(request):
     brands = Brand.objects.filter(is_active=True)
     now = timezone.now()
     deals = HotDeal.objects.filter(start_date__lte=now, end_date__gte=now)
+    headline = SiteHeadline.objects.filter(is_active=True).order_by('-created_at').first()
+
 
     context = {
         'products': products,
         'deals': deals,
-        'brands': brands
+        'brands': brands, 
+        'headline': headline
     }
     return render(request, 'home.html', context)
 

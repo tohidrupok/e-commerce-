@@ -301,19 +301,19 @@
                                     100% { transform: translateX(-100%); }
                                 }
                                 </style>
-                                
-                                <div style="overflow:hidden; white-space:nowrap; background:#fff4e5; border:1px solid #ffc107; padding:10px 0; font-family:Segoe UI,sans-serif; font-size:16px;">
-                                    <div style="
-                                        display:inline-block;
-                                        white-space:nowrap;
-                                        animation: scroll-left 25s linear infinite;
-                                    "
-                                    onmouseover="this.style.animationPlayState='paused'"
-                                    onmouseout="this.style.animationPlayState='running'">
-                                        Sunday, 05 August, All our outlets -------. Additionally, our online activities are open and operational.
+                                {% if headline %}
+                                    <div style="overflow:hidden; white-space:nowrap; background:#fff4e5; border:1px solid #ffc107; padding:10px 0; font-family:Segoe UI,sans-serif; font-size:16px;">
+                                        <div style="
+                                            display:inline-block;
+                                            white-space:nowrap;
+                                            animation: scroll-left 25s linear infinite;
+                                        "
+                                        onmouseover="this.style.animationPlayState='paused'"
+                                        onmouseout="this.style.animationPlayState='running'">
+                                        {{ headline.title }}
+                                        </div>
                                     </div>
-                                </div>
-
+                                {% endif %}
                         
                             <!-- 🔘 SERVICE BOX Section -->
                             <div class="jio-quick-links">

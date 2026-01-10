@@ -285,7 +285,7 @@ from django.contrib.auth import get_user_model
 
 
 User = get_user_model()
-
+ 
 # ------------------------
 # Client List
 # ------------------------
@@ -355,3 +355,47 @@ def client_delete(request, pk):
     client.delete()
     messages.success(request, "Client deleted successfully!")
     return redirect("client_list")
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import SiteHeadline
+
+def headline_page(request):
+    edit_headline = None
+
+    # EDIT MODE
+    edit_id = request.GET.get('edit')
+    if edit_id:
+        edit_headline = get_object_or_404(SiteHeadline, id=edit_id)
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        is_active = request.POST.get('is_active') == 'on'
+        headline_id = request.POST.get('headline_id')
+
+        if headline_id:
+            # UPDATE
+            headline = get_object_or_404(SiteHeadline, id=headline_id)
+            headline.title = title
+            headline.is_active = is_active
+            headline.save()
+        else:
+            # CREATE
+            SiteHeadline.objects.create(
+                title=title,
+                is_active=is_active
+            )
+
+        return redirect('headline_page')
+
+    headlines = SiteHeadline.objects.order_by('-created_at')
+    return render(request, 'headline/page.html', {
+        'headlines': headlines,
+        'edit_headline': edit_headline
+    })
+
+
+def headline_delete(request, pk):
+    headline = get_object_or_404(SiteHeadline, pk=pk)
+    headline.delete()
+    return redirect('headline_page')
