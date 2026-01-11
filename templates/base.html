@@ -313,171 +313,11 @@
 		color: #333;
 		}
 	</style>
-<body class="common-home res layout-home1">
-    <div id="wrapper" class="wrapper-full banners-effect-7">
-		<!-- Header Container  -->
-		<header id="header" class=" variantleft type_1">
-			<!-- Header Top -->
-			<div class="header-top compact-hidden">
-				<div class="custom-navbar-wrapper"> 
-					<div class="custom-navbar-top">
-						<div class="custom-logo"> 
-						<!--<img src="https://jisa.bkonsoft.com/media/products/js3_2jcjT7O.png" alt="Jisa Logo">-->
-						 <a href="{% url 'home' %}"><img src="https://jisa.com.bd/media/logo/jisa-3-logo.png" alt="Jisa Logo"></a>
-						</div>
 
-						<div class="custom-search-box">
-						<input type="text" placeholder="Search" />
-						<button>🔍</button>
-						</div>
-
-						<div class="custom-top-links">
-						<div>🎁 Offers</div>
-						<div>⚡ Happy Hour</div>
-                        
-                        {% if request.user.is_authenticated %}
-                            <div style="display:flex;align-items:center;gap:10px;">
-
-                                <!-- Avatar -->
-                                {% if request.user.profile.avatar %}
-                                    <img src="{{ request.user.profile.avatar.url }}" 
-                                        alt="Avatar"
-                                        style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
-                                {% else %}
-                                    <div style="width:32px;height:32px;border-radius:50%;
-                                                background:#ccc;display:flex;align-items:center;justify-content:center;
-                                                font-size:14px;">👤</div>
-                                {% endif %}
-
-                                <!-- Username (click → Profile page) -->
-                                <a href="{% url 'profile' %}"
-                                style="font-weight:bold;color:#ffffffee;text-decoration:none;">
-                                    {{ request.user.username }}
-                                </a>
-
-                                
-                            </div>
-
-                        {% else %}
-
-                            <!-- Login Button -->
-                            <a href="{% url 'customer_login' %}" 
-                            style="background-color:#FD7211;border-radius:8px;color:#fff;
-                                    padding:5px 12px;text-decoration:none;font-size:14px;">
-                            Login
-                            </a>
-
-                        {% endif %}
-
-						<div class="custom-pc-builder">PC Builder</div>
-						</div>
-					</div>
-					</div>
-
-			</div>
-			<!-- //Header Top -->
-			<style>
+    <style>
                     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-                    
-                    /* =============================
-                       GLOBAL
-                    ============================= */
-                    body {
-                        margin: 0;
-                        font-family: "Inter", sans-serif;
-                        font-size: 14px;
-                        background-color: #f4f5f7;
-                    }
-                    
-                    /* REMOVE ALL DEFAULT SPACING CAUSING GAP */
-                    .header-center,
-                    .header-center .container,
-                    .header-center .row,
-                    .megamenu-wrapper,
-                    .megamenu-pattern,
-                    .megamenu {
-                        margin: 0 !important;
-                        padding: 0 !important;
-                    }
-                    
-                    /* =============================
-                       TOP NAVBAR
-                    ============================= */
-                    .custom-navbar-top {
-                        background-color: #061c2f;
-                        padding: 6px 30px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
-                        color: white;
-                    }
-                    
-                    .custom-logo img {
-                        height: 35px;
-                    }
-                    
-                    /* SEARCH BOX */
-                    .custom-search-box {
-                        flex: 1;
-                        margin: 0 20px;
-                        display: flex;
-                    }
-                    
-                    .custom-search-box input {
-                        width: 100%;
-                        padding: 6px 14px;
-                        font-size: 14px;
-                        border: none;
-                        border-radius: 4px 0 0 4px;
-                        outline: none;
-                    }
-                    
-                    .custom-search-box button {
-                        background: white;
-                        border: none;
-                        padding: 0 16px;
-                        font-size: 18px;
-                        cursor: pointer;
-                        border-radius: 0 4px 4px 0;
-                    }
-                    
-                    /* RIGHT LINKS */
-                    .custom-top-links {
-                        display: flex;
-                        align-items: center;
-                        gap: 25px;
-                        font-size: 14px;
-                    }
-                    
-                    .custom-top-links div {
-                        display: flex;
-                        align-items: center;
-                        gap: 6px;
-                        cursor: pointer;
-                    }
-                    
-                    /* PC BUILDER BUTTON */
-                    .custom-pc-builder {
-                        background: linear-gradient(90deg, #3971ff, #5c9dff);
-                        padding: 5px 5px;
-                        font-size: 12px;
-                        color: white;
-                        border-radius: 6px;
-                        font-weight: 600;
-                        cursor: pointer;
-                        border: none;
-                    }
-                    
-                    /* =============================
-                       FULL-WIDTH MENU BAR
-                    ============================= */
-                    .header-bottom-wrapper {
-                        width: 100%;
-                        background: #ffffff;
-                        border-bottom: 1px solid #e3e3e3;
-                        margin: 0 !important;
-                        padding: 0 !important;  /* remove gap */
-                    }
+
+
                     
                     .header-bottom-inner {
                         max-width: 1350px;
@@ -489,16 +329,7 @@
                         font-weight: 600;
                     }
                     
-                    /* MENU LINKS */
-                    .header-bottom-inner a {
-                        text-decoration: none;
-                        color: #000;
-                        padding: 4px 0;
-                    }
-                    
-                    .header-bottom-inner a:hover {
-                        color: #2478ff;
-                    }
+
                     
                     /* REMOVE BUTTON LOOK ON MEGAMENU */
                     .megamenu li,
@@ -579,6 +410,17 @@
                     position: relative;
                   }
 
+
+/* FORCE hide even if .hover class exists */
+.with-sub-menu > .sub-menu.level-1 {
+    display: none !important;
+}
+
+/* ONLY show on REAL mouse hover */
+.with-sub-menu:hover > .sub-menu.level-1 {
+    display: block !important;
+}
+
 /* ===== LEVEL 1 (2nd column) ===== */
 .sub-menu.level-1 {
     position: absolute;
@@ -588,6 +430,7 @@
     min-width: 220px;
     z-index: 1000;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    display: none ;
 }
 
 /* ===== 2nd level item ===== */
@@ -648,83 +491,190 @@
 
             </style>
 
-            
-            
-            <!-- Header center -->
-            <div class="header-center">
-                <div class="container">
-                    <div class="row">
-                        <div class="header-center-right col-md-12 col-sm-12 col-xs-12">
-                            <div class="responsive so-megamenu megamenu-style-dev">
-            
-                                <nav class="navbar-default">
-                                    <div class="container-megamenu horizontal">
-            
-                                        <div class="navbar-header">
-                                            <button type="button" id="show-megamenu" data-toggle="collapse" class="navbar-toggle">
-                                                <span class="icon-bar"></span>
-                                                <span class="icon-bar"></span>
-                                                <span class="icon-bar"></span>
-                                            </button>
-                                        </div>
-                                        <div class="megamenu-wrapper">
-                                            <div class="megamenu-pattern">
-                                                <div class="container">
-                                                    <ul class="megamenu" data-transition="slide" data-animationtime="250">
-                                                        {% for cat in menu_categories|slice:":12" %}
-                                                            <li class="with-sub-menu hover main-item">
-                                                                <a href="{% url 'category_products' cat.slug %}">
-                                                                    {{ cat.name }}
-                                                                </a>
-                                                    
-                                                                {% if cat.has_children %}
-                                                                    <div class="sub-menu level-1">
-                                                                        <ul>
-                                                                            {% for subcat in cat.children.all %}
-                                                                                <li class="has-sublevel">
-                                                    
-                                                                                    <a href="{% url 'category_products' subcat.slug %}" class="subcat-link">
-                                                                                        {{ subcat.name }}
-                                                    
-                                                                                      
-                                                                                        {% if subcat.children.exists %}
-                                                                                                <span class="arrow">➤</span>
-                                                                                        {% endif %}
+<body class="common-home res layout-home1">
+    <div id="wrapper" class="wrapper-full banners-effect-7">
+		<header id="header" class="variantleft type_1" style="background-color: #000000 !important;">		
 
-
-                                                                                    </a>
-                                                    
-                                                                                    {% if subcat.children.exists %}
-                                                                                        <ul class="sub-menu level-2">
-                                                                                            {% for subsub in subcat.children.all %}
-                                                                                                <li>
-                                                                                                    <a href="{% url 'category_products' subsub.slug %}">
-                                                                                                        {{ subsub.name }}
-                                                                                                    </a>
-                                                                                                </li>
-                                                                                            {% endfor %}
-                                                                                        </ul>
-                                                                                    {% endif %}
-                                                                                </li>
-                                                                            {% endfor %}
-                                                                        </ul>
-                                                                    </div>
-                                                                {% endif %}
-                                                            </li>
-                                                        {% endfor %}
-                                                    </ul>
-                                                </div>
-                                        </div>
-            
-                                    </div>
-                                </nav>
-            
+			<!-- Header Bottom -->
+			<div class="header-bottom compact-hidden">
+				<div class="container">
+					<div class="header-bottom-inner">
+						<div class="row">
+							<div class="header-bottom-left menu-vertical col-md-3 col-sm-2 col-xs-2">
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <a href="{% url 'home' %}">
+                                        <img src="https://jisa.com.bd/media/logo/jisa-3-logo.png"
+                                            alt="Jisa Logo"
+                                            style="height: 40px; width: auto;">
+                                    </a>
+                                </div>
                             </div>
-                        </div>
+							
+							<!-- Main menu -->
+							<div class="header-bottom-right col-md-9 col-sm-10 col-xs-10">
+                                
+								<div class="col-lg-9 col-md-8 col-sm-7 col-xs-9 header_search">
+									<!-- Search -->
+									<div id="sosearchpro" class="search-pro">
+										<form method="GET" action="index.html">
+											<div id="search0" class="search input-group">
+												<input class="autosearch-input form-control" type="text" value="" size="50" autocomplete="off" placeholder="Search" name="search">
+												<span class="input-group-btn">
+												<button type="submit" class="button-search btn btn-primary" name="submit_search"><i class="fa fa-search"></i></button>
+												</span>
+											</div>
+											<input type="hidden" name="route" value="product/search" />
+										</form>
+									</div>
+									<!-- //end Search -->
+								</div>
+								<div class="block-cart">
+									<!--cart-->
+									<div class="shopping_cart pull-right">
+										<div id="cart" class=" btn-group btn-shopping-cart">
+											<a data-loading-text="Loading..." class="btn-group top_cart dropdown-toggle" data-toggle="dropdown">
+												<div class="shopcart">
+													<span class="handle pull-left"></span>
+													<span class="text-shopping-cart hidden-xs">	My cart	</span>
+													<span class="text-shopping-cart-mobi hidden-lg hidden-md hidden-sm ">
+													  <i class="fa fa-cart-plus"></i>
+													</span> 
+												</div>
+											</a>
+											<ul class="tab-content content dropdown-menu pull-right shoppingcart-box" role="menu">							
+												<li>
+													<table class="table table-striped">
+														<tbody>
+															<tr>
+																<td class="text-center" style="width:70px">
+																	<a href="product.html"> <img class="lazyload preview" data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="image/demo/shop/product/35.jpg" style="width:70px" alt="Filet Mign" title="Filet Mign"> </a>
+																</td>
+																<td class="text-left"> <a class="cart_product_name" href="product.html">Filet Mign</a> </td>
+																<td class="text-center"> x1 </td>
+																<td class="text-center"> $1,202.00 </td>
+																<td class="text-right">
+																	<a href="product.html" class="fa fa-edit"></a>
+																</td>
+																<td class="text-right">
+																	<a onclick="cart.remove('2');" class="fa fa-times fa-delete"></a>
+																</td>
+															</tr>
+															<tr>
+																<td class="text-center" style="width:70px">
+																	<a href="product.html"> <img class="lazyload preview" data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="image/demo/shop/product/141.jpg" style="width:70px" alt="Canon EOS 5D" title="Canon EOS 5D"> </a>
+																</td>
+																<td class="text-left"> <a class="cart_product_name" href="product.html">Canon EOS 5D</a> </td>
+																<td class="text-center"> x1 </td>
+																<td class="text-center"> $60.00 </td>
+																<td class="text-right">
+																	<a href="product.html" class="fa fa-edit"></a>
+																</td>
+																<td class="text-right">
+																	<a onclick="cart.remove('1');" class="fa fa-times fa-delete"></a>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</li>
+												<li>
+													<div>
+														<table class="table table-bordered">
+															<tbody>
+																<tr>
+																	<td class="text-left"><strong>Sub-Total</strong>
+																	</td>
+																	<td class="text-right">$1,060.00</td>
+																</tr>
+																<tr>
+																	<td class="text-left"><strong>Eco Tax (-2.00)</strong>
+																	</td>
+																	<td class="text-right">$2.00</td>
+																</tr>
+																<tr>
+																	<td class="text-left"><strong>VAT (20%)</strong>
+																	</td>
+																	<td class="text-right">$200.00</td>
+																</tr>
+																<tr>
+																	<td class="text-left"><strong>Total</strong>
+																	</td>
+																	<td class="text-right">$1,262.00</td>
+																</tr>
+															</tbody>
+														</table>
+														<p class="text-center"> <a class="btn view-cart" href="cart.html"><i class="fa fa-shopping-cart"></i>View Cart</a>&nbsp;&nbsp;&nbsp; <a class="btn btn-mega checkout-cart" href="checkout.html"><i class="fa fa-share"></i>Checkout</a> </p>
+													</div>
+												</li>
+											</ul>
+										</div>
+									</div>
+									<!--//cart-->
+								</div>
+								<div class="header_custom_link hidden-xs">
+									<ul>
+										<li><a href="login.html"><i class="fa fa-user"></i> Login</a></li>
+									</ul>	
+								</div>
+							</div>
+							<!-- //end Main menu -->
+						</div>
+					</div>
+				</div>
+			</div>
+            <!-- Header center -->
+			<div class="header-center">
+				<div class="container">
+					<div class="megamenu-wrapper">
+                                            
+                        <ul class="megamenu" data-transition="slide" data-animationtime="250">
+                            {% for cat in menu_categories|slice:":12" %}
+                                <li class="with-sub-menu hover main-item">
+                                    <a href="{% url 'category_products' cat.slug %}">
+                                        {{ cat.name }}
+                                    </a>
+                        
+                                    {% if cat.has_children %}
+                                        <div class="sub-menu level-1">
+                                            <ul>
+                                                {% for subcat in cat.children.all %}
+                                                    <li class="has-sublevel">
+                        
+                                                        <a href="{% url 'category_products' subcat.slug %}" class="subcat-link">
+                                                            {{ subcat.name }}
+                        
+                                                            
+                                                            {% if subcat.children.exists %}
+                                                                    <span class="arrow">➤</span>
+                                                            {% endif %}
+
+
+                                                        </a>
+                        
+                                                        {% if subcat.children.exists %}
+                                                            <ul class="sub-menu level-2">
+                                                                {% for subsub in subcat.children.all %}
+                                                                    <li>
+                                                                        <a href="{% url 'category_products' subsub.slug %}">
+                                                                            {{ subsub.name }}
+                                                                        </a>
+                                                                    </li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        {% endif %}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                                                
             
                     </div>
-                </div>
-            </div>
+				</div>
+			</div>
+			<!-- //Header center -->
 		</header>
 		<!-- Main Container  -->
 		<main id="content" class="page-main">
