@@ -357,6 +357,10 @@ def client_delete(request, pk):
     return redirect("client_list")
 
 
+def settings_dashboard(request):
+    return render(request, 'settings/dashboard.html') 
+
+
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import SiteHeadline
 
@@ -399,3 +403,24 @@ def headline_delete(request, pk):
     headline = get_object_or_404(SiteHeadline, pk=pk)
     headline.delete()
     return redirect('headline_page')
+
+
+
+
+
+from .models import HomeSliderSection
+from .forms import HomeSliderSectionForm
+from django.shortcuts import render, redirect
+
+def home_slider_manage(request):
+    instance = HomeSliderSection.objects.first()
+
+    if request.method == 'POST':
+        form = HomeSliderSectionForm(request.POST, request.FILES, instance=instance)
+        if form.is_valid():
+            form.save()
+            return redirect('home_slider_manage')
+    else:
+        form = HomeSliderSectionForm(instance=instance)
+
+    return render(request, 'headline/home_slider_manage.html', {'form': form})

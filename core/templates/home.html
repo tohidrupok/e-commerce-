@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load bd_currency %}
 
 {% block title %}JISA{% endblock %}
 
@@ -87,50 +88,49 @@
                         .mobile-slide {
                             display: none;
                         }
-                        </style>
+                    </style>
 
                         <div class="row">
-                            <!-- LEFT SLIDER (Desktop + Tablet) -->
-                            <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
-                                <div class="slider-container"> 
-                                    <div id="so-slideshow">
-                                        <div class="module slideshow no-margin">
-                        
-                                            <div class="item">
-                                                <a href="#">
-                                                    <img src="{% static 'image/demo/slider/sl11/99.webp' %}" alt="">
-                                                </a>
-                                            </div>
-                        
-                                            <div class="item">
-                                                <a href="#">
-                                                    <img src="{% static 'image/demo/slider/sl11/96.webp' %}" alt="">
-                                                </a>
-                                            </div>
-                        
-                                            <div class="item">
-                                                <a href="#">
-                                                    <img src="{% static 'image/demo/slider/sl13/34.webp' %}" alt="">
-                                                </a>
-                                            </div>
-                        
+                        {% if slider_section %}
+
+                        <!-- LEFT SLIDER -->
+                        <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
+                            <div class="slider-container"> 
+                                <div id="so-slideshow">
+                                    <div class="module slideshow no-margin">
+
+                                        <div class="item">
+                                            <img src="{{ slider_section.slider_1.url }}" alt="">
                                         </div>
+
+                                        <div class="item">
+                                            <img src="{{ slider_section.slider_2.url }}" alt="">
+                                        </div>
+
+                                        <div class="item">
+                                            <img src="{{ slider_section.slider_3.url }}" alt="">
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
-                        
-                            <!-- RIGHT IMAGES (Desktop Only) -->
-                            <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                        
-                                <div class="right-static">
-                                    <img src="{% static 'image/demo/slider/sl11/60.webp' %}" alt="">
-                                </div>
-                        
-                                <div class="right-static">
-                                    <img src="{% static 'image/demo/slider/sl11/61.webp' %}" alt="">
-                                </div>
-                        
+                        </div>
+
+                        <!-- RIGHT IMAGES -->
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+
+                            <div class="right-static">
+                                <img src="{{ slider_section.right_image_1.url }}" alt="">
                             </div>
+
+                            <div class="right-static">
+                                <img src="{{ slider_section.right_image_2.url }}" alt="">
+                            </div>
+
+                        </div>
+
+                        {% endif %}
+
                         </div>
                         
                         
@@ -556,12 +556,18 @@
                                 <!-- Content -->
                                 <div class="deal-content">
                                     <div class="deal-title">{{ deal.product.name }}</div>
-                        
+
                                     <div class="deal-prices">
-                                        <span class="deal-price-new">{{ deal.special_price }}৳</span>
-                                        <span class="deal-price-old">{{ deal.product.price }}৳</span>
+                                        <span class="deal-price-new">
+                                            {{ deal.special_price|bd_format }}৳
+                                        </span>
+
+                                        <span class="deal-price-old">
+                                            {{ deal.product.price|bd_format }}৳
+                                        </span>
                                     </div>
                                 </div>
+
                         
                             </div>
                             {% endfor %}
@@ -795,13 +801,20 @@
                         
                                     <div class="product-content">
                                         <h4 class="product-title">{{ product.name }}</h4>
+
                                         <div class="price-box">
-                                            <span class="price-new">{{ product.get_discount_price }}৳</span>
+                                            <span class="price-new">
+                                                {{ product.get_discount_price|bd_format }}৳
+                                            </span>
+
                                             {% if product.old_price %}
-                                            <span class="price-old">{{ product.old_price }}৳</span>
+                                            <span class="price-old">
+                                                {{ product.old_price|bd_format }}৳
+                                            </span>
                                             {% endif %}
                                         </div>
                                     </div>
+
                         
                                 </div>
                             </div>

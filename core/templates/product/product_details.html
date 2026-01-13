@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load bd_currency %}
 
 {% block title %}{{ product.name }}{% endblock %}
 
@@ -216,20 +217,24 @@ body, .product-view {
         
         <!-- TAGS -->
         <div class="product-tags mb-5">
-        
+
             <span>
                 Price:
-                <strong>{{ product.price }}৳</strong>
+                <strong>{{ product.price|bd_format }}৳</strong>
                 {% if product.old_price %}
-                    <del style="margin-left:5px; color:#888;">{{ product.old_price }}৳</del>
+                    <del style="margin-left:5px; color:#888;">
+                        {{ product.old_price|bd_format }}৳
+                    </del>
                 {% endif %}
             </span>
-        
+
             <span>
                 Regular Price:
-                <strong>{{ product.old_price|default:product.price }}৳</strong>
+                <strong>
+                    {{ product.old_price|default:product.price|bd_format }}৳
+                </strong>
             </span>
-        
+
             <span>
                 Status:
                 {% if product.stock_quantity > 0 %}
@@ -238,18 +243,19 @@ body, .product-view {
                     <strong style="color:#dc2626;">Out of Stock</strong>
                 {% endif %}
             </span>
-        
+
             <span>
                 Product Code:
                 <strong>{{ product.id }}</strong>
             </span>
-        
+
             <span>
                 Brand:
                 <strong>{{ product.brand.name }}</strong>
             </span>
-        
+
         </div>
+
         
         
         <!-- KEY FEATURES -->
@@ -266,37 +272,53 @@ body, .product-view {
         <h2 class="text-xl font-semibold mt-6 mb-3">Payment Options</h2>
         
         <div style="display:flex; gap:20px; flex-wrap:wrap;">
-        
+
             <!-- Cash Price -->
             <label class="payment-box active" id="cashBox">
                 <div style="display:flex; gap:16px;">
                     <input type="radio" name="pay" checked>
                     <div>
-                        <div style="font-size:16px; font-weight:bold;">{{ product.price }}৳</div>
+                        <div style="font-size:16px; font-weight:bold;">
+                            {{ product.price|bd_format }}৳
+                        </div>
+
                         {% if product.old_price %}
-                        <div style="color:#999; text-decoration:line-through;">{{ product.old_price }}৳</div>
+                        <div style="color:#999; text-decoration:line-through;">
+                            {{ product.old_price|bd_format }}৳
+                        </div>
                         {% endif %}
+
                         <div style="margin-top:5px;">Cash Discount Price</div>
-                        <div style="color:#888; font-size:14px;">Online / Cash Payment</div>
+                        <div style="color:#888; font-size:14px;">
+                            Online / Cash Payment
+                        </div>
                     </div>
                 </div>
             </label>
-        
+
             <!-- EMI -->
             <label class="payment-box" id="emiBox">
                 <div style="display:flex; gap:16px;">
                     <input type="radio" name="pay">
                     <div>
-                        <div style="font-size:16px; font-weight:bold;">913৳/month</div>
-                        <div style="font-size:12px;">Regular Price: {{ product.old_price|default:product.price }}৳</div>
+                        <div style="font-size:16px; font-weight:bold;">
+                            {{ emi_amount|bd_format }}৳ / month
+                        </div>
+
+                        <div style="font-size:12px;">
+                            Regular Price:
+                            {{ product.old_price|default:product.price|bd_format }}৳
+                        </div>
+
                         <div style="margin-top:5px; color:#777; font-size:14px;">
-                            0% EMI for up to 12 Months
+                            0% EMI for up to {{ emi_months }} Months
                         </div>
                     </div>
                 </div>
             </label>
-        
+
         </div>
+
         
         
         <!-- QTY + BUY BUTTON -->

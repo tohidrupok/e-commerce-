@@ -5313,12 +5313,12 @@ h2.title-category {
       float: right;
       margin-top: 4px; }
   .type_1 .header-bottom {
-    background: #eee;
+    background:#061c2f;
     height: 45px;
     margin-bottom: 0; }
     .type_1 .header-bottom .container .header-bottom-inner {
       display: inline-block;
-      background: #222;
+      background: #061c2f;
       width: 100%; }
       .type_1 .header-bottom .container .header-bottom-inner .header-bottom-left {
         padding-right: 20px; }

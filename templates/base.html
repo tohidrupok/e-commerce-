@@ -489,11 +489,12 @@
     font-size: 14px;
 }
 
-            </style>
+
+    </style>
 
 <body class="common-home res layout-home1">
     <div id="wrapper" class="wrapper-full banners-effect-7">
-		<header id="header" class="variantleft type_1" style="background-color: #000000 !important;">		
+		<header id="header" class="variantleft type_1" style="background-color: #061c2f !important;">		
 
 			<!-- Header Bottom -->
 			<div class="header-bottom compact-hidden">
@@ -501,11 +502,11 @@
 					<div class="header-bottom-inner">
 						<div class="row">
 							<div class="header-bottom-left menu-vertical col-md-3 col-sm-2 col-xs-2">
-                                <div style="display: flex; align-items: center; justify-content: center;">
+                                <div style="display: flex; align-items: center; justify-content: left;">
                                     <a href="{% url 'home' %}">
                                         <img src="https://jisa.com.bd/media/logo/jisa-3-logo.png"
                                             alt="Jisa Logo"
-                                            style="height: 40px; width: auto;">
+                                            style="height: 50px; width: auto;">
                                     </a>
                                 </div>
                             </div>
@@ -535,7 +536,7 @@
 											<a data-loading-text="Loading..." class="btn-group top_cart dropdown-toggle" data-toggle="dropdown">
 												<div class="shopcart">
 													<span class="handle pull-left"></span>
-													<span class="text-shopping-cart hidden-xs">	My cart	</span>
+													<span class="text-shopping-cart hidden-xs">Offer</span>
 													<span class="text-shopping-cart-mobi hidden-lg hidden-md hidden-sm ">
 													  <i class="fa fa-cart-plus"></i>
 													</span> 
@@ -545,7 +546,11 @@
 												<li>
 													<table class="table table-striped">
 														<tbody>
-															<tr>
+                                                            <tr>
+                                                                <td class="text-left"> <a class="cart_product_name" href="product.html">No Avaivle Offer</a> </td>
+ 
+                                                            </tr>
+															<!-- <tr>
 																<td class="text-center" style="width:70px">
 																	<a href="product.html"> <img class="lazyload preview" data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="image/demo/shop/product/35.jpg" style="width:70px" alt="Filet Mign" title="Filet Mign"> </a>
 																</td>
@@ -572,7 +577,7 @@
 																<td class="text-right">
 																	<a onclick="cart.remove('1');" class="fa fa-times fa-delete"></a>
 																</td>
-															</tr>
+															</tr> -->
 														</tbody>
 													</table>
 												</li>
@@ -580,7 +585,7 @@
 													<div>
 														<table class="table table-bordered">
 															<tbody>
-																<tr>
+																<!-- <tr>
 																	<td class="text-left"><strong>Sub-Total</strong>
 																	</td>
 																	<td class="text-right">$1,060.00</td>
@@ -599,10 +604,10 @@
 																	<td class="text-left"><strong>Total</strong>
 																	</td>
 																	<td class="text-right">$1,262.00</td>
-																</tr>
+																</tr> -->
 															</tbody>
 														</table>
-														<p class="text-center"> <a class="btn view-cart" href="cart.html"><i class="fa fa-shopping-cart"></i>View Cart</a>&nbsp;&nbsp;&nbsp; <a class="btn btn-mega checkout-cart" href="checkout.html"><i class="fa fa-share"></i>Checkout</a> </p>
+														<p class="text-center"> <a class="btn view-cart" href="{%url 'cart_view'%}"><i class="fa fa-shopping-cart"></i>View Cart</a>&nbsp;&nbsp;&nbsp; <a class="btn btn-mega checkout-cart" href="#"><i class="fa fa-share"></i>Get Cuppon</a> </p>
 													</div>
 												</li>
 											</ul>
@@ -612,7 +617,29 @@
 								</div>
 								<div class="header_custom_link hidden-xs">
 									<ul>
-										<li><a href="login.html"><i class="fa fa-user"></i> Login</a></li>
+                                        <li>
+                                            {% if request.user.is_authenticated %}
+
+                                                <a href="{% url 'profile' %}"
+                                                style="display:flex;align-items:center;gap:8px;">
+
+                                                    <img
+                                                        src="{% if request.user.profile.avatar %}{{ request.user.profile.avatar.url }}{% else %}{% static 'images/default-user.png' %}{% endif %}"
+                                                        alt="User"
+                                                        style="width:28px;height:28px;border-radius:50%;object-fit:cover;"
+                                                    />
+
+                                                    <span>{{ request.user.username }}</span>
+                                                </a>
+
+                                            {% else %}
+
+                                                <a href="{% url 'customer_login' %}">
+                                                    <i class="fa fa-user"></i> Login
+                                                </a>
+
+                                            {% endif %}
+                                        </li>
 									</ul>	
 								</div>
 							</div>

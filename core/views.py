@@ -16,13 +16,15 @@ def home(request):
     now = timezone.now()
     deals = HotDeal.objects.filter(start_date__lte=now, end_date__gte=now)
     headline = SiteHeadline.objects.filter(is_active=True).order_by('-created_at').first()
+    slider_section = HomeSliderSection.objects.filter(is_active=True).first()
 
 
     context = {
         'products': products,
         'deals': deals,
         'brands': brands, 
-        'headline': headline
+        'headline': headline,
+        'slider_section': slider_section
     }
     return render(request, 'home.html', context)
 
@@ -109,9 +111,23 @@ def product_quickview(request, pk):
     return render(request, 'product/quickview.html', {'product': product})
 
 
+# def product_detail(request, slug):
+#     product = get_object_or_404(Product, slug=slug)
+#     return render(request, 'product/product_details.html', {'product': product})
+
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
-    return render(request, 'product/product_details.html', {'product': product})
+
+    regular_price = product.old_price or product.price
+    emi_months = 12
+    emi_amount = regular_price / emi_months
+
+    context = {
+        "product": product,
+        "emi_amount": emi_amount,
+        "emi_months": emi_months,
+    }
+    return render(request, "product/product_details.html", context)
 
 # def product_detail(request, pk):
 #     product = get_object_or_404(Product, pk=pk)
