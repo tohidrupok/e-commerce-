@@ -1208,3 +1208,132 @@ def success_page(request):
 
 #     # render success
 #     return render(request, "order/success.html", {"order": order})
+
+
+from django.shortcuts import render
+from django.db.models import Q
+from .models import Product, Category
+
+from django.shortcuts import render
+from django.db.models import Q
+from django.core.paginator import Paginator
+from .models import Product, Category
+
+
+def search_results(request):
+    query = request.GET.get("q", "").strip()
+    sort = request.GET.get("sort", "default")
+    page = request.GET.get("page")
+
+    categories = Category.objects.none()
+    products = Product.objects.none()
+
+    if query:
+        # matched categories
+        categories = Category.objects.filter(
+            name__icontains=query
+        )
+
+        # matched products
+        products = Product.objects.filter(
+            Q(name__icontains=query) |
+            Q(category__name__icontains=query)
+        ).distinct()
+
+        # ===== SORTING =====
+        if sort == "low":
+            products = products.order_by("price")
+        elif sort == "high":
+            products = products.order_by("-price")
+        elif sort == "new":
+            products = products.order_by("-id")
+
+    # ===== PAGINATION =====
+    paginator = Paginator(products, 20)
+    page_obj = paginator.get_page(page)
+
+    context = {
+        "query": query,
+        "categories": categories,
+        "products": page_obj,
+        "sort": sort,
+    }
+
+    return render(request, "search_results.html", context)
+
+
+
+# def search_results(request):
+#     query = request.GET.get("q", "").strip()
+#     print(query)
+#     categories = []
+#     products = []
+
+#     if query:
+#         categories = Category.objects.filter(
+#             name__icontains=query
+#         )
+
+#         products = Product.objects.filter(
+#             Q(name__icontains=query) |
+#             Q(short_description__icontains=query) |
+#             Q(description__icontains=query),
+#             is_active=True
+#         )
+
+#     context = {
+#         "query": query,
+#         "categories": categories,
+#         "products": products,
+#     }
+
+#     return render(request, "search_results.html", context)
+
+
+
+# from django.http import JsonResponse
+# from django.db.models import Q
+# from .models import Product, Category
+
+
+# def smart_search_api(request):
+#     print("dukcha go")
+#     query = request.GET.get("q", "").strip()
+#     print(query) 
+
+#     products = []
+#     categories = []
+
+#     if query:
+#         products_qs = Product.objects.filter(
+#             is_active=True
+#         ).filter(
+#             Q(name__icontains=query) |
+#             Q(short_description__icontains=query)
+#         )[:8]
+
+#         categories_qs = Category.objects.filter(
+#             name__icontains=query
+#         )[:8]
+
+#         products = [
+#             {
+#                 "name": p.name,
+#                 "slug": p.slug,
+#                 "price": str(p.price),
+#             }
+#             for p in products_qs
+#         ]
+
+#         categories = [
+#             {
+#                 "name": c.name,
+#                 "slug": c.slug,
+#             }
+#             for c in categories_qs
+#         ]
+
+#     return JsonResponse({
+#         "products": products,
+#         "categories": categories,
+#     })

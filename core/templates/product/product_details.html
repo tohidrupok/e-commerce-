@@ -4,6 +4,13 @@
 
 {% block title %}{{ product.name }}{% endblock %}
 
+<!-- ADD ONCE (preferably before </body>) -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+ 
+
 {% block content %}
 <div class="main-container container">
     <ul class="breadcrumb">
@@ -52,24 +59,37 @@
 
 </div>
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<!-- JS -->
 <script>
-$(document).ready(function () {
-
-    // Only active class toggle (popup handled by lightbox automatically)
-    $('.thumb-row .thumbnail').on('click', function () {
-
-        $('.thumb-row .thumbnail').removeClass('active');
-        $(this).addClass('active');
-
-
+document.querySelectorAll(".thumb-row .thumbnail").forEach(el => {
+    el.addEventListener("click", function () {
+        document.querySelectorAll(".thumb-row .thumbnail")
+            .forEach(t => t.classList.remove("active"));
+        el.classList.add("active");
     });
-
 });
 </script>
+
+
+<script>
+if (typeof lightbox !== "undefined") {
+    lightbox.option({
+        resizeDuration: 200,
+        wrapAround: true
+    });
+
+    document.addEventListener("lightbox:change", function (e) {
+        const imgSrc = e.detail.image.src;
+        const mainImg = document.getElementById("mainProductImage");
+        const mainLink = document.getElementById("mainImageLink");
+
+        if (mainImg && mainLink) {
+            mainImg.src = imgSrc;
+            mainLink.href = imgSrc;
+        }
+    });
+}
+</script>
+ 
 
 
 <!-- CSS -->
@@ -80,13 +100,22 @@ body, .product-view {
 }
 
 /* Main Image */
-.large-image img {
+/* .large-image img {
+    width: 100%;
+    height: 350px;
+    object-fit: contain;
+    border-radius: 6px;
+    margin-bottom: 10px;
+} */
+
+.main-image img {
     width: 100%;
     height: 350px;
     object-fit: contain;
     border-radius: 6px;
     margin-bottom: 10px;
 }
+ 
 
 /* Thumbnail Row */
 .thumb-row {

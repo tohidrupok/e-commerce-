@@ -517,7 +517,19 @@
 								<div class="col-lg-9 col-md-8 col-sm-7 col-xs-9 header_search">
 									<!-- Search -->
 									<div id="sosearchpro" class="search-pro">
-										<form method="GET" action="index.html">
+                                        <form action="{% url 'search_results' %}" method="get" class="eco-search-form">
+                                            <input type="text"
+                                                name="q"
+                                                class="form-control"
+                                                placeholder="Search products or categories..."
+                                                required>
+
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </form>
+
+										<!-- <form method="GET" action="index.html">
 											<div id="search0" class="search input-group">
 												<input class="autosearch-input form-control" type="text" value="" size="50" autocomplete="off" placeholder="Search" name="search">
 												<span class="input-group-btn">
@@ -525,7 +537,7 @@
 												</span>
 											</div>
 											<input type="hidden" name="route" value="product/search" />
-										</form>
+										</form> -->
 									</div>
 									<!-- //end Search -->
 								</div>

@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bd_currency %}
+
+{% block title %}Search – {{ query }}{% endblock %}
+
+{% block content %}
+
+<style>
+/* ================= GLOBAL ================= */
+.search-page{
+    background:#f5f7fa;
+    padding:30px 0;
+}
+.search-container{
+    max-width:1280px;
+    margin:auto;
+}
+
+/* ================= HEADER ================= */
+.search-header{
+    margin-bottom:16px;
+}
+.search-header h2{
+    font-size:20px;
+    font-weight:600;
+    color:#111;
+}
+
+/* ================= CATEGORY RESULT ================= */
+.category-result{
+    background:#fff;
+    border-radius:6px;
+    padding:14px;
+    margin-bottom:18px;
+}
+.category-result-title{
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:10px;
+}
+.category-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+.category-tags a{
+    padding:6px 14px;
+    font-size:13px;
+    border:1px solid #e0e0e0;
+    border-radius:20px;
+    color:#333;
+    background:#fafafa;
+    transition:.2s;
+}
+.category-tags a:hover{
+    background:#111;
+    color:#fff;
+    border-color:#111;
+}
+
+/* ================= PRODUCT SECTION ================= */
+.product-section{
+    background:#fff;
+    border-radius:6px;
+    padding:16px;
+}
+
+/* ================= TOP BAR ================= */
+.product-topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid #eee;
+    padding-bottom:12px;
+    margin-bottom:16px;
+}
+.product-count{
+    font-size:14px;
+    font-weight:500;
+}
+.product-topbar select{
+    padding:6px 10px;
+    font-size:13px;
+}
+
+/* ================= GRID ================= */
+.product-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:16px;
+}
+@media(max-width:1200px){.product-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:992px){.product-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){.product-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.product-grid{grid-template-columns:1fr}}
+
+/* ================= CARD ================= */
+.product-card{
+    border:1px solid #eee;
+    border-radius:6px;
+    padding:12px;
+    background:#fff;
+    transition:.2s;
+}
+.product-card:hover{
+    box-shadow:0 6px 20px rgba(0,0,0,.08);
+}
+
+/* ================= IMAGE ================= */
+.product-image{
+    height:170px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+}
+.product-image img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+}
+
+/* ================= DISCOUNT ================= */
+.product-discount{
+    position:absolute;
+    top:8px;
+    left:8px;
+    background:#e53935;
+    color:#fff;
+    font-size:11px;
+    padding:4px 8px;
+    border-radius:4px;
+}
+
+/* ================= INFO ================= */
+.product-title{
+    margin-top:10px;
+    font-size:14px;
+    font-weight:500;
+    line-height:1.4;
+    height:40px;
+    overflow:hidden;
+}
+.product-title a{
+    color:#111;
+}
+.product-title a:hover{
+    text-decoration:underline;
+}
+
+/* ================= PRICE ================= */
+.product-price{
+    margin-top:6px;
+}
+.price-new{
+    font-size:16px;
+    font-weight:700;
+    color:#111;
+}
+.price-old{
+    font-size:13px;
+    color:#999;
+    text-decoration:line-through;
+    margin-left:6px;
+}
+
+/* ================= PAGINATION ================= */
+.page-btn{
+    display:inline-block;
+    padding:6px 12px;
+    margin:3px;
+    border:1px solid #ddd;
+    border-radius:4px;
+    font-size:13px;
+    background:#fff;
+    color:#333;
+}
+.page-btn:hover,
+.page-btn.active{
+    background:#111;
+    color:#fff;
+    border-color:#111;
+}
+</style>
+
+<div class="search-page">
+<div class="search-container">
+
+    <!-- ===== HEADER ===== -->
+    <div class="search-header">
+        <h2>Search results for “{{ query }}”</h2>
+    </div>
+
+    <!-- ===== CATEGORY RESULT ===== -->
+    {% if categories %}
+    <div class="category-result">
+        <div class="category-result-title">Matching Categories</div>
+        <div class="category-tags">
+            {% for cat in categories %}
+                <a href="#">{{ cat.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ===== PRODUCT RESULT ===== -->
+    <div class="product-section">
+
+        <!-- TOP BAR -->
+        <div class="product-topbar">
+            <div class="product-count">
+                {{ products.paginator.count }} products found
+            </div>
+
+            <form method="get">
+                <input type="hidden" name="q" value="{{ query }}">
+                <select name="sort" onchange="this.form.submit()">
+                    <option value="default" {% if sort == "default" %}selected{% endif %}>
+                        Default
+                    </option>
+                    <option value="low" {% if sort == "low" %}selected{% endif %}>
+                        Price: Low to High
+                    </option>
+                    <option value="high" {% if sort == "high" %}selected{% endif %}>
+                        Price: High to Low
+                    </option>
+                    <option value="new" {% if sort == "new" %}selected{% endif %}>
+                        Newest
+                    </option>
+                </select>
+            </form>
+        </div>
+
+        <!-- PRODUCT GRID -->
+        <div class="product-grid">
+
+            {% for product in products %}
+            <div class="product-card">
+
+                <div class="product-image">
+                    {% if product.discount_percent %}
+                        <div class="product-discount">
+                            -{{ product.discount_percent }}%
+                        </div>
+                    {% endif %}
+
+                    {% if product.images.first %}
+                        <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="{% static 'image/no-image.png' %}">
+                    {% endif %}
+                </div>
+
+                <div class="product-title">
+                    <a href="">
+                        {{ product.name }}
+                    </a>
+                </div>
+
+                <div class="product-price">
+                    <span class="price-new">
+                        {{ product.get_discount_price|bd_format }}৳
+                    </span>
+                    {% if product.old_price %}
+                    <span class="price-old">
+                        {{ product.old_price|bd_format }}৳
+                    </span>
+                    {% endif %}
+                </div>
+
+            </div>
+            {% empty %}
+                <p>No products found.</p>
+            {% endfor %}
+
+        </div>
+
+        <!-- PAGINATION -->
+        {% if products.paginator.num_pages > 1 %}
+        <div style="margin-top:30px;text-align:center">
+            {% if products.has_previous %}
+                <a class="page-btn"
+                   href="?q={{ query }}&sort={{ sort }}&page={{ products.previous_page_number }}">
+                   Prev
+                </a>
+            {% endif %}
+
+            {% for num in products.paginator.page_range %}
+                {% if num == products.number %}
+                    <span class="page-btn active">{{ num }}</span>
+                {% else %}
+                    <a class="page-btn"
+                       href="?q={{ query }}&sort={{ sort }}&page={{ num }}">
+                       {{ num }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+
+            {% if products.has_next %}
+                <a class="page-btn"
+                   href="?q={{ query }}&sort={{ sort }}&page={{ products.next_page_number }}">
+                   Next
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+</div>
+
+{% endblock %}

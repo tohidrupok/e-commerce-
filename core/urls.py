@@ -46,6 +46,8 @@ urlpatterns = [
 
     path("checkout/", views.checkout, name="checkout"),
     path("success/", views.success_page, name="success_page"),
+
+    path("search/", views.search_results, name="search_results"),
         
 
 ]
