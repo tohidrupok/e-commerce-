@@ -496,170 +496,412 @@
     <div id="wrapper" class="wrapper-full banners-effect-7">
 		<header id="header" class="variantleft type_1" style="background-color: #061c2f !important;">		
 
-			<!-- Header Bottom -->
-			<div class="header-bottom compact-hidden">
-				<div class="container">
-					<div class="header-bottom-inner">
-						<div class="row">
-							<div class="header-bottom-left menu-vertical col-md-3 col-sm-2 col-xs-2">
-                                <div style="display: flex; align-items: center; justify-content: left;">
-                                    <a href="{% url 'home' %}">
-                                        <img src="https://jisa.com.bd/media/logo/jisa-3-logo.png"
-                                            alt="Jisa Logo"
-                                            style="height: 50px; width: auto;">
-                                    </a>
-                                </div>
+
+
+<!-- Mobile Header START -->
+<style>
+/* Mobile Header */
+.mobile-header {
+    background: #061c2f;
+    padding: 8px 12px;
+    color: #fff;
+}
+
+/* Top row */
+.mobile-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Menu button */
+.mobile-menu-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 22px;
+}
+
+/* Logo */
+.mobile-logo img {
+    height: 36px;
+}
+
+/* Cart */
+.mobile-cart {
+    color: #fff;
+    font-size: 20px;
+    position: relative;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: red;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Search */
+.mobile-search {
+    margin-top: 8px;
+}
+
+.mobile-search-box {
+    position: relative;
+}
+
+.mobile-search-box input {
+    width: 100%;
+    padding: 10px 40px 10px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    color: #000;
+}
+
+.mobile-search-box input::placeholder {
+    color: #666;
+}
+
+/* Search icon inside input */
+.mobile-search-box button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 16px;
+}
+
+/* Mobile Nav */
+.mobile-nav ul {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+}
+
+.mobile-nav ul li a {
+    display: block;
+    padding: 12px;
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-decoration: none;
+}
+</style>
+<div class="mobile-header visible-xs">
+
+    <!-- Top bar -->
+    <div class="mobile-header-top">
+
+        <!-- Menu Toggle -->
+        <button class="mobile-menu-btn"
+                data-toggle="collapse"
+                data-target="#mobileNav"
+                aria-expanded="false">
+            <i class="fa fa-bars" id="menuIcon"></i>
+        </button>
+
+        <!-- Logo -->
+        <a href="{% url 'home' %}" class="mobile-logo">
+            <img src="https://jisa.com.bd/media/logo/jisa-3-logo.png">
+        </a>
+
+        <!-- Cart -->
+        <a href="{% url 'cart_view' %}" class="mobile-cart">
+            <i class="fa fa-shopping-cart"></i>
+            <span id="mobileCartBadge" class="cart-badge">0</span>
+        </a>
+
+    </div>
+
+    <!-- Search -->
+    <!-- <div class="mobile-search">
+        <form method="GET">
+            <div class="mobile-search-box">
+                <input type="text" placeholder="Search products..." name="search">
+                <button type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div> --> 
+    <!-- Mobile Search -->
+    <!-- Search -->
+    <div class="mobile-search">
+        <form action="{% url 'search_results' %}" method="get" class="eco-search-form">
+            <div class="mobile-search-box">
+                <input type="text"
+                    name="q"
+                    class="form-control"
+                    placeholder="Search products or categories..."
+                    required>
+
+                <button type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Collapsible Nav -->
+    <div id="mobileNav" class="collapse mobile-nav">
+        <ul>
+            {% for cat in menu_categories %}
+                <li>
+                    <a href="{% url 'category_products' cat.slug %}">
+                        {{ cat.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+<script>
+$('#mobileNav').on('show.bs.collapse', function () {
+    $('#menuIcon').removeClass('fa-bars').addClass('fa-times');
+});
+
+$('#mobileNav').on('hide.bs.collapse', function () {
+    $('#menuIcon').removeClass('fa-times').addClass('fa-bars');
+});
+</script>
+
+<!-- Mobile View CLose -->
+
+<!-- Header Bottom -->
+<style>
+.header-flex {
+    display: flex;
+    align-items: center;
+}
+
+/* Logo */
+.logo-wrap img {
+    height: 45px;
+}
+
+/* Right side */
+.header-right-flex {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+/* Search */
+.header_search {
+    flex: 1;
+}
+
+/* Items */
+.header-item {
+    color: #fff;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.header-item a {
+    color: #fff;
+}
+
+/* User */
+.user-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.user-box img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+}
+
+/* PC Builder */
+.pc-builder-btn {
+    background: #1e5bff;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .header-right-flex {
+        flex-wrap: wrap;
+    }
+
+    .header_search {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .pc-builder-btn {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+}
+@media (max-width: 767px) {
+    .header-bottom,
+    .header-center {
+        display: none !important;
+    }
+}
+
+.header_search .live-search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    display: flex;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.live-search-results > div {
+    width: 50%;
+    padding: 10px;
+    border-right: 1px solid #eee;
+}
+
+.live-search-results > div:last-child {
+    border-right: none;
+}
+
+.live-search-results ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.live-search-results li {
+    padding: 5px 0;
+}
+
+.live-search-results li a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+}
+
+.live-search-results li:hover {
+    background: #f5f5f5;
+}
+
+</style>
+<div class="header-bottom compact-hidden">
+    <div class="container">
+        <div class="row header-flex" style="margin-top:5px">
+
+            <!-- Logo -->
+            <div class="header-bottom-left col-md-2 col-sm-2 col-xs-3">
+                <a href="{% url 'home' %}" class="logo-wrap">
+                    <img src="https://jisa.com.bd/media/logo/jisa-3-logo.png" alt="Jisa Logo">
+                </a>
+            </div>
+
+            <!-- Right Content -->
+            <div class="header-bottom-right col-md-10 col-sm-10 col-xs-9">
+
+                <div class="header-right-flex">
+
+                    <!-- Search -->
+                    <!-- Search -->
+                    <!-- <div class="header_search">
+                        <form action="{% url 'search_results' %}" method="get" class="eco-search-form">
+                            <div class="search input-group">
+                                <input class="form-control" 
+                                    type="text" 
+                                    name="q"
+                                    placeholder="Search products or categories..."
+                                    required>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
                             </div>
-							
-							<!-- Main menu -->
-							<div class="header-bottom-right col-md-9 col-sm-10 col-xs-10">
-                                
-								<div class="col-lg-9 col-md-8 col-sm-7 col-xs-9 header_search">
-									<!-- Search -->
-									<div id="sosearchpro" class="search-pro">
-                                        <form action="{% url 'search_results' %}" method="get" class="eco-search-form">
-                                            <input type="text"
-                                                name="q"
-                                                class="form-control"
-                                                placeholder="Search products or categories..."
-                                                required>
+                        </form>
+                    </div> -->
+                     <!-- Search -->
+<div class="header_search" style="position: relative;">
+    <form action="{% url 'search_results' %}" method="get" class="eco-search-form">
+        <div class="search input-group">
+            <input class="form-control" 
+                   type="text" 
+                   name="q"
+                   placeholder="Search products or categories..."
+                   required>
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </span>
+        </div>
+    </form>
 
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fa fa-search"></i>
-                                            </button>
-                                        </form>
+    <!-- Live search container -->
+    <div class="live-search-results" style="display:none;">
+        <div class="live-products"></div>
+        <div class="live-categories"></div>
+    </div>
+</div>
 
-										<!-- <form method="GET" action="index.html">
-											<div id="search0" class="search input-group">
-												<input class="autosearch-input form-control" type="text" value="" size="50" autocomplete="off" placeholder="Search" name="search">
-												<span class="input-group-btn">
-												<button type="submit" class="button-search btn btn-primary" name="submit_search"><i class="fa fa-search"></i></button>
-												</span>
-											</div>
-											<input type="hidden" name="route" value="product/search" />
-										</form> -->
-									</div>
-									<!-- //end Search -->
-								</div>
-								<div class="block-cart">
-									<!--cart-->
-									<div class="shopping_cart pull-right">
-										<div id="cart" class=" btn-group btn-shopping-cart">
-											<a data-loading-text="Loading..." class="btn-group top_cart dropdown-toggle" data-toggle="dropdown">
-												<div class="shopcart">
-													<span class="handle pull-left"></span>
-													<span class="text-shopping-cart hidden-xs">Offer</span>
-													<span class="text-shopping-cart-mobi hidden-lg hidden-md hidden-sm ">
-													  <i class="fa fa-cart-plus"></i>
-													</span> 
-												</div>
-											</a>
-											<ul class="tab-content content dropdown-menu pull-right shoppingcart-box" role="menu">							
-												<li>
-													<table class="table table-striped">
-														<tbody>
-                                                            <tr>
-                                                                <td class="text-left"> <a class="cart_product_name" href="product.html">No Avaivle Offer</a> </td>
- 
-                                                            </tr>
-															<!-- <tr>
-																<td class="text-center" style="width:70px">
-																	<a href="product.html"> <img class="lazyload preview" data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="image/demo/shop/product/35.jpg" style="width:70px" alt="Filet Mign" title="Filet Mign"> </a>
-																</td>
-																<td class="text-left"> <a class="cart_product_name" href="product.html">Filet Mign</a> </td>
-																<td class="text-center"> x1 </td>
-																<td class="text-center"> $1,202.00 </td>
-																<td class="text-right">
-																	<a href="product.html" class="fa fa-edit"></a>
-																</td>
-																<td class="text-right">
-																	<a onclick="cart.remove('2');" class="fa fa-times fa-delete"></a>
-																</td>
-															</tr>
-															<tr>
-																<td class="text-center" style="width:70px">
-																	<a href="product.html"> <img class="lazyload preview" data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="image/demo/shop/product/141.jpg" style="width:70px" alt="Canon EOS 5D" title="Canon EOS 5D"> </a>
-																</td>
-																<td class="text-left"> <a class="cart_product_name" href="product.html">Canon EOS 5D</a> </td>
-																<td class="text-center"> x1 </td>
-																<td class="text-center"> $60.00 </td>
-																<td class="text-right">
-																	<a href="product.html" class="fa fa-edit"></a>
-																</td>
-																<td class="text-right">
-																	<a onclick="cart.remove('1');" class="fa fa-times fa-delete"></a>
-																</td>
-															</tr> -->
-														</tbody>
-													</table>
-												</li>
-												<li>
-													<div>
-														<table class="table table-bordered">
-															<tbody>
-																<!-- <tr>
-																	<td class="text-left"><strong>Sub-Total</strong>
-																	</td>
-																	<td class="text-right">$1,060.00</td>
-																</tr>
-																<tr>
-																	<td class="text-left"><strong>Eco Tax (-2.00)</strong>
-																	</td>
-																	<td class="text-right">$2.00</td>
-																</tr>
-																<tr>
-																	<td class="text-left"><strong>VAT (20%)</strong>
-																	</td>
-																	<td class="text-right">$200.00</td>
-																</tr>
-																<tr>
-																	<td class="text-left"><strong>Total</strong>
-																	</td>
-																	<td class="text-right">$1,262.00</td>
-																</tr> -->
-															</tbody>
-														</table>
-														<p class="text-center"> <a class="btn view-cart" href="{%url 'cart_view'%}"><i class="fa fa-shopping-cart"></i>View Cart</a>&nbsp;&nbsp;&nbsp; <a class="btn btn-mega checkout-cart" href="#"><i class="fa fa-share"></i>Get Cuppon</a> </p>
-													</div>
-												</li>
-											</ul>
-										</div>
-									</div>
-									<!--//cart-->
-								</div>
-								<div class="header_custom_link hidden-xs">
-									<ul>
-                                        <li>
-                                            {% if request.user.is_authenticated %}
 
-                                                <a href="{% url 'profile' %}"
-                                                style="display:flex;align-items:center;gap:8px;">
 
-                                                    <img
-                                                        src="{% if request.user.profile.avatar %}{{ request.user.profile.avatar.url }}{% else %}{% static 'images/default-user.png' %}{% endif %}"
-                                                        alt="User"
-                                                        style="width:28px;height:28px;border-radius:50%;object-fit:cover;"
-                                                    />
+                    <!-- Offers -->
+                    <a class="header-item" href="#">
+                        <span class="hidden-xs">🎁 Offers</span>
+                        <i class="fa fa-gift visible-xs"></i>
+                    </a>
 
-                                                    <span>{{ request.user.username }}</span>
-                                                </a>
+                    <!-- Happy Hour -->
+                    <a class="header-item" href="#">
+                        <span class="hidden-xs">⚡ Happy Hour</span>
+                        <i class="fa fa-bolt visible-xs"></i>
+                    </a>
 
-                                            {% else %}
+                    <!-- Account -->
+                    <div class="header-item">
+                        {% if request.user.is_authenticated %}
+                            <a href="{% url 'profile' %}" class="user-box">
+                                <img src="{% if request.user.profile.avatar %}{{ request.user.profile.avatar.url }}{% else %}{% static 'images/default-user.png' %}{% endif %}">
+                                <span class="hidden-xs">{{ request.user.username }}</span>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'customer_login' %}">
+                                <span class="hidden-xs">👤 Account</span>
+                                <i class="fa fa-user visible-xs"></i>
+                            </a>
+                        {% endif %}
+                    </div>
 
-                                                <a href="{% url 'customer_login' %}">
-                                                    <i class="fa fa-user"></i> Login
-                                                </a>
+                    <!-- PC Builder -->
+                    <a href="#" class="pc-builder-btn">
+                        PC Builder
+                    </a>
 
-                                            {% endif %}
-                                        </li>
-									</ul>	
-								</div>
-							</div>
-							<!-- //end Main menu -->
-						</div>
-					</div>
-				</div>
-			</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
             <!-- Header center -->
 			<div class="header-center">
 				<div class="container">
@@ -1209,6 +1451,61 @@
 <!-- CSS -->
 <link rel="stylesheet" href="{% static 'css/themecss/cpanel.css' %}" type="text/css" media="all" />
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInputs = document.querySelectorAll('input[name="q"]');
+
+    searchInputs.forEach(input => {
+        const resultBox = document.createElement("div");
+        resultBox.classList.add("live-search-results");
+        input.parentNode.appendChild(resultBox);
+
+        input.addEventListener("input", function() {
+            const query = this.value.trim();
+            if (query.length < 2) {
+                resultBox.innerHTML = "";
+                return;
+            }
+
+            fetch(`/live-search/?q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(data => {
+                    let html = "";
+
+                    if (data.categories.length > 0) {
+                        html += `<div class="live-categories"><strong>Categories</strong><ul>`;
+                        data.categories.forEach(cat => {
+                            html += `<li><a href="${cat.url}">${cat.name}</a></li>`;
+                        });
+                        html += "</ul></div>";
+                    }
+
+                    if (data.products.length > 0) {
+                        html += `<div class="live-products"><strong>Products</strong><ul>`;
+                        data.products.forEach(prod => {
+                            html += `<li>
+                                <a href="${prod.url}">
+                                    <img src="${prod.image}" style="width:40px;height:40px;object-fit:cover;margin-right:5px;">
+                                    ${prod.name} - ${prod.price}৳
+                                </a>
+                            </li>`;
+                        });
+                        html += "</ul></div>";
+                    }
+
+                    resultBox.innerHTML = html;
+                });
+        });
+
+        // Hide when clicked outside
+        document.addEventListener("click", function(e){
+            if (!resultBox.contains(e.target) && e.target !== input) {
+                resultBox.innerHTML = "";
+            }
+        });
+    });
+});
+</script>
 
 
 <!-- JS Libs & Plugins -->

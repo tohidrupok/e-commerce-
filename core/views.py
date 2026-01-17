@@ -1212,10 +1212,6 @@ def success_page(request):
 
 from django.shortcuts import render
 from django.db.models import Q
-from .models import Product, Category
-
-from django.shortcuts import render
-from django.db.models import Q
 from django.core.paginator import Paginator
 from .models import Product, Category
 
@@ -1262,6 +1258,49 @@ def search_results(request):
     return render(request, "search_results.html", context)
 
 
+
+
+# views.py
+from django.http import JsonResponse
+from .models import Product, Category
+from django.db.models import Q
+
+def live_search(request):
+    query = request.GET.get("q", "").strip()
+    print(query)
+    products_data = []
+    categories_data = []
+
+    if query:
+        # ===== Match Categories =====
+        categories = Category.objects.filter(
+            name__icontains=query
+        ).order_by('name')[:5]  # limit to top 5
+        for cat in categories:
+            categories_data.append({
+                "id": cat.id,
+                "name": str(cat),  # includes parent → child
+                "url": f"/category/{cat.slug}/"  # adjust if you have different URL
+            })
+
+        # ===== Match Products =====
+        products = Product.objects.filter(
+            Q(name__icontains=query) |
+            Q(category__name__icontains=query)
+        ).distinct().order_by('-id')[:5]  # top 5 newest
+        for prod in products:
+            products_data.append({
+                "id": prod.id,
+                "name": prod.name,
+                "price": prod.get_discount_price(),
+                "url": f"/product/{prod.slug}/",  # adjust if needed
+                "image": prod.images.first().image.url if hasattr(prod, 'images') and prod.images.first() else ""
+            })
+
+    return JsonResponse({
+        "categories": categories_data,
+        "products": products_data,
+    })
 
 # def search_results(request):
 #     query = request.GET.get("q", "").strip()

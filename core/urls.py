@@ -48,6 +48,7 @@ urlpatterns = [
     path("success/", views.success_page, name="success_page"),
 
     path("search/", views.search_results, name="search_results"),
+    path("live-search/", views.live_search, name="live_search"),
         
 
 ]
