@@ -198,8 +198,8 @@
         <div class="category-result-title">Matching Categories</div>
         <div class="category-tags">
             {% for cat in categories %}
-                <a href="#">{{ cat.name }}</a>
-            {% endfor %}
+                <a href="{% url 'category_products' cat.slug %}">{{ cat.name }}</a>
+            {% endfor %} 
         </div>
     </div>
     {% endif %}
@@ -236,40 +236,40 @@
         <div class="product-grid">
 
             {% for product in products %}
-            <div class="product-card">
+            <a href="{% url 'product_detail' product.slug %}" class="product-card-link">
+                <div class="product-card">
 
-                <div class="product-image">
-                    {% if product.discount_percent %}
-                        <div class="product-discount">
-                            -{{ product.discount_percent }}%
-                        </div>
-                    {% endif %}
+                    <div class="product-image">
+                        {% if product.discount_percent %}
+                            <div class="product-discount">
+                                -{{ product.discount_percent }}%
+                            </div>
+                        {% endif %}
 
-                    {% if product.images.first %}
-                        <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
-                    {% else %}
-                        <img src="{% static 'image/no-image.png' %}">
-                    {% endif %}
-                </div>
+                        {% if product.images.first %}
+                            <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <img src="{% static 'image/no-image.png' %}">
+                        {% endif %}
+                    </div>
 
-                <div class="product-title">
-                    <a href="">
+                    <div class="product-title">
                         {{ product.name }}
-                    </a>
-                </div>
+                    </div>
 
-                <div class="product-price">
-                    <span class="price-new">
-                        {{ product.get_discount_price|bd_format }}৳
-                    </span>
-                    {% if product.old_price %}
-                    <span class="price-old">
-                        {{ product.old_price|bd_format }}৳
-                    </span>
-                    {% endif %}
-                </div>
+                    <div class="product-price">
+                        <span class="price-new">
+                            {{ product.get_discount_price|bd_format }}৳
+                        </span>
+                        {% if product.old_price %}
+                        <span class="price-old">
+                            {{ product.old_price|bd_format }}৳
+                        </span>
+                        {% endif %}
+                    </div>
 
-            </div>
+                </div>
+            </a>
             {% empty %}
                 <p>No products found.</p>
             {% endfor %}
