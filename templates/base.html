@@ -813,6 +813,7 @@ $('#mobileNav').on('hide.bs.collapse', function () {
         position: relative;
     }
 
+    /* HIDE BY DEFAULT */
     .mobile-search-box .live-search-results {
         position: absolute;
         top: 110%;
@@ -820,26 +821,22 @@ $('#mobileNav').on('hide.bs.collapse', function () {
         width: 100%;
         background: #fff;
         z-index: 9999;
-        display: flex;
+        display: none; /* hide initially */
         border-radius: 10px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.18);
-        overflow: hidden;
-        max-height: 70vh;
-    }
-
-    /* LEFT + RIGHT */
-    .mobile-search-box .live-search-results > div {
-        width: 50%;
-        padding: 10px;
         overflow-y: auto;
+        max-height: 70vh;
+        padding: 10px 0;
     }
 
-    /* Divider */
-    .mobile-search-box .live-search-results > div:first-child {
-        border-right: 1px solid #eee;
+    .mobile-search-box .live-search-results > div {
+        width: 100%;
+        padding: 0 10px;
+        overflow-y: visible;
+        border: none;
+        margin-bottom: 15px;
     }
 
-    /* Section title */
     .mobile-search-box .live-search-results strong {
         display: block;
         font-size: 13px;
@@ -848,7 +845,6 @@ $('#mobileNav').on('hide.bs.collapse', function () {
         color: #222;
     }
 
-    /* Lists */
     .mobile-search-box .live-search-results ul {
         list-style: none;
         margin: 0;
@@ -864,7 +860,6 @@ $('#mobileNav').on('hide.bs.collapse', function () {
         border-bottom: none;
     }
 
-    /* Links */
     .mobile-search-box .live-search-results a {
         text-decoration: none;
         color: #333;
@@ -874,7 +869,6 @@ $('#mobileNav').on('hide.bs.collapse', function () {
         font-size: 13px;
     }
 
-    /* Product image */
     .mobile-search-box .live-search-results img {
         width: 36px;
         height: 36px;
@@ -883,99 +877,12 @@ $('#mobileNav').on('hide.bs.collapse', function () {
         flex-shrink: 0;
     }
 
-    /* Tap feedback */
     .mobile-search-box .live-search-results a:active {
         background: #f5f5f5;
         border-radius: 6px;
     }
 }
 
-
-/* ================================
-   MOBILE LIVE SEARCH – FIXED DESIGN
-   ================================ */
-@media (max-width: 767px) {
-
-    .mobile-search-box {
-        position: relative;
-    }
-
-    .mobile-search-box .live-search-results {
-        position: absolute;
-        top: 110%;
-        left: 0;
-        width: 100%;
-        background: #fff;
-        z-index: 9999;
-        display: flex;
-        border-radius: 10px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.18);
-        overflow: hidden;
-        max-height: 70vh;
-    }
-
-    /* LEFT + RIGHT */
-    .mobile-search-box .live-search-results > div {
-        width: 50%;
-        padding: 10px;
-        overflow-y: auto;
-    }
-
-    /* Divider */
-    .mobile-search-box .live-search-results > div:first-child {
-        border-right: 1px solid #eee;
-    }
-
-    /* Section title */
-    .mobile-search-box .live-search-results strong {
-        display: block;
-        font-size: 13px;
-        font-weight: 600;
-        margin-bottom: 6px;
-        color: #222;
-    }
-
-    /* Lists */
-    .mobile-search-box .live-search-results ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .mobile-search-box .live-search-results li {
-        padding: 6px 4px;
-        border-bottom: 1px solid #f0f0f0;
-    }
-
-    .mobile-search-box .live-search-results li:last-child {
-        border-bottom: none;
-    }
-
-    /* Links */
-    .mobile-search-box .live-search-results a {
-        text-decoration: none;
-        color: #333;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 13px;
-    }
-
-    /* Product image */
-    .mobile-search-box .live-search-results img {
-        width: 36px;
-        height: 36px;
-        object-fit: cover;
-        border-radius: 6px;
-        flex-shrink: 0;
-    }
-
-    /* Tap feedback */
-    .mobile-search-box .live-search-results a:active {
-        background: #f5f5f5;
-        border-radius: 6px;
-    }
-}
 
 </style>
 <div class="header-bottom compact-hidden">
@@ -1679,6 +1586,30 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.querySelector('.mobile-search-box input[type="text"]');
+    const resultsBox = document.querySelector('.mobile-search-box .live-search-results');
+
+    if (searchInput && resultsBox) {
+        searchInput.addEventListener('input', function() {
+            if (this.value.trim().length > 0) {
+                resultsBox.style.display = 'block'; // show dropdown
+            } else {
+                resultsBox.style.display = 'none'; // hide if input empty
+            }
+        });
+
+        // Optional: hide dropdown if clicked outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.mobile-search-box')) {
+                resultsBox.style.display = 'none';
+            }
+        });
+    }
 });
 </script>
 

@@ -1267,7 +1267,7 @@ from django.db.models import Q
 
 def live_search(request):
     query = request.GET.get("q", "").strip()
-    print(query)
+    
     products_data = []
     categories_data = []
 
