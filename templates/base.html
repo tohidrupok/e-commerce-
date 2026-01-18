@@ -666,6 +666,7 @@
     </div>
 
 </div>
+
 <script>
 $('#mobileNav').on('show.bs.collapse', function () {
     $('#menuIcon').removeClass('fa-bars').addClass('fa-times');
@@ -803,6 +804,179 @@ $('#mobileNav').on('hide.bs.collapse', function () {
     background: #f5f5f5;
 }
 
+/* ================================
+   MOBILE LIVE SEARCH – FIXED DESIGN
+   ================================ */
+@media (max-width: 767px) {
+
+    .mobile-search-box {
+        position: relative;
+    }
+
+    .mobile-search-box .live-search-results {
+        position: absolute;
+        top: 110%;
+        left: 0;
+        width: 100%;
+        background: #fff;
+        z-index: 9999;
+        display: flex;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+        overflow: hidden;
+        max-height: 70vh;
+    }
+
+    /* LEFT + RIGHT */
+    .mobile-search-box .live-search-results > div {
+        width: 50%;
+        padding: 10px;
+        overflow-y: auto;
+    }
+
+    /* Divider */
+    .mobile-search-box .live-search-results > div:first-child {
+        border-right: 1px solid #eee;
+    }
+
+    /* Section title */
+    .mobile-search-box .live-search-results strong {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #222;
+    }
+
+    /* Lists */
+    .mobile-search-box .live-search-results ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .mobile-search-box .live-search-results li {
+        padding: 6px 4px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .mobile-search-box .live-search-results li:last-child {
+        border-bottom: none;
+    }
+
+    /* Links */
+    .mobile-search-box .live-search-results a {
+        text-decoration: none;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+    }
+
+    /* Product image */
+    .mobile-search-box .live-search-results img {
+        width: 36px;
+        height: 36px;
+        object-fit: cover;
+        border-radius: 6px;
+        flex-shrink: 0;
+    }
+
+    /* Tap feedback */
+    .mobile-search-box .live-search-results a:active {
+        background: #f5f5f5;
+        border-radius: 6px;
+    }
+}
+
+
+/* ================================
+   MOBILE LIVE SEARCH – FIXED DESIGN
+   ================================ */
+@media (max-width: 767px) {
+
+    .mobile-search-box {
+        position: relative;
+    }
+
+    .mobile-search-box .live-search-results {
+        position: absolute;
+        top: 110%;
+        left: 0;
+        width: 100%;
+        background: #fff;
+        z-index: 9999;
+        display: flex;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+        overflow: hidden;
+        max-height: 70vh;
+    }
+
+    /* LEFT + RIGHT */
+    .mobile-search-box .live-search-results > div {
+        width: 50%;
+        padding: 10px;
+        overflow-y: auto;
+    }
+
+    /* Divider */
+    .mobile-search-box .live-search-results > div:first-child {
+        border-right: 1px solid #eee;
+    }
+
+    /* Section title */
+    .mobile-search-box .live-search-results strong {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #222;
+    }
+
+    /* Lists */
+    .mobile-search-box .live-search-results ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .mobile-search-box .live-search-results li {
+        padding: 6px 4px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .mobile-search-box .live-search-results li:last-child {
+        border-bottom: none;
+    }
+
+    /* Links */
+    .mobile-search-box .live-search-results a {
+        text-decoration: none;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+    }
+
+    /* Product image */
+    .mobile-search-box .live-search-results img {
+        width: 36px;
+        height: 36px;
+        object-fit: cover;
+        border-radius: 6px;
+        flex-shrink: 0;
+    }
+
+    /* Tap feedback */
+    .mobile-search-box .live-search-results a:active {
+        background: #f5f5f5;
+        border-radius: 6px;
+    }
+}
+
 </style>
 <div class="header-bottom compact-hidden">
     <div class="container">
@@ -839,28 +1013,28 @@ $('#mobileNav').on('hide.bs.collapse', function () {
                         </form>
                     </div> -->
                      <!-- Search -->
-<div class="header_search" style="position: relative;">
-    <form action="{% url 'search_results' %}" method="get" class="eco-search-form">
-        <div class="search input-group">
-            <input class="form-control" 
-                   type="text" 
-                   name="q"
-                   placeholder="Search products or categories..."
-                   required>
-            <span class="input-group-btn">
-                <button class="btn btn-primary" type="submit">
-                    <i class="fa fa-search"></i>
-                </button>
-            </span>
-        </div>
-    </form>
+                    <div class="header_search" style="position: relative;">
+                        <form action="{% url 'search_results' %}" method="get" class="eco-search-form">
+                            <div class="search input-group">
+                                <input class="form-control" 
+                                    type="text" 
+                                    name="q"
+                                    placeholder="Search products or categories..."
+                                    required>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
 
-    <!-- Live search container -->
-    <div class="live-search-results" style="display:none;">
-        <div class="live-products"></div>
-        <div class="live-categories"></div>
-    </div>
-</div>
+                        <!-- Live search container -->
+                        <div class="live-search-results" style="display:none;">
+                            <div class="live-products"></div>
+                            <div class="live-categories"></div>
+                        </div>
+                    </div>
 
 
 
@@ -1472,13 +1646,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 .then(data => {
                     let html = "";
 
-                    if (data.categories.length > 0) {
-                        html += `<div class="live-categories"><strong>Categories</strong><ul>`;
-                        data.categories.forEach(cat => {
-                            html += `<li><a href="${cat.url}">${cat.name}</a></li>`;
-                        });
-                        html += "</ul></div>";
-                    }
 
                     if (data.products.length > 0) {
                         html += `<div class="live-products"><strong>Products</strong><ul>`;
@@ -1489,6 +1656,14 @@ document.addEventListener("DOMContentLoaded", function() {
                                     ${prod.name} - ${prod.price}৳
                                 </a>
                             </li>`;
+                        });
+                        html += "</ul></div>";
+                    }
+
+                    if (data.categories.length > 0) {
+                        html += `<div class="live-categories"><strong>Categories</strong><ul>`;
+                        data.categories.forEach(cat => {
+                            html += `<li><a href="${cat.url}">${cat.name}</a></li>`;
                         });
                         html += "</ul></div>";
                     }
