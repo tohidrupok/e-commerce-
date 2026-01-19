@@ -294,7 +294,12 @@ body, .product-view {
             {{ product.short_description|linebreaks }}
         </div>
         
-        <a href="#more" class="text-red-600 font-semibold mt-2 inline-block">View More Info</a>
+        <a href="#tab-0"
+        class="text-red-600 font-semibold mt-2 inline-block"
+        data-toggle="tab"
+        id="viewMoreInfo">
+        View More Info
+        </a>
         
         
         <!-- PAYMENT OPTIONS -->
@@ -386,12 +391,17 @@ body, .product-view {
             <div style="margin-top:20px; display:flex; justify-content:center; gap:10px;">
                 <a href="/cart/" 
                 style="background:#2563eb; color:#fff; padding:10px 18px; border-radius:6px; font-weight:600;">
-                Go to Cart
+                View Cart
                 </a>
-                <button onclick="closeCartPopup()" 
-                        style="background:#6b7280; color:#fff; padding:10px 18px; border-radius:6px; font-weight:600;">
-                    Continue
-                </button>
+
+                <form action="{% url 'checkout' %}" method="get">
+                    <button type="submit"
+                        style="background:#6b7280; color:#fff; padding:10px 18px; 
+                            border-radius:6px; font-weight:600;">
+                       Confirm Order
+                    </button>
+                </form>
+
             </div>
         </div>
 
@@ -490,7 +500,7 @@ body, .product-view {
                     <div class="tab-content col-xs-12">
 
                         {% if product.specifications %}
-                         !-- specifications -->
+                        
                         <div id="tab-0" class="tab-pane fade active in">
 
                             <style>
@@ -667,5 +677,30 @@ body, .product-view {
         </div>
     </div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const viewMore = document.getElementById("viewMoreInfo");
+
+    if (viewMore) {
+        viewMore.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            // 1️⃣ Activate Specifications tab
+            $('a[href="#tab-0"]').tab('show');
+
+            // 2️⃣ Smooth scroll to tab section
+            const tabSection = document.querySelector(".producttab");
+            if (tabSection) {
+                setTimeout(() => {
+                    tabSection.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+                }, 200);
+            }
+        });
+    }
+});
+</script>
 
 {% endblock %}
