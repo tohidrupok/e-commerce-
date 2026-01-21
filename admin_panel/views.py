@@ -424,3 +424,100 @@ def home_slider_manage(request):
         form = HomeSliderSectionForm(instance=instance)
 
     return render(request, 'headline/home_slider_manage.html', {'form': form})
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from core.models import CategoryAttribute, ProductAttributeValue
+from django import forms
+
+# =============================
+# FORMS
+# =============================
+class CategoryAttributeForm(forms.ModelForm):
+    class Meta:
+        model = CategoryAttribute
+        fields = ['category', 'name']
+
+
+class ProductAttributeValueForm(forms.ModelForm):
+    class Meta:
+        model = ProductAttributeValue
+        fields = ['product', 'attribute', 'value']
+
+
+# =============================
+# CATEGORY ATTRIBUTE VIEWS
+# =============================
+def categoryattribute_list(request):
+    attributes = CategoryAttribute.objects.all()
+    return render(request, 'category/categoryattribute_list.html', {'attributes': attributes})
+
+
+def categoryattribute_add(request):
+    if request.method == 'POST':
+        form = CategoryAttributeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('categoryattribute_list')
+    else:
+        form = CategoryAttributeForm()
+    return render(request, 'category/categoryattribute_form.html', {'form': form})
+
+
+def categoryattribute_edit(request, pk):
+    obj = get_object_or_404(CategoryAttribute, pk=pk)
+    if request.method == 'POST':
+        form = CategoryAttributeForm(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+            return redirect('categoryattribute_list')
+    else:
+        form = CategoryAttributeForm(instance=obj)
+    return render(request, 'category/categoryattribute_form.html', {'form': form, 'object': obj})
+
+
+def categoryattribute_delete(request, pk):
+    obj = get_object_or_404(CategoryAttribute, pk=pk)
+    if request.method == 'POST':
+        obj.delete()
+        return redirect('categoryattribute_list')
+    return redirect('categoryattribute_list')  # JS confirm handles deletion
+
+
+# =============================
+# PRODUCT ATTRIBUTE VALUE VIEWS
+# =============================
+def productattributevalue_list(request):
+    product_attributes = ProductAttributeValue.objects.all()
+    return render(request, 'category/productattributevalue_list.html', {'product_attributes': product_attributes})
+
+
+def productattributevalue_add(request):
+    if request.method == 'POST':
+        form = ProductAttributeValueForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('productattribute_list')
+    else:
+        form = ProductAttributeValueForm()
+    return render(request, 'category/productattributevalue_form.html', {'form': form})
+
+
+def productattributevalue_edit(request, pk):
+    obj = get_object_or_404(ProductAttributeValue, pk=pk)
+    if request.method == 'POST':
+        form = ProductAttributeValueForm(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+            return redirect('productattribute_list')
+    else:
+        form = ProductAttributeValueForm(instance=obj)
+    return render(request, 'category/productattributevalue_form.html', {'form': form, 'object': obj})
+
+
+def productattributevalue_delete(request, pk):
+    obj = get_object_or_404(ProductAttributeValue, pk=pk)
+    if request.method == 'POST':
+        obj.delete()
+        return redirect('productattribute_list')
+    return redirect('productattribute_list')

@@ -23,6 +23,19 @@ urlpatterns = [
     path('headline/delete/<int:pk>/', views.headline_delete, name='headline_delete'),
     path('home-slider/', views.home_slider_manage, name='home_slider_manage'),
 
+    path('attributes/', views.categoryattribute_list, name='categoryattribute_list'),
+    path('attributes/add/', views.categoryattribute_add, name='categoryattribute_add'),
+    path('attributes/<int:pk>/edit/', views.categoryattribute_edit, name='categoryattribute_edit'),
+    path('attributes/<int:pk>/delete/', views.categoryattribute_delete, name='categoryattribute_delete'),
+
+    # =============================
+    # PRODUCT ATTRIBUTE VALUE
+    # =============================
+    path('product-attributes/', views.productattributevalue_list, name='productattribute_list'),
+    path('product-attributes/add/', views.productattributevalue_add, name='productattribute_add'),
+    path('product-attributes/<int:pk>/edit/', views.productattributevalue_edit, name='productattribute_edit'),
+    path('product-attributes/<int:pk>/delete/', views.productattributevalue_delete, name='productattribute_delete'),
+
 ]
 
 

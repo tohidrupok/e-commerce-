@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Category, Product, ProductImage, HotDeal, Brand, PaymentHistory
 from django.contrib import admin
-from .models import Product
+from .models import *
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 
@@ -207,4 +207,34 @@ class PaymentHistoryAdmin(admin.ModelAdmin):
     ordering = ("-created_at",)
 
 
+@admin.register(CategoryAttribute)
+class CategoryAttributeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category')
+    list_filter = ('category',)
+    search_fields = ('name', 'category__name')
+    ordering = ('category', 'name')
+
+
+# ============================
+# PRODUCT ATTRIBUTE VALUE ADMIN
+# ============================
+@admin.register(ProductAttributeValue)
+class ProductAttributeValueAdmin(admin.ModelAdmin):
+    list_display = ('product', 'attribute', 'value')
+    list_filter = ('attribute', 'attribute__category')
+    search_fields = (
+        'product__name',
+        'attribute__name',
+        'value',
+    )
+    autocomplete_fields = ('product',)
+    ordering = ('product', 'attribute')
+
+
+# ============================
+# OPTIONAL: INLINE (RECOMMENDED)
+# ============================
+class ProductAttributeInline(admin.TabularInline):
+    model = ProductAttributeValue
+    extra = 1
 

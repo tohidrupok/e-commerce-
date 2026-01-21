@@ -59,6 +59,8 @@ class Category(models.Model):
         super().save(*args, **kwargs) 
 
 
+
+
 class Product(models.Model):
     STATUS_CHOICES = (
         ('new', 'New'),
@@ -254,3 +256,34 @@ class PaymentHistory(models.Model):
 
     def __str__(self):
         return f"Payment {self.amount} for Order #{self.order.id}"
+
+
+
+class CategoryAttribute(models.Model):
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name="attributes"
+    )
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.category.name} - {self.name}"
+ 
+
+class ProductAttributeValue(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="attribute_values"
+    )
+    attribute = models.ForeignKey(
+        CategoryAttribute,
+        on_delete=models.CASCADE
+    )
+    value = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.product.name} - {self.attribute.name}: {self.value}" 
+    
+

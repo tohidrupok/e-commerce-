@@ -8,6 +8,8 @@ from accounts.utils import generate_username_from_phone, generate_unique_usernam
 import re
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.db.models import Max
+
 User = get_user_model()
 
 def home(request):
@@ -39,23 +41,94 @@ def get_all_subcategories(category):
     return subcategories
 
 
-from django.shortcuts import render, get_object_or_404
-from django.db.models import Max, Q
-from .models import Product, Category
-from .models import Brand   
+# from django.shortcuts import render, get_object_or_404
+# from django.db.models import Max, Q
+# from .models import Product, Category
+# from .models import Brand   
+
+# def category_products(request, slug):
+#     category = get_object_or_404(Category, slug=slug)
+
+#     subcats = get_all_subcategories(category)
+#     all_category_ids = [category.id] + [c.id for c in subcats]
+
+#     products = Product.objects.filter(
+#         category_id__in=all_category_ids,
+#         is_active=True
+#     )
+
+#     # GET values
+#     selected_status = request.GET.getlist('status')
+#     selected_brands = request.GET.getlist('brand')
+#     selected_rating = request.GET.get('rating')
+#     selected_featured = request.GET.get('featured')
+#     selected_max_price = request.GET.get('max_price')
+#     in_stock = request.GET.get('in_stock')
+
+#     # Filters
+#     if selected_max_price:
+#         products = products.filter(price__lte=selected_max_price)
+
+#     if in_stock:
+#         products = products.filter(stock_quantity__gt=0)
+
+#     if selected_status:
+#         products = products.filter(status__in=selected_status)
+
+#     if selected_brands:
+#         products = products.filter(brand_id__in=selected_brands)
+
+#     if selected_rating:
+#         products = products.filter(rating__gte=selected_rating)
+
+#     if selected_featured:
+#         products = products.filter(is_featured=True)
+
+#     max_price = products.aggregate(Max('price'))['price__max'] or 0
+
+#     brands = Brand.objects.filter(
+#         brand__category_id__in=all_category_ids
+#     ).distinct()
+
+#     context = {
+#         'category': category,
+#         'products': products,
+#         'brands': brands,
+#         'max_price': int(max_price),
+
+#         # 🔥 send selected values
+#         'selected_status': selected_status,
+#         'selected_brands': selected_brands,
+#         'selected_rating': selected_rating,
+#         'selected_featured': selected_featured,
+#         'in_stock': in_stock,
+#     }
+
+#     return render(request, 'category_products.html', context)
 
 def category_products(request, slug):
     category = get_object_or_404(Category, slug=slug)
 
+    # =============================
+    # CATEGORY + SUBCATEGORIES
+    # =============================
     subcats = get_all_subcategories(category)
     all_category_ids = [category.id] + [c.id for c in subcats]
 
-    products = Product.objects.filter(
+    # =============================
+    # BASE QUERYSET (CATEGORY ONLY)
+    # =============================
+    base_products = Product.objects.filter(
         category_id__in=all_category_ids,
         is_active=True
     )
 
-    # GET values
+    # this will be filtered step by step
+    products = base_products
+
+    # =============================
+    # STATIC FILTERS
+    # =============================
     selected_status = request.GET.getlist('status')
     selected_brands = request.GET.getlist('brand')
     selected_rating = request.GET.get('rating')
@@ -63,7 +136,6 @@ def category_products(request, slug):
     selected_max_price = request.GET.get('max_price')
     in_stock = request.GET.get('in_stock')
 
-    # Filters
     if selected_max_price:
         products = products.filter(price__lte=selected_max_price)
 
@@ -82,28 +154,73 @@ def category_products(request, slug):
     if selected_featured:
         products = products.filter(is_featured=True)
 
-    max_price = products.aggregate(Max('price'))['price__max'] or 0
+    # =============================
+    # 🔥 DYNAMIC ATTRIBUTE FILTERS
+    # =============================
+    attributes = CategoryAttribute.objects.filter(
+        category_id__in=all_category_ids
+    )
+
+    for attr in attributes:
+        param_key = f"attr_{attr.id}"
+        selected_values = request.GET.getlist(param_key)
+
+        if selected_values:
+            products = products.filter(
+                attribute_values__attribute=attr,
+                attribute_values__value__in=selected_values
+            )
+
+    # =============================
+    # BUILD FILTER OPTIONS (CATEGORY BASED)
+    # =============================
+    dynamic_filters = []
+
+    for attr in attributes:
+        values = ProductAttributeValue.objects.filter(
+            attribute=attr,
+            product__category_id__in=all_category_ids
+        ).values_list('value', flat=True).distinct()
+
+        if values:
+            dynamic_filters.append({
+                'id': attr.id,
+                'name': attr.name,
+                'values': values,
+                'selected': request.GET.getlist(f"attr_{attr.id}")
+            })
+
+    # =============================
+    # EXTRA DATA (IMPORTANT FIX)
+    # =============================
+    # ❗ max_price MUST be category-based, not filtered-products-based
+    max_price = base_products.aggregate(Max('price'))['price__max'] or 0
 
     brands = Brand.objects.filter(
         brand__category_id__in=all_category_ids
     ).distinct()
 
+    # =============================
+    # CONTEXT
+    # =============================
     context = {
         'category': category,
         'products': products,
         'brands': brands,
         'max_price': int(max_price),
 
-        # 🔥 send selected values
+        # selected values
         'selected_status': selected_status,
         'selected_brands': selected_brands,
         'selected_rating': selected_rating,
         'selected_featured': selected_featured,
         'in_stock': in_stock,
+
+        # dynamic filters
+        'dynamic_filters': dynamic_filters,
     }
 
     return render(request, 'category_products.html', context)
-
 
 def product_quickview(request, pk):
     product = get_object_or_404(Product, pk=pk)

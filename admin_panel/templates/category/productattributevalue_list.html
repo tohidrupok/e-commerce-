@@ -1,0 +1,35 @@
+{% extends "admin-base.html" %}
+{% block content %}
+<h2>Product Attribute Values</h2>
+<a href="{% url 'productattribute_add' %}" style="padding:6px 12px; background:#2563eb; color:#fff; border-radius:4px; text-decoration:none;">Add New</a>
+
+<table border="1" cellpadding="8" cellspacing="0" style="margin-top:20px; width:100%; border-collapse:collapse;">
+    <tr style="background:#f3f4f6;">
+        <th>ID</th>
+        <th>Product</th>
+        <th>Attribute</th>
+        <th>Value</th>
+        <th>Actions</th>
+    </tr>
+    {% for item in product_attributes %}
+    <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.attribute.name }}</td>
+        <td>{{ item.value }}</td>
+        <td>
+            <a href="{% url 'productattribute_edit' item.id %}" style="margin-right:8px;">Edit</a>
+            
+            <form method="post" action="{% url 'productattribute_delete' item.id %}" style="display:inline;" onsubmit="return confirm('Are you sure to delete this attribute?');">
+                {% csrf_token %}
+                <button type="submit" style="padding:4px 8px; background:#dc2626; color:#fff; border:none; border-radius:4px; cursor:pointer;">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">No product attributes found.</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

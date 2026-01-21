@@ -1,0 +1,29 @@
+{% extends "admin-base.html" %}
+{% block content %}
+<h2>Category Attributes</h2>
+<a href="{% url 'categoryattribute_add' %}" style="padding:6px 12px; background:#2563eb; color:#fff; border-radius:4px; text-decoration:none;">Add New</a>
+
+<table border="1" cellpadding="8" cellspacing="0" style="margin-top:20px; width:100%; border-collapse:collapse;">
+    <tr style="background:#f3f4f6;">
+        <th>ID</th>
+        <th>Category</th>
+        <th>Name</th>
+        <th>Actions</th>
+    </tr>
+    {% for attr in attributes %}
+    <tr>
+        <td>{{ attr.id }}</td>
+        <td>{{ attr.category.name }}</td>
+        <td>{{ attr.name }}</td>
+        <td>
+            <a href="{% url 'categoryattribute_edit' attr.id %}" style="margin-right:8px;">Edit</a>
+            
+            <form method="post" action="{% url 'categoryattribute_delete' attr.id %}" style="display:inline;" onsubmit="return confirm('Are you sure to delete {{ attr.name }}?');">
+                {% csrf_token %}
+                <button type="submit" style="padding:4px 8px; background:#dc2626; color:#fff; border:none; border-radius:4px; cursor:pointer;">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
